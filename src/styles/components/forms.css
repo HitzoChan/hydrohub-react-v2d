@@ -1,0 +1,271 @@
+/* ==========================================================
+   HYDROHUB FORM SYSTEM
+========================================================== */
+
+/* ==========================
+   FORM GROUP
+========================== */
+
+.form-group{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+
+    margin-bottom:20px;
+
+}
+
+/* ==========================
+   LABEL
+========================== */
+
+.form-label{
+
+    font-size:14px;
+
+    font-weight:600;
+
+    color:var(--text);
+
+}
+
+/* ==========================
+   INPUT
+========================== */
+
+.form-control{
+
+    width:100%;
+
+    height:48px;
+
+    padding:0 16px;
+
+    border:1px solid var(--border);
+
+    border-radius:var(--radius-md);
+
+    background:#fff;
+
+    color:var(--text);
+
+    font-size:14px;
+
+    transition:all var(--transition);
+
+}
+
+.form-control::placeholder{
+
+    color:var(--text-light);
+
+}
+
+.form-control:hover{
+
+    border-color:#CBD5E1;
+
+}
+
+.form-control:focus{
+
+    border-color:var(--primary);
+
+    box-shadow:0 0 0 4px rgba(37,99,235,.12);
+
+}
+
+/* ==========================
+   TEXTAREA
+========================== */
+
+textarea.form-control{
+
+    min-height:120px;
+
+    padding:14px 16px;
+
+    resize:vertical;
+
+}
+
+/* ==========================
+   SELECT
+========================== */
+
+select.form-control{
+
+    cursor:pointer;
+
+}
+
+/* ==========================
+   READONLY
+========================== */
+
+.form-control:disabled,
+
+.form-control[readonly]{
+
+    background:#F8FAFC;
+
+    cursor:not-allowed;
+
+    opacity:.8;
+
+}
+
+/* ==========================
+   INPUT WITH ICON
+========================== */
+
+.input-group{
+
+    position:relative;
+
+}
+
+.input-group i{
+
+    position:absolute;
+
+    left:16px;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    color:var(--text-light);
+
+    font-size:16px;
+
+}
+
+.input-group .form-control{
+
+    padding-left:46px;
+
+}
+
+/* ==========================
+   FORM ROW
+========================== */
+
+.form-row{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:20px;
+
+}
+
+/* ==========================
+   CHECKBOX
+========================== */
+
+.form-check{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+}
+
+.form-check input{
+
+    width:18px;
+
+    height:18px;
+
+    accent-color:var(--primary);
+
+}
+
+/* ==========================
+   RADIO
+========================== */
+
+.form-radio{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+}
+
+.form-radio input{
+
+    accent-color:var(--primary);
+
+}
+
+/* ==========================
+   HELP TEXT
+========================== */
+
+.form-text{
+
+    font-size:13px;
+
+    color:var(--text-light);
+
+}
+
+/* ==========================
+   ERROR
+========================== */
+
+.form-error{
+
+    font-size:13px;
+
+    color:var(--danger);
+
+}
+
+/* ==========================
+   SUCCESS
+========================== */
+
+.form-success{
+
+    font-size:13px;
+
+    color:var(--success);
+
+}
+
+/* ==========================
+   REQUIRED
+========================== */
+
+.required{
+
+    color:var(--danger);
+
+    margin-left:4px;
+
+}
+
+/* ==========================
+   RESPONSIVE
+========================== */
+
+@media (max-width:768px){
+
+    .form-row{
+
+        grid-template-columns:1fr;
+
+    }
+
+}

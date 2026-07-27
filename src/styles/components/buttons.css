@@ -1,0 +1,279 @@
+/* ==========================================================
+   HYDROHUB BUTTON SYSTEM
+========================================================== */
+
+/* ==========================
+   BASE BUTTON
+========================== */
+
+.btn{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:8px;
+
+    padding:10px 20px;
+
+    border:none;
+
+    border-radius:var(--radius-md);
+
+    font-size:14px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:all var(--transition);
+
+    text-decoration:none;
+
+    white-space:nowrap;
+
+}
+
+/* ==========================
+   HOVER
+========================== */
+
+.btn:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:var(--shadow-sm);
+
+}
+
+/* ==========================
+   ACTIVE
+========================== */
+
+.btn:active{
+
+    transform:scale(.98);
+
+}
+
+/* ==========================
+   DISABLED
+========================== */
+
+.btn:disabled{
+
+    opacity:.6;
+
+    cursor:not-allowed;
+
+    transform:none;
+
+    box-shadow:none;
+
+}
+
+/* ==========================
+   PRIMARY
+========================== */
+
+.btn-primary{
+
+    background:var(--primary);
+
+    color:#fff;
+
+}
+
+.btn-primary:hover{
+
+    background:var(--primary-dark);
+
+}
+
+/* ==========================
+   SUCCESS
+========================== */
+
+.btn-success{
+
+    background:var(--success);
+
+    color:#fff;
+
+}
+
+/* ==========================
+   WARNING
+========================== */
+
+.btn-warning{
+
+    background:var(--warning);
+
+    color:#fff;
+
+}
+
+/* ==========================
+   DANGER
+========================== */
+
+.btn-danger{
+
+    background:var(--danger);
+
+    color:#fff;
+
+}
+
+/* ==========================
+   PURPLE
+========================== */
+
+.btn-purple{
+
+    background:var(--purple);
+
+    color:#fff;
+
+}
+
+/* ==========================
+   OUTLINE BUTTONS
+========================== */
+
+.btn-outline-primary{
+
+    background:#fff;
+
+    color:var(--primary);
+
+    border:1px solid var(--primary);
+
+}
+
+.btn-outline-primary:hover{
+
+    background:var(--primary);
+
+    color:#fff;
+
+}
+
+.btn-outline-success{
+
+    background:#fff;
+
+    color:var(--success);
+
+    border:1px solid var(--success);
+
+}
+
+.btn-outline-success:hover{
+
+    background:var(--success);
+
+    color:#fff;
+
+}
+
+.btn-outline-danger{
+
+    background:#fff;
+
+    color:var(--danger);
+
+    border:1px solid var(--danger);
+
+}
+
+.btn-outline-danger:hover{
+
+    background:var(--danger);
+
+    color:#fff;
+
+}
+
+/* ==========================
+   LIGHT BUTTONS
+========================== */
+
+.btn-light{
+
+    background:#fff;
+
+    color:var(--text);
+
+    border:1px solid var(--border);
+
+}
+
+.btn-light:hover{
+
+    background:#F8FAFC;
+
+}
+
+/* ==========================
+   BUTTON SIZES
+========================== */
+
+.btn-sm{
+
+    padding:8px 14px;
+
+    font-size:13px;
+
+}
+
+.btn-lg{
+
+    padding:14px 28px;
+
+    font-size:16px;
+
+}
+
+/* ==========================
+   FULL WIDTH
+========================== */
+
+.btn-block{
+
+    width:100%;
+
+}
+
+/* ==========================
+   ICON BUTTON
+========================== */
+
+.btn-icon{
+
+    width:42px;
+
+    height:42px;
+
+    padding:0;
+
+    border-radius:12px;
+
+}
+
+/* ==========================
+   RESPONSIVE
+========================== */
+
+@media (max-width:768px){
+
+    .btn{
+
+        width:100%;
+
+    }
+
+}

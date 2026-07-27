@@ -1,0 +1,217 @@
+/* ==========================================================
+   HYDROHUB PAGE HEADER SYSTEM
+========================================================== */
+
+/* ==========================
+   PAGE HEADER
+========================== */
+
+.page-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+    gap:24px;
+
+    margin-bottom:32px;
+
+    padding-bottom:20px;
+
+    border-bottom:1px solid var(--border);
+
+}
+
+/* ==========================
+   LEFT SECTION
+========================== */
+
+.page-header-left{
+
+    flex:1;
+
+}
+
+/* ==========================
+   RIGHT SECTION
+========================== */
+
+.page-header-right{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    flex-wrap:wrap;
+
+}
+
+/* ==========================
+   PAGE TITLE
+========================== */
+
+.page-title{
+
+    font-size:32px;
+
+    font-weight:700;
+
+    color:var(--text);
+
+    margin-bottom:8px;
+
+    letter-spacing:-0.5px;
+
+}
+
+/* ==========================
+   PAGE DESCRIPTION
+========================== */
+
+.page-description{
+
+    font-size:15px;
+
+    color:var(--text-light);
+
+    line-height:1.6;
+
+}
+
+/* ==========================
+   BREADCRUMB
+========================== */
+
+.breadcrumb{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    margin-bottom:12px;
+
+    font-size:13px;
+
+    color:var(--text-light);
+
+}
+
+.breadcrumb a{
+
+    color:var(--text-light);
+
+    transition:color var(--transition);
+
+}
+
+.breadcrumb a:hover{
+
+    color:var(--primary);
+
+}
+
+.breadcrumb .active{
+
+    color:var(--primary);
+
+    font-weight:600;
+
+}
+
+/* ==========================
+   PAGE ACTIONS
+========================== */
+
+.page-actions{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    flex-wrap:wrap;
+
+}
+
+/* ==========================
+   PAGE ICON
+========================== */
+
+.page-icon{
+
+    width:56px;
+
+    height:56px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    border-radius:16px;
+
+    background:var(--primary-light);
+
+    color:var(--primary);
+
+    font-size:24px;
+
+}
+
+/* ==========================
+   PAGE HEADER WITH ICON
+========================== */
+
+.page-header-content{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+
+}
+
+/* ==========================
+   RESPONSIVE
+========================== */
+
+@media(max-width:768px){
+
+    .page-header{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+    }
+
+    .page-header-right{
+
+        width:100%;
+
+        justify-content:flex-start;
+
+    }
+
+    .page-title{
+
+        font-size:26px;
+
+    }
+
+    .page-header-content{
+
+        align-items:flex-start;
+
+    }
+
+}

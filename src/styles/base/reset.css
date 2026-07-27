@@ -1,0 +1,241 @@
+/* ==========================================================
+   HYDROHUB RESET
+   Global Reset & Base Elements
+========================================================== */
+
+/* ==========================
+   BOX MODEL
+========================== */
+
+*,
+*::before,
+*::after{
+
+    margin:0;
+
+    padding:0;
+
+    box-sizing:border-box;
+
+}
+
+/* ==========================
+   HTML
+========================== */
+
+html{
+
+    scroll-behavior:smooth;
+
+    -webkit-text-size-adjust:100%;
+
+}
+
+/* ==========================
+   BODY
+========================== */
+
+body{
+
+    min-height:100vh;
+
+    text-rendering:optimizeLegibility;
+
+    -webkit-font-smoothing:antialiased;
+
+    -moz-osx-font-smoothing:grayscale;
+
+    overflow-x:hidden;
+
+}
+
+/* ==========================
+   IMAGES
+========================== */
+
+img,
+picture,
+svg,
+video,
+canvas{
+
+    display:block;
+
+    max-width:100%;
+
+}
+
+/* ==========================
+   BUTTONS
+========================== */
+
+button{
+
+    border:none;
+
+    outline:none;
+
+    background:none;
+
+    font:inherit;
+
+    cursor:pointer;
+
+}
+
+/* ==========================
+   LINKS
+========================== */
+
+a{
+
+    color:inherit;
+
+    text-decoration:none;
+
+}
+
+a:hover{
+
+    text-decoration:none;
+
+}
+
+/* ==========================
+   LISTS
+========================== */
+
+ul,
+ol{
+
+    list-style:none;
+
+}
+
+/* ==========================
+   FORM ELEMENTS
+========================== */
+
+input,
+textarea,
+select,
+button{
+
+    font:inherit;
+
+}
+
+input:focus,
+textarea:focus,
+select:focus{
+
+    outline:none;
+
+}
+
+/* ==========================
+   TABLES
+========================== */
+
+table{
+
+    border-collapse:collapse;
+
+    border-spacing:0;
+
+    width:100%;
+
+}
+
+/* ==========================
+   HR
+========================== */
+
+hr{
+
+    border:none;
+
+    border-top:1px solid var(--border);
+
+}
+
+/* ==========================
+   PARAGRAPH
+========================== */
+
+p{
+
+    margin:0;
+
+}
+
+/* ==========================
+   HEADINGS
+========================== */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6{
+
+    margin:0;
+
+    font-weight:600;
+
+}
+
+/* ==========================
+   SMALL
+========================== */
+
+small{
+
+    display:block;
+
+}
+
+/* ==========================
+   TEXT SELECTION
+========================== */
+
+::selection{
+
+    background:var(--primary);
+
+    color:#fff;
+
+}
+
+/* ==========================
+   SCROLLBAR
+========================== */
+
+::-webkit-scrollbar{
+
+    width:10px;
+
+    height:10px;
+
+}
+
+::-webkit-scrollbar-track{
+
+    background:#f1f5f9;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:#cbd5e1;
+
+    border-radius:999px;
+
+}
+
+::-webkit-scrollbar-thumb:hover{
+
+    background:#94a3b8;
+
+}

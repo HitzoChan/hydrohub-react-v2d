@@ -1,0 +1,377 @@
+/* ==========================================================
+   HYDROHUB CARD SYSTEM
+========================================================== */
+
+/* ==========================
+   DEFAULT CARD
+========================== */
+
+.card{
+
+    background:var(--surface);
+
+    border:1px solid var(--border);
+
+    border-radius:var(--radius-lg);
+
+    box-shadow:var(--shadow-sm);
+
+    transition:all var(--transition);
+
+    overflow:hidden;
+
+}
+
+.card:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:var(--shadow-md);
+
+}
+
+/* ==========================
+   CARD HEADER
+========================== */
+
+.card-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:20px 24px;
+
+    border-bottom:1px solid var(--border);
+
+    background:#fff;
+
+}
+
+.card-title{
+
+    font-size:18px;
+
+    font-weight:700;
+
+    color:var(--text);
+
+}
+
+.card-subtitle{
+
+    margin-top:4px;
+
+    font-size:14px;
+
+    color:var(--text-light);
+
+}
+
+/* ==========================
+   CARD BODY
+========================== */
+
+.card-body{
+
+    padding:24px;
+
+}
+
+/* ==========================
+   CARD FOOTER
+========================== */
+
+.card-footer{
+
+    padding:18px 24px;
+
+    border-top:1px solid var(--border);
+
+    background:#fff;
+
+}
+
+/* ==========================
+   STAT CARD
+========================== */
+
+.stat-card{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    background:var(--surface);
+
+    border:1px solid var(--border);
+
+    border-radius:var(--radius-lg);
+
+    padding:24px;
+
+    box-shadow:var(--shadow-sm);
+
+    transition:all var(--transition);
+
+}
+
+.stat-card:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:var(--shadow-md);
+
+}
+
+/* ==========================
+   STAT CONTENT
+========================== */
+
+.stat-content{
+
+    flex:1;
+
+}
+
+.stat-title{
+
+    font-size:14px;
+
+    font-weight:600;
+
+    color:var(--text-light);
+
+    margin-bottom:10px;
+
+}
+
+.stat-value{
+
+    font-size:34px;
+
+    font-weight:700;
+
+    color:var(--text);
+
+    line-height:1;
+
+}
+
+.stat-subtitle{
+
+    margin-top:10px;
+
+    font-size:13px;
+
+    color:var(--text-light);
+
+}
+
+/* ==========================
+   STAT ICON
+========================== */
+
+.stat-icon{
+
+    width:64px;
+
+    height:64px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    border-radius:18px;
+
+    font-size:28px;
+
+    color:#fff;
+
+}
+
+/* ==========================
+   ICON COLORS
+========================== */
+
+.bg-primary{
+
+    background:var(--primary);
+
+}
+
+.bg-success{
+
+    background:var(--success);
+
+}
+
+.bg-warning{
+
+    background:var(--warning);
+
+}
+
+.bg-danger{
+
+    background:var(--danger);
+
+}
+
+.bg-purple{
+
+    background:var(--purple);
+
+}
+
+/* ==========================
+   INFO CARD
+========================== */
+
+.info-card{
+
+    background:var(--surface);
+
+    border:1px solid var(--border);
+
+    border-radius:var(--radius-lg);
+
+    padding:24px;
+
+    box-shadow:var(--shadow-sm);
+
+}
+
+/* ==========================
+   CARD GRID
+========================== */
+
+.card-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+
+    gap:24px;
+
+}
+
+/* ==========================
+   RESPONSIVE
+========================== */
+
+@media (max-width:768px){
+
+    .stat-card{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:20px;
+
+    }
+
+    .stat-icon{
+
+        width:56px;
+
+        height:56px;
+
+        font-size:24px;
+
+    }
+
+    .stat-value{
+
+        font-size:28px;
+
+    }
+
+}
+
+/* ==========================
+   STAT TREND
+========================== */
+
+.stat-trend{
+
+    margin-top:12px;
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    font-size:13px;
+
+    font-weight:600;
+
+}
+
+.trend-success{
+
+    color:var(--success);
+
+}
+
+.trend-danger{
+
+    color:var(--danger);
+
+}
+
+.trend-warning{
+
+    color:var(--warning);
+
+}
+
+.trend-primary{
+
+    color:var(--primary);
+
+}
+
+.trend-neutral{
+
+    color:var(--text-light);
+
+}
+
+/* ==========================
+   CARD WITHOUT HEADER
+========================== */
+
+.card.no-padding .card-body{
+
+    padding:0;
+
+}
+
+/* ==========================
+   CARD SCROLL
+========================== */
+
+.card-scroll{
+
+    overflow:auto;
+
+}
+
+/* ==========================
+   CARD HEIGHT
+========================== */
+
+.card-fill{
+
+    height:100%;
+
+}

@@ -1,0 +1,171 @@
+/* ======================================================
+   PAGE
+====================================================== */
+
+.page-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+/* ======================================================
+   STATISTICS CARDS
+====================================================== */
+
+.stats-card {
+  border: none;
+  border-radius: 14px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+  transition: 0.25s ease;
+}
+
+.stats-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+}
+
+.stats-title {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 6px;
+}
+
+.stats-value {
+  font-size: 30px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.stats-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ======================================================
+   SEARCH & FILTER
+====================================================== */
+
+.search-card {
+  border: none;
+  border-radius: 14px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, .06);
+}
+
+.search-card .form-control,
+.search-card .form-select {
+  border-radius: 10px;
+}
+
+.search-card .input-group-text {
+  background: #fff;
+}
+
+/* ======================================================
+   TABLE
+====================================================== */
+
+.custom-table {
+  margin-bottom: 0;
+}
+
+.custom-table thead th {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  border-bottom: 2px solid #eef2f7;
+}
+
+.custom-table tbody td {
+  vertical-align: middle;
+  font-size: 14px;
+  padding: 16px 12px;
+}
+
+.custom-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+/* ======================================================
+   BADGES
+====================================================== */
+
+.orders-badge {
+  background: #e0f2fe;
+  color: #0369a1;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-badge.active {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.status-badge.inactive {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+/* ======================================================
+   BUTTONS
+====================================================== */
+
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ======================================================
+   MODAL
+====================================================== */
+
+.modal-content {
+  border-radius: 16px;
+  border: none;
+}
+
+.modal-header {
+  border-bottom: 1px solid #eef2f7;
+}
+
+.modal-footer {
+  border-top: 1px solid #eef2f7;
+}
+
+/* ======================================================
+   RESPONSIVE
+====================================================== */
+
+@media (max-width: 768px) {
+
+  .page-title {
+    font-size: 1.5rem;
+  }
+
+  .stats-value {
+    font-size: 24px;
+  }
+
+  .custom-table {
+    min-width: 850px;
+  }
+
+}

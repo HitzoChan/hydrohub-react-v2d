@@ -1,0 +1,2202 @@
+/* ==========================================================
+   HYDROHUB MESSAGING
+   PART 1 - PAGE LAYOUT
+========================================================== */
+
+/* =======================================
+   PAGE HEADER
+======================================= */
+
+.messaging-page-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+    flex-wrap:wrap;
+    margin-bottom:24px;
+}
+
+.messaging-page-title{
+    margin:0;
+    font-size:2rem;
+    font-weight:700;
+    color:#1e293b;
+}
+
+.messaging-page-description{
+    margin:6px 0 0;
+    color:#64748b;
+    font-size:.95rem;
+}
+
+/* =======================================
+   CONVERSATION COUNTER
+======================================= */
+
+.conversation-counter{
+    background:#fff;
+    border:1px solid #e2e8f0;
+    border-radius:18px;
+    min-width:160px;
+    padding:18px 24px;
+    text-align:center;
+    box-shadow:0 8px 24px rgba(15,23,42,.05);
+}
+
+.counter-number{
+    display:block;
+    font-size:2rem;
+    font-weight:700;
+    color:#2563eb;
+    line-height:1;
+}
+
+.counter-label{
+    display:block;
+    margin-top:8px;
+    color:#64748b;
+    font-size:.95rem;
+}
+
+/* =======================================
+   MAIN LAYOUT
+======================================= */
+
+.messaging-layout{
+
+    display:grid;
+    grid-template-columns:360px 1fr;
+    gap:24px;
+    align-items:stretch;
+
+    height:75vh;
+}
+
+/* =======================================
+   PANELS
+======================================= */
+
+.conversation-sidebar,
+.chat-panel{
+
+    background:#ffffff;
+
+    border:1px solid #e2e8f0;
+
+    border-radius:22px;
+
+    overflow:hidden;
+
+    display:flex;
+
+    flex-direction:column;
+
+    box-shadow:0 10px 30px rgba(15,23,42,.06);
+}
+
+/* =======================================
+   PANEL HEADER
+======================================= */
+
+.panel-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:18px 20px;
+
+    background:#fafcff;
+
+    border-bottom:1px solid #eef2f7;
+}
+
+.panel-header h5{
+
+    margin:0;
+
+    font-size:1.6rem;
+
+    font-weight:700;
+
+    color:#1e293b;
+}
+
+.panel-header small{
+
+    display:block;
+
+    margin-top:4px;
+
+    color:#64748b;
+}
+
+/* =======================================
+   CHAT PANEL
+======================================= */
+
+.chat-panel,
+.conversation-sidebar{
+    height:100%;
+}
+
+/* =======================================
+   EMPTY STATES
+======================================= */
+
+.empty-state,
+.chat-empty-state{
+
+    flex:1;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    text-align:center;
+
+    padding:50px 30px;
+
+    color:#64748b;
+}
+
+.empty-state i,
+.chat-empty-state i{
+
+    font-size:3.5rem;
+
+    color:#2563eb;
+
+    margin-bottom:18px;
+}
+
+.empty-state h5,
+.chat-empty-state h5{
+
+    margin-bottom:10px;
+
+    font-weight:700;
+
+    color:#1e293b;
+}
+
+.empty-state p,
+.chat-empty-state p{
+
+    margin:0;
+
+    max-width:300px;
+
+    color:#64748b;
+}
+
+/* =======================================
+   LOADING
+======================================= */
+
+.conversation-loading{
+
+    flex:1;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    flex-direction:column;
+
+    gap:14px;
+
+    padding:40px;
+}
+
+/* =======================================
+   SCROLLBARS
+======================================= */
+
+.conversation-sidebar::-webkit-scrollbar,
+.chat-body::-webkit-scrollbar{
+
+    width:8px;
+}
+
+.conversation-sidebar::-webkit-scrollbar-thumb,
+.chat-body::-webkit-scrollbar-thumb{
+
+    background:#cbd5e1;
+
+    border-radius:20px;
+}
+
+.conversation-sidebar::-webkit-scrollbar-thumb:hover,
+.chat-body::-webkit-scrollbar-thumb:hover{
+
+    background:#94a3b8;
+}
+
+/* =======================================
+   RESPONSIVE
+======================================= */
+
+@media (max-width:1200px){
+
+    .messaging-layout{
+
+        grid-template-columns:320px 1fr;
+    }
+
+}
+
+@media (max-width:992px){
+
+    .messaging-layout{
+
+        grid-template-columns:1fr;
+
+        gap:18px;
+    }
+
+    .conversation-sidebar{
+
+        height:420px;
+    }
+
+    .chat-panel{
+
+        min-height:650px;
+    }
+
+}
+
+@media (max-width:768px){
+
+    .messaging-page-header{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+    }
+
+    .conversation-counter{
+
+        width:100%;
+    }
+
+}
+
+/* ==========================================================
+   HYDROHUB MESSAGING
+   PART 2 - CONVERSATION LIST
+========================================================== */
+
+/* =======================================
+   SEARCH
+======================================= */
+
+.conversation-search-wrapper{
+
+    padding:14px 16px;
+
+    border-bottom:1px solid #eef2f7;
+
+    background:#ffffff;
+}
+
+.conversation-search{
+
+    position:relative;
+}
+
+.conversation-search i{
+
+    position:absolute;
+
+    left:16px;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    color:#94a3b8;
+
+    font-size:15px;
+}
+
+.conversation-search input{
+
+    width:100%;
+
+    height:48px;
+
+    padding:0 16px 0 46px;
+
+    border:1px solid #dbe3ec;
+
+    border-radius:14px;
+
+    background:#f8fafc;
+
+    outline:none;
+
+    transition:.25s;
+}
+
+.conversation-search input:focus{
+
+    background:#ffffff;
+
+    border-color:#2563eb;
+
+    box-shadow:0 0 0 4px rgba(37,99,235,.08);
+}
+
+/* =======================================
+   CONVERSATION LIST
+======================================= */
+
+.conversation-list{
+    flex:1;
+    overflow-y:auto;
+    overflow-x:hidden;
+
+    padding:16px;
+
+    max-height:420px;
+}
+/* =======================================
+   CONVERSATION CARD
+======================================= */
+
+.conversation-card{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:10px 12px;
+
+    margin-bottom:10px;
+
+    background:#ffffff;
+
+    border:1px solid #edf2f7;
+
+    border-radius:14px;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+    min-height:72px;
+}
+
+.conversation-card:hover{
+
+    transform:translateY(-2px);
+
+    border-color:#bfdbfe;
+
+    box-shadow:0 10px 24px rgba(37,99,235,.10);
+}
+
+.conversation-card.active{
+
+    background:#eff6ff;
+
+    border:2px solid #2563eb;
+
+    box-shadow:0 12px 30px rgba(37,99,235,.16);
+}
+
+/* =======================================
+   AVATAR
+======================================= */
+
+.conversation-avatar{
+
+    width:44px;
+
+    height:44px;
+
+    min-width:44px;
+
+    border-radius:50%;
+
+    background:linear-gradient(135deg,#2563eb,#60a5fa);
+
+    color:#fff;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:16px;
+
+    font-weight:700;
+
+    position:relative;
+
+    flex-shrink:0;
+}
+
+/* =======================================
+   ONLINE / OFFLINE
+======================================= */
+
+.online-indicator,
+.offline-indicator{
+
+    position:absolute;
+
+    right:2px;
+
+    bottom:2px;
+
+    width:14px;
+
+    height:14px;
+
+    border-radius:50%;
+
+    border:3px solid #ffffff;
+}
+
+.online-indicator{
+
+    background:#22c55e;
+}
+
+.offline-indicator{
+
+    background:#94a3b8;
+}
+
+/* =======================================
+   CONTENT
+======================================= */
+
+.conversation-content{
+
+    flex:1;
+
+    min-width:0;
+}
+
+/* =======================================
+   TOP ROW
+======================================= */
+
+.conversation-top{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+    gap:12px;
+
+    margin-bottom:2px;
+}
+
+.conversation-name{
+
+    margin:0;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    color:#1e293b;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+
+    white-space:nowrap;
+}
+
+.conversation-date{
+
+    font-size:12px;
+
+    color:#94a3b8;
+
+    white-space:nowrap;
+}
+
+/* =======================================
+   DRIVER
+======================================= */
+
+.conversation-driver{
+
+    margin-bottom:2px;
+
+    font-size:12px;
+
+    font-weight:600;
+
+    color:#2563eb;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+
+    white-space:nowrap;
+}
+
+/* =======================================
+   LAST MESSAGE
+======================================= */
+
+.conversation-last-message{
+
+    font-size:12px;
+
+    color:#64748b;
+
+    overflow:hidden;
+
+    white-space:nowrap;
+
+    text-overflow:ellipsis;
+
+    min-height:auto;
+}
+
+/* =======================================
+   FOOTER
+======================================= */
+
+.conversation-footer{
+
+    display:flex;
+
+    justify-content: flex-end;
+
+    align-items:center;
+
+    margin-top:6px;
+}
+
+.conversation-right{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+}
+
+.conversation-price{
+
+    margin-left:auto;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    color:#2563eb;
+}
+
+/* =======================================
+   STATUS PILLS
+======================================= */
+
+.status-pill{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:6px 12px;
+
+    border-radius:30px;
+
+    font-size:12px;
+
+    font-weight:600;
+}
+
+.status-pill.pending{
+
+    background:#fef3c7;
+
+    color:#b45309;
+}
+
+.status-pill.assigned{
+
+    background:#dbeafe;
+
+    color:#1d4ed8;
+}
+
+.status-pill.in-progress,
+.status-pill.in_progress{
+
+    background:#ede9fe;
+
+    color:#6d28d9;
+}
+
+.status-pill.in-transit,
+.status-pill.in_transit{
+
+    background:#dcfce7;
+
+    color:#15803d;
+}
+
+.status-pill.completed{
+
+    background:#dcfce7;
+
+    color:#15803d;
+}
+
+.status-pill.cancelled{
+
+    background:#fee2e2;
+
+    color:#b91c1c;
+}
+
+.status-pill.secondary{
+
+    background:#e5e7eb;
+
+    color:#475569;
+}
+
+/* =======================================
+   UNREAD BADGE
+======================================= */
+
+.conversation-unread{
+
+    min-width:24px;
+
+    height:24px;
+
+    border-radius:50%;
+
+    background:#2563eb;
+
+    color:#ffffff;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:12px;
+
+    font-weight:700;
+}
+
+/* =======================================
+   EMPTY STATE
+======================================= */
+
+.conversation-empty{
+
+    height:100%;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    text-align:center;
+
+    padding:50px 24px;
+}
+
+.conversation-empty i{
+
+    font-size:52px;
+
+    color:#2563eb;
+
+    margin-bottom:18px;
+}
+
+.conversation-empty h6{
+
+    margin-bottom:8px;
+
+    font-weight:700;
+
+    color:#1e293b;
+}
+
+.conversation-empty small{
+
+    color:#64748b;
+}
+
+/* =======================================
+   SCROLLBAR
+======================================= */
+
+.conversation-list::-webkit-scrollbar{
+
+    width:6px;
+}
+
+.conversation-list::-webkit-scrollbar-thumb{
+
+    background:#cbd5e1;
+
+    border-radius:20px;
+}
+
+.conversation-list::-webkit-scrollbar-thumb:hover{
+
+    background:#94a3b8;
+}
+
+/* ==========================================================
+   HYDROHUB MESSAGING
+   PART 3 - CHAT WINDOW
+========================================================== */
+
+/* ========================================
+   CHAT HEADER
+======================================== */
+
+.chat-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:20px;
+
+    padding:14px 18px;
+
+    background:#ffffff;
+
+    border-bottom:1px solid #eef2f7;
+
+    position:sticky;
+
+    top:0;
+
+    z-index:20;
+}
+
+.chat-header-left{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:16px;
+
+    min-width:0;
+}
+
+/* ========================================
+   CLICKABLE PROFILE
+======================================== */
+
+.chat-profile-button{
+
+    border:none;
+
+    background:none;
+
+    padding:0;
+
+    cursor:pointer;
+
+    border-radius:50%;
+
+    transition:.25s;
+
+    flex-shrink:0;
+}
+
+.chat-profile-button:hover{
+
+    transform:scale(1.05);
+}
+
+.chat-avatar{
+
+    width:42px;
+
+    height:42px;
+
+    border-radius:50%;
+
+    background:linear-gradient(135deg,#2563eb,#60a5fa);
+
+    color:#ffffff;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:16px;
+
+    font-weight:700;
+
+    position:relative;
+}
+
+.chat-user-info{
+
+    display:flex;
+
+    flex-direction:column;
+
+    min-width:0;
+}
+
+.chat-user-info.clickable{
+
+    cursor:pointer;
+}
+
+.chat-user-info.clickable:hover .chat-customer-name{
+
+    color:#2563eb;
+}
+
+.chat-customer-name{
+
+    margin:0;
+
+    font-size:16px;
+
+    font-weight:600;
+
+    color:#1e293b;
+
+    white-space:nowrap;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+
+    transition:.2s;
+}
+
+.chat-meta{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    margin-top:4px;
+
+    flex-wrap:wrap;
+
+    font-size:12px;
+
+    color:#64748b;
+}
+
+.driver-name{
+
+    color:#2563eb;
+
+    font-weight:600;
+
+    white-space:nowrap;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+}
+
+.driver-status{
+
+    font-weight:600;
+}
+
+.driver-status.online{
+
+    color:#16a34a;
+}
+
+.driver-status.offline{
+
+    color:#94a3b8;
+}
+
+/* ========================================
+   RIGHT HEADER
+======================================== */
+
+.chat-header-right{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    flex-wrap:wrap;
+
+    justify-content:flex-end;
+}
+
+.order-status-badge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:8px 16px;
+
+    border-radius:30px;
+
+    background:#eff6ff;
+
+    color:#2563eb;
+
+    font-size:.82rem;
+
+    font-weight:700;
+
+    white-space:nowrap;
+}
+
+/* ========================================
+   CHAT BODY
+======================================== */
+
+.chat-body{
+
+    flex:1;
+
+    overflow-y:auto;
+
+    overflow-x:hidden;
+
+    padding:24px;
+}
+
+/* ========================================
+   MESSAGE ROW
+======================================== */
+
+.message-row{
+
+    display:flex;
+
+    align-items:flex-end;
+
+    margin-bottom:12px;
+}
+
+.message-row.admin{
+
+    justify-content:flex-end;
+}
+
+.message-row.customer{
+
+    justify-content:flex-start;
+}
+
+/* ========================================
+   MESSAGE AVATAR
+======================================== */
+
+.message-avatar{
+
+    width:42px;
+
+    height:42px;
+
+    border-radius:50%;
+
+    background:#2563eb;
+
+    color:#ffffff;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-weight:700;
+
+    margin-right:12px;
+
+    flex-shrink:0;
+}
+
+/* ========================================
+   MESSAGE BUBBLE
+======================================== */
+
+.message-bubble{
+
+    max-width:55%;
+
+    padding:10px 14px;
+
+    border-radius:14px;
+
+    box-shadow:0 4px 14px rgba(15,23,42,.06);
+
+    word-break:break-word;
+}
+
+.message-bubble.customer{
+
+    background:#ffffff;
+
+    color:#1e293b;
+
+    border-top-left-radius:6px;
+}
+
+.message-bubble.driver{
+
+    background:#fff7ed;
+
+    color:#9a3412;
+
+    border-top-left-radius:6px;
+}
+
+.message-bubble.admin{
+
+    background:#2563eb;
+
+    color:#ffffff;
+
+    border-top-right-radius:6px;
+}
+
+/* ========================================
+   MESSAGE CONTENT
+======================================== */
+
+.message-sender{
+
+    font-size:.78rem;
+
+    font-weight:700;
+
+    margin-bottom:8px;
+
+    opacity:.85;
+}
+
+.message-text{
+
+    font-size:14px;
+
+    line-height:1.45;
+}
+
+.message-footer{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    align-items:center;
+
+    gap:8px;
+
+    margin-top:10px;
+
+    font-size:.72rem;
+
+    opacity:.8;
+}
+
+.message-time{
+
+    white-space:nowrap;
+}
+
+.message-status{
+
+    font-size:.8rem;
+}
+
+/* ========================================
+   EMPTY CHAT
+======================================== */
+
+.chat-empty-state{
+
+    height:100%;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    text-align:center;
+}
+
+.chat-empty-state i{
+
+    font-size:56px;
+
+    color:#2563eb;
+
+    margin-bottom:18px;
+}
+
+.chat-empty-state h5{
+
+    margin-bottom:10px;
+
+    font-weight:700;
+
+    color:#1e293b;
+}
+
+.chat-empty-state p{
+
+    color:#64748b;
+}
+
+/* ========================================
+   MESSAGE COMPOSER
+======================================== */
+
+.chat-footer{
+
+    flex-shrink:0;
+
+    border-top:1px solid #eef2f7;
+
+    background:#fff;
+}
+
+.chat-composer{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:10px 14px;
+
+    background:#fff;
+
+    border-top:1px solid #edf2f7;
+}
+
+/* ========================================
+   ICON BUTTONS
+======================================== */
+
+.composer-icon-btn{
+
+    width:46px;
+
+    height:46px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:#f5f7fb;
+
+    color:#64748b;
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+.composer-icon-btn:hover{
+
+    background:#e8f0ff;
+
+    color:#2563eb;
+}
+
+/* ========================================
+   INPUT
+======================================== */
+
+.composer-input{
+
+    flex:1;
+
+    height:48px;
+
+    border:1px solid #dbe4f0;
+
+    border-radius:999px;
+
+    padding:0 18px;
+
+    outline:none;
+
+    font-size:15px;
+}
+
+.composer-input:focus{
+
+    background:#ffffff;
+
+    border-color:#2563eb;
+
+    box-shadow:0 0 0 4px rgba(37,99,235,.08);
+}
+
+/* ========================================
+   SEND BUTTON
+======================================== */
+
+.composer-send-btn{
+
+    width:46px;
+
+    height:46px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:#2563eb;
+
+    color:#fff;
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+.composer-send-btn:hover{
+
+    background:#1d4ed8;
+}
+
+.composer-send-btn:disabled{
+
+    opacity:.45;
+
+    cursor:not-allowed;
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width:768px){
+
+    .chat-header{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+    }
+
+    .chat-header-right{
+
+        width:100%;
+
+        justify-content:flex-start;
+    }
+
+    .message-bubble{
+
+        max-width:90%;
+    }
+
+    .chat-body{
+
+        padding:18px;
+    }
+
+}
+
+/* ==========================================================
+   HYDROHUB MESSAGING
+   PART 4 - CUSTOMER DETAILS DRAWER
+========================================================== */
+
+/* ========================================
+   DRAWER OVERLAY
+======================================== */
+
+.drawer-overlay{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(15,23,42,.35);
+
+    backdrop-filter:blur(3px);
+
+    z-index:1040;
+
+    animation:fadeIn .25s ease;
+}
+
+/* ========================================
+   DRAWER
+======================================== */
+
+.conversation-drawer{
+
+    position:fixed;
+
+    top:0;
+
+    right:0;
+
+    width:430px;
+
+    max-width:100%;
+
+    height:100vh;
+
+    background:#ffffff;
+
+    display:flex;
+
+    flex-direction:column;
+
+    box-shadow:-12px 0 40px rgba(0,0,0,.15);
+
+    z-index:1050;
+
+    animation:drawerSlide .30s ease;
+}
+
+/* ========================================
+   DRAWER HEADER
+======================================== */
+
+.drawer-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:22px 24px;
+
+    border-bottom:1px solid #eef2f7;
+
+    background:#ffffff;
+
+    position:sticky;
+
+    top:0;
+
+    z-index:5;
+}
+
+.drawer-title{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:16px;
+}
+
+.drawer-avatar{
+
+    width:60px;
+
+    height:60px;
+
+    border-radius:50%;
+
+    background:linear-gradient(135deg,#2563eb,#60a5fa);
+
+    color:#ffffff;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:22px;
+
+    font-weight:700;
+}
+
+.drawer-title h5{
+
+    margin:0;
+
+    font-size:1.1rem;
+
+    font-weight:700;
+
+    color:#1e293b;
+}
+
+.drawer-title small{
+
+    color:#64748b;
+}
+
+/* ========================================
+   CLOSE BUTTON
+======================================== */
+
+.drawer-close-btn{
+
+    width:42px;
+
+    height:42px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:#f1f5f9;
+
+    color:#64748b;
+
+    cursor:pointer;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    transition:.25s;
+}
+
+.drawer-close-btn:hover{
+
+    background:#dbeafe;
+
+    color:#2563eb;
+
+    transform:rotate(90deg);
+}
+
+/* ========================================
+   DRAWER BODY
+======================================== */
+
+.drawer-body{
+
+    flex:1;
+
+    overflow-y:auto;
+
+    padding:24px;
+
+    background:#f8fafc;
+}
+
+/* ========================================
+   DETAILS CARD
+======================================== */
+
+.details-card{
+
+    background:#ffffff;
+
+    border:1px solid #e2e8f0;
+
+    border-radius:18px;
+
+    margin-bottom:22px;
+
+    overflow:hidden;
+
+    box-shadow:0 6px 20px rgba(15,23,42,.05);
+}
+
+.details-card:last-child{
+
+    margin-bottom:0;
+}
+
+/* ========================================
+   CARD HEADER
+======================================== */
+
+.details-card-header{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    padding:18px;
+
+    border-bottom:1px solid #eef2f7;
+
+    background:#ffffff;
+}
+
+.details-card-header h6{
+
+    margin:0;
+
+    font-weight:700;
+
+    color:#1e293b;
+}
+
+.details-card-header small{
+
+    color:#64748b;
+}
+
+/* ========================================
+   ICONS
+======================================== */
+
+.details-icon{
+
+    width:48px;
+
+    height:48px;
+
+    border-radius:14px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    color:#ffffff;
+
+    font-size:18px;
+}
+
+.details-icon.customer{
+
+    background:#2563eb;
+}
+
+.details-icon.driver{
+
+    background:#10b981;
+}
+
+.details-icon.order{
+
+    background:#f59e0b;
+}
+
+.details-icon.action{
+
+    background:#8b5cf6;
+}
+
+/* ========================================
+   CARD CONTENT
+======================================== */
+
+.details-content{
+
+    padding:18px;
+}
+
+.details-row{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+    gap:12px;
+
+    padding:12px 0;
+
+    border-bottom:1px dashed #e2e8f0;
+}
+
+.details-row:last-child{
+
+    border-bottom:none;
+}
+
+.details-row span{
+
+    color:#64748b;
+
+    font-size:.9rem;
+}
+
+.details-row strong{
+
+    color:#1e293b;
+
+    font-weight:600;
+
+    text-align:right;
+
+    word-break:break-word;
+}
+
+.details-row.address{
+
+    flex-direction:column;
+}
+
+.details-row.address strong{
+
+    text-align:left;
+}
+
+/* ========================================
+   PRICE
+======================================== */
+
+.price{
+
+    color:#2563eb;
+
+    font-weight:700;
+
+    font-size:1rem;
+}
+
+/* ========================================
+   STATUS CHIP
+======================================== */
+
+.status-chip{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:6px 12px;
+
+    border-radius:999px;
+
+    font-size:12px;
+
+    font-weight:600;
+}
+
+.status-chip.success{
+
+    background:#dcfce7;
+
+    color:#15803d;
+}
+
+.status-chip.warning{
+
+    background:#fef3c7;
+
+    color:#b45309;
+}
+
+.status-chip.primary{
+
+    background:#dbeafe;
+
+    color:#1d4ed8;
+}
+
+.status-chip.secondary{
+
+    background:#e5e7eb;
+
+    color:#475569;
+}
+
+/* ========================================
+   QUICK ACTIONS
+======================================== */
+
+.quick-actions{
+
+    display:grid;
+
+    gap:12px;
+
+    padding:18px;
+}
+
+.quick-actions .btn{
+
+    width:100%;
+}
+
+/* ========================================
+   DRAWER SCROLLBAR
+======================================== */
+
+.drawer-body::-webkit-scrollbar{
+
+    width:8px;
+}
+
+.drawer-body::-webkit-scrollbar-thumb{
+
+    background:#cbd5e1;
+
+    border-radius:20px;
+}
+
+.drawer-body::-webkit-scrollbar-thumb:hover{
+
+    background:#94a3b8;
+}
+
+/* ========================================
+   ANIMATIONS
+======================================== */
+
+@keyframes drawerSlide{
+
+    from{
+
+        transform:translateX(100%);
+    }
+
+    to{
+
+        transform:translateX(0);
+    }
+
+}
+
+@keyframes fadeIn{
+
+    from{
+
+        opacity:0;
+    }
+
+    to{
+
+        opacity:1;
+    }
+
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width:992px){
+
+    .conversation-drawer{
+
+        width:100%;
+    }
+
+}
+
+/* ==========================================================
+   HYDROHUB MESSAGING
+   PART 5 - FINAL POLISH & RESPONSIVE
+========================================================== */
+
+/* ========================================
+   BUTTONS
+======================================== */
+
+.btn{
+
+    transition:
+        background-color .25s,
+        color .25s,
+        border-color .25s,
+        transform .25s,
+        box-shadow .25s;
+}
+
+.btn:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:0 8px 18px rgba(15,23,42,.12);
+}
+
+.btn:active{
+
+    transform:translateY(0);
+}
+
+/* ========================================
+   CHAT HEADER BUTTONS
+======================================== */
+
+.chat-header-right .btn{
+
+    border-radius:12px;
+
+    font-weight:600;
+
+    padding:8px 16px;
+}
+
+/* ========================================
+   PANEL HOVER
+======================================== */
+
+.conversation-sidebar,
+.chat-panel{
+
+    transition:
+        box-shadow .3s ease,
+        transform .3s ease;
+}
+
+.conversation-sidebar:hover,
+.chat-panel:hover{
+
+    box-shadow:0 14px 36px rgba(15,23,42,.08);
+}
+
+/* ========================================
+   CARD HOVER
+======================================== */
+
+.details-card{
+
+    transition:
+        transform .25s,
+        box-shadow .25s;
+}
+
+.details-card:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:0 12px 26px rgba(15,23,42,.08);
+}
+
+/* ========================================
+   MESSAGE ANIMATION
+======================================== */
+
+.message-row{
+
+    animation:messageAppear .25s ease;
+}
+
+@keyframes messageAppear{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(12px);
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+    }
+
+}
+
+/* ========================================
+   MESSAGE BUBBLE HOVER
+======================================== */
+
+.message-bubble{
+
+    transition:
+        transform .2s,
+        box-shadow .2s;
+}
+
+.message-bubble:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:0 10px 24px rgba(15,23,42,.10);
+}
+
+/* ========================================
+   AVATAR HOVER
+======================================== */
+
+.chat-avatar,
+.conversation-avatar{
+
+    transition:
+        transform .25s,
+        box-shadow .25s;
+}
+
+.chat-avatar:hover,
+.conversation-avatar:hover{
+
+    transform:scale(1.05);
+
+    box-shadow:0 10px 20px rgba(37,99,235,.25);
+}
+
+/* ========================================
+   SMOOTH SCROLLING
+======================================== */
+
+.chat-body,
+.drawer-body,
+.conversation-list{
+
+    scroll-behavior:smooth;
+}
+
+/* ========================================
+   INPUT PLACEHOLDER
+======================================== */
+
+.composer-input::placeholder{
+
+    color:#94a3b8;
+}
+
+/* ========================================
+   INPUT DISABLED
+======================================== */
+
+.composer-input:disabled{
+
+    background:#f1f5f9;
+
+    cursor:not-allowed;
+}
+
+/* ========================================
+   SELECTION
+======================================== */
+
+::selection{
+
+    background:#2563eb;
+
+    color:#ffffff;
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width:1200px){
+
+    .messaging-layout{
+
+        grid-template-columns:300px 1fr;
+    }
+
+}
+
+@media (max-width:992px){
+
+    .messaging-layout{
+
+        grid-template-columns:1fr;
+    }
+
+    .conversation-sidebar{
+
+        height:420px;
+    }
+
+    .chat-panel{
+
+        min-height:650px;
+    }
+
+    .chat-header{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:16px;
+    }
+
+    .chat-header-right{
+
+        width:100%;
+
+        justify-content:flex-start;
+
+        flex-wrap:wrap;
+    }
+
+    .conversation-drawer{
+
+        width:100%;
+    }
+
+}
+
+@media (max-width:768px){
+
+    .chat-body{
+
+        padding:18px;
+    }
+
+    .chat-footer{
+
+        padding:16px;
+    }
+
+    .chat-composer{
+
+        gap:10px;
+    }
+
+    .composer-input{
+
+        height:46px;
+    }
+
+    .composer-send-btn{
+
+        width:46px;
+
+        height:46px;
+    }
+
+    .conversation-avatar{
+
+        width:50px;
+
+        height:50px;
+
+        min-width:50px;
+
+        font-size:18px;
+    }
+
+    .chat-avatar{
+
+        width:50px;
+
+        height:50px;
+
+        font-size:18px;
+    }
+
+}
+
+@media (max-width:576px){
+
+    .messaging-page-title{
+
+        font-size:1.6rem;
+    }
+
+    .conversation-card{
+
+        padding:14px;
+    }
+
+    .message-bubble{
+
+        max-width:95%;
+    }
+
+    .drawer-header{
+
+        padding:18px;
+    }
+
+    .drawer-body{
+
+        padding:18px;
+    }
+
+}
+
+/* ==========================================
+   EMOJI PICKER
+========================================== */
+
+.emoji-picker-wrapper{
+
+    position:relative;
+
+    display:flex;
+
+    align-items:center;
+}
+
+.emoji-picker-popup{
+
+    position:absolute;
+
+    bottom:60px;
+
+    left:0;
+
+    z-index:999;
+
+    box-shadow:0 15px 40px rgba(0,0,0,.15);
+
+    border-radius:18px;
+
+    overflow:hidden;
+}
+
+/* ========================================
+   END OF FILE
+======================================== */

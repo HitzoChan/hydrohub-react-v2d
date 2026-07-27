@@ -1,0 +1,375 @@
+/* ==========================================================
+   ORDER MANAGEMENT
+========================================================== */
+
+.page-header h2 {
+  color: #1f2937;
+  font-weight: 700;
+}
+
+.page-header p {
+  font-size: 15px;
+  color: #6b7280;
+}
+
+/* ==========================================================
+   STATISTICS CARDS
+========================================================== */
+
+.stat-card {
+  background: #ffffff;
+  border: 1px solid #eef2f7;
+  border-radius: 18px;
+  padding: 24px;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+  height: 100%;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
+}
+
+.stat-card small {
+  display: block;
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.stat-card h2 {
+  margin: 8px 0;
+  font-size: 34px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.stat-card span {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* ==========================================================
+   ICONS
+========================================================== */
+
+.stat-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+/* ==========================================================
+   CARD COLORS
+========================================================== */
+
+.card-total {
+  background: #eef5ff;
+}
+
+.card-total .stat-icon {
+  background: #0d6efd;
+  color: #fff;
+}
+
+.card-pending {
+  background: #fff8e7;
+}
+
+.card-pending .stat-icon {
+  background: #ffc107;
+  color: #fff;
+}
+
+.card-ready {
+  background: #eefcf6;
+}
+
+.card-ready .stat-icon {
+  background: #20c997;
+  color: #fff;
+}
+
+.card-delivered {
+  background: #f3f0ff;
+}
+
+.card-delivered .stat-icon {
+  background: #6f42c1;
+  color: #fff;
+}
+
+/* ==========================================================
+   FILTERS
+========================================================== */
+
+.card-body .input-group-text {
+  background: #fff;
+  border-right: none;
+}
+
+.card-body .form-control {
+  border-left: none;
+}
+
+.form-control,
+.form-select {
+  border-radius: 10px;
+  min-height: 44px;
+}
+
+.form-control:focus,
+.form-select:focus {
+  box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.15);
+}
+
+/* ==========================================================
+   TABLE CARD
+========================================================== */
+
+.card {
+  border-radius: 16px;
+  border: none;
+}
+
+.card-header {
+  background: #ffffff;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.card-header h5 {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+/* ==========================================================
+   TABLE
+========================================================== */
+
+.table {
+  margin-bottom: 0;
+}
+
+.table thead th {
+  font-size: 13px;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+  border-bottom: 2px solid #eef2f7;
+  background: #fafbfc;
+}
+
+.table tbody td {
+  font-size: 14px;
+  color: #374151;
+  vertical-align: middle;
+  padding: 14px 12px;
+}
+
+.table tbody tr {
+  transition: background .2s ease;
+}
+
+.table tbody tr:hover {
+  background: #f8fbff;
+}
+
+.table td,
+.table th {
+  white-space: nowrap;
+}
+
+/* ==========================================================
+   BADGES
+========================================================== */
+
+.badge {
+  font-weight: 600;
+  border-radius: 999px;
+  padding: .45rem .8rem;
+  font-size: 12px;
+}
+
+.badge-dark {
+  background: #111827;
+}
+
+.badge-green {
+  background: #10b981;
+}
+
+.badge-red {
+  background: #ef4444;
+}
+
+.badge-blue {
+  background: #3b82f6;
+}
+
+.badge-gray {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+/* ==========================================================
+   BUTTONS
+========================================================== */
+
+.btn {
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+.btn-primary {
+  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.2);
+}
+
+.btn-outline-secondary:hover {
+  background: #f8f9fa;
+}
+
+/* ==========================================================
+   LOADING
+========================================================== */
+
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+}
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media (max-width: 992px) {
+  .stat-card {
+    padding: 18px;
+  }
+
+  .stat-card h2 {
+    font-size: 28px;
+  }
+
+  .stat-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-header {
+    text-align: center;
+  }
+
+  .table {
+    font-size: 13px;
+  }
+
+  .card-header {
+    text-align: center;
+  }
+}
+
+.order-modal{
+    border:none;
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 20px 60px rgba(15,23,42,.15);
+}
+
+.order-modal-header{
+    padding:20px 28px;
+    background:#fff;
+    border-bottom:1px solid #edf2f7;
+}
+
+.order-modal-title{
+    font-size:22px;
+    font-weight:700;
+    color:#1f2937;
+    margin:0;
+}
+
+.order-modal-body{
+    background:#f8fafc;
+    padding:24px 28px;
+}
+
+.order-modal-footer{
+    background:#fff;
+    border-top:1px solid #edf2f7;
+    padding:18px 28px;
+}
+
+.order-section{
+    background:#fff;
+    border:1px solid #e5e7eb;
+    border-radius:14px;
+    padding:20px;
+}
+
+.section-title{
+    font-size:16px;
+    font-weight:700;
+    color:#1f2937;
+    margin-bottom:18px;
+}
+
+.order-table{
+    margin-bottom:0;
+}
+
+.order-table th{
+    width:220px;
+    background:#f8fafc;
+    color:#6b7280;
+    font-size:14px;
+    font-weight:600;
+    padding:14px 18px;
+    border-color:#edf2f7;
+}
+
+.order-table td{
+    font-size:14px;
+    color:#111827;
+    font-weight:500;
+    padding:14px 18px;
+    border-color:#edf2f7;
+}
+
+.order-table tbody tr:hover{
+    background:#fafcff;
+}
+
+.order-total{
+    font-size:22px;
+    font-weight:700;
+    color:#0d6efd;
+}
+
+.total-row th,
+.total-row td{
+    background:#f8fbff;
+}
+
+.order-notes{
+    background:#f8fafc;
+    border:1px solid #e5e7eb;
+    border-radius:10px;
+    padding:16px;
+    color:#374151;
+    line-height:1.6;
+}
+
+.order-modal .btn-secondary{
+    border-radius:10px;
+    padding:9px 24px;
+    font-weight:600;
+}

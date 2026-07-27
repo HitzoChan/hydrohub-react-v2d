@@ -1,0 +1,249 @@
+/* ==========================================================
+   HYDROHUB TOOLBAR & SEARCH SYSTEM
+========================================================== */
+
+/* ==========================
+   TOOLBAR
+========================== */
+
+.toolbar{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:20px;
+
+    margin-bottom:24px;
+
+    flex-wrap:wrap;
+
+}
+
+/* ==========================
+   TOOLBAR LEFT
+========================== */
+
+.toolbar-left{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:16px;
+
+    flex-wrap:wrap;
+
+}
+
+/* ==========================
+   TOOLBAR RIGHT
+========================== */
+
+.toolbar-right{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    flex-wrap:wrap;
+
+}
+
+/* ==========================
+   SEARCH BOX
+========================== */
+
+.search-box{
+
+    position:relative;
+
+    width:320px;
+
+    max-width:100%;
+
+}
+
+/* ==========================
+   SEARCH ICON
+========================== */
+
+.search-box i{
+
+    position:absolute;
+
+    top:50%;
+
+    left:16px;
+
+    transform:translateY(-50%);
+
+    color:var(--text-light);
+
+    font-size:16px;
+
+}
+
+/* ==========================
+   SEARCH INPUT
+========================== */
+
+.search-input{
+
+    width:100%;
+
+    height:48px;
+
+    padding:0 18px 0 46px;
+
+    border:1px solid var(--border);
+
+    border-radius:var(--radius-md);
+
+    background:#fff;
+
+    color:var(--text);
+
+    transition:all var(--transition);
+
+}
+
+.search-input::placeholder{
+
+    color:var(--text-light);
+
+}
+
+.search-input:hover{
+
+    border-color:#CBD5E1;
+
+}
+
+.search-input:focus{
+
+    border-color:var(--primary);
+
+    box-shadow:0 0 0 4px rgba(37,99,235,.12);
+
+}
+
+/* ==========================
+   FILTER
+========================== */
+
+.filter-select{
+
+    min-width:180px;
+
+    height:48px;
+
+    padding:0 16px;
+
+    border:1px solid var(--border);
+
+    border-radius:var(--radius-md);
+
+    background:#fff;
+
+    color:var(--text);
+
+    cursor:pointer;
+
+    transition:all var(--transition);
+
+}
+
+.filter-select:hover{
+
+    border-color:#CBD5E1;
+
+}
+
+.filter-select:focus{
+
+    border-color:var(--primary);
+
+    box-shadow:0 0 0 4px rgba(37,99,235,.12);
+
+}
+
+/* ==========================
+   DATE FILTER
+========================== */
+
+.date-filter{
+
+    width:180px;
+
+}
+
+/* ==========================
+   TOOLBAR TITLE
+========================== */
+
+.toolbar-title{
+
+    font-size:18px;
+
+    font-weight:600;
+
+    color:var(--text);
+
+}
+
+/* ==========================
+   TOOLBAR SUBTITLE
+========================== */
+
+.toolbar-subtitle{
+
+    font-size:14px;
+
+    color:var(--text-light);
+
+}
+
+/* ==========================
+   RESPONSIVE
+========================== */
+
+@media(max-width:768px){
+
+    .toolbar{
+
+        flex-direction:column;
+
+        align-items:stretch;
+
+    }
+
+    .toolbar-left,
+
+    .toolbar-right{
+
+        width:100%;
+
+        flex-direction:column;
+
+        align-items:stretch;
+
+    }
+
+    .search-box{
+
+        width:100%;
+
+    }
+
+    .filter-select{
+
+        width:100%;
+
+    }
+
+}
