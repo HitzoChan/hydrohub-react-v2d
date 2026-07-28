@@ -2,11 +2,44 @@ import { supabase } from "../lib/supabase";
 
 /*
 |--------------------------------------------------------------------------
+| Auto Archive Expired Conversations
+|--------------------------------------------------------------------------
+*/
+
+export async function archiveExpiredConversations() {
+  try {
+    const cutoff = new Date(
+      Date.now() - 24 * 60 * 60 * 1000
+    ).toISOString();
+
+    const { error } = await supabase
+      .from("conversations")
+      .update({
+        status: "archived",
+        archived_at: new Date().toISOString(),
+      })
+      .eq("status", "active")
+      .not("delivered_at", "is", null)
+      .lte("delivered_at", cutoff);
+
+    if (error) throw error;
+  } catch (error) {
+    console.error(
+      "archiveExpiredConversations()",
+      error
+    );
+  }
+}
+
+/*
+|--------------------------------------------------------------------------
 | Get Conversations
 |--------------------------------------------------------------------------
 */
 
-export async function getConversations() {
+export async function getConversations(
+  status = "active"
+) {
   try {
     const [
       conversationsResult,
@@ -14,12 +47,13 @@ export async function getConversations() {
       customersResult,
       employeesResult,
     ] = await Promise.all([
-      supabase
-        .from("conversations")
-        .select("*")
-        .order("last_message_at", {
-          ascending: false,
-        }),
+    supabase
+      .from("conversations")
+      .select("*")
+      .eq("status", status)
+      .order("last_message_at", {
+        ascending: false,
+      }),
 
       supabase
         .from("orders")
@@ -161,6 +195,15 @@ export async function getConversations() {
           orderStatus:
             order.status ??
             "pending",
+            
+          conversationStatus:
+            conversation.status,
+
+          deliveredAt:
+            conversation.delivered_at,
+
+          archivedAt:
+            conversation.archived_at,            
         };
       }
     );

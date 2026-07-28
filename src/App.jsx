@@ -4,6 +4,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Orders from "./pages/Orders";
 import Deliveries from "./pages/Deliveries";
+import Employees from "./pages/Employees";
 import Customers from "./pages/Customers";
 import MapMonitoring from "./pages/MapMonitoring";
 import Messaging from "./pages/Messaging";
@@ -23,7 +24,6 @@ function NotFound() {
 function App() {
   return (
     <Routes>
-
       {/* Redirect Home */}
       <Route
         path="/"
@@ -46,6 +46,12 @@ function App() {
       <Route
         path="/deliveries"
         element={<Deliveries />}
+      />
+
+      {/* Employees */}
+      <Route
+        path="/employees"
+        element={<Employees />}
       />
 
       {/* Customers */}
@@ -71,7 +77,6 @@ function App() {
         path="*"
         element={<NotFound />}
       />
-
     </Routes>
   );
 }

@@ -1,0 +1,605 @@
+/* ==========================================================
+   Employees Page
+========================================================== */
+
+.employees-page {
+  padding: 28px;
+  background: #f8fafc;
+  min-height: 100%;
+}
+
+.page-header {
+  margin-bottom: 28px;
+}
+
+.page-header h2 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.page-header p {
+  margin-top: 6px;
+  color: #64748b;
+  font-size: .95rem;
+}
+
+/* ==========================================================
+   Toolbar
+========================================================== */
+
+/* ===================================
+   EMPLOYEE TOOLBAR
+=================================== */
+
+.employee-toolbar {
+    border-radius: 16px;
+}
+
+.employee-toolbar-content{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:24px;
+    flex-wrap:wrap;
+}
+
+.employee-search{
+    flex:1;
+    min-width:350px;
+    max-width:650px;
+}
+
+.employee-search .input-group{
+    width:100%;
+}
+
+.employee-search input{
+    height:48px;
+    font-size:15px;
+}
+
+.employee-search .input-group-text{
+    height:48px;
+    background:#fff;
+}
+
+.employee-count{
+    white-space:nowrap;
+    font-size:15px;
+    color:#6c757d;
+}
+
+.employee-count strong{
+    color:#212529;
+}
+
+/* ==========================================================
+   Statistic Cards
+========================================================== */
+
+.stat-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 22px;
+  min-height: 120px;
+  transition: all .25s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 32px rgba(15,23,42,.08);
+}
+
+.stat-card h6 {
+  margin-bottom: 12px;
+  font-size: .85rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.stat-card h2 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.stat-card .icon-box {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ==========================================================
+   Employee Table
+========================================================== */
+
+.employee-table {
+  width: 100%;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.employee-table table {
+  width: 100%;
+  margin: 0;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+.employee-table thead {
+  background: #f8fafc;
+}
+
+.employee-table th {
+  padding: 16px 18px;
+  border: none;
+  border-bottom: 1px solid #e5e7eb;
+
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  white-space: nowrap;
+}
+
+.employee-table td {
+  padding: 18px;
+  border-top: 1px solid #eef2f7;
+  vertical-align: middle;
+}
+
+.employee-table tbody tr {
+  transition: .2s ease;
+}
+
+.employee-table tbody tr:hover {
+  background: #f8fbff;
+}
+
+/* ==========================
+   Employee Cell
+========================== */
+
+.employee-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 280px;
+}
+
+.employee-avatar {
+  width: 46px;
+  height: 46px;
+
+  border-radius: 50%;
+
+  background: #2563eb;
+  color: #fff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 15px;
+  font-weight: 700;
+
+  flex-shrink: 0;
+}
+
+.employee-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.employee-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #0f172a;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.employee-id {
+  margin-top: 2px;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  color: #2563eb;
+}
+
+.employee-email {
+  margin-top: 2px;
+
+  font-size: 12px;
+  color: #64748b;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ==========================
+   Compact Columns
+========================== */
+
+.employee-table td:nth-child(2),
+.employee-table td:nth-child(3),
+.employee-table td:nth-child(4),
+.employee-table td:nth-child(5),
+.employee-table td:nth-child(6) {
+  white-space: nowrap;
+}
+
+/* ==========================
+   Responsive Table
+========================== */
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.table-responsive::-webkit-scrollbar {
+  height: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 20px;
+}
+
+/* ==========================================================
+   Role Badge
+========================================================== */
+
+.employee-table .badge {
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 8px 16px;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+}
+
+.bg-primary-subtle {
+  background: #dbeafe !important;
+  color: #2563eb !important;
+}
+
+/* ==========================================================
+   Status Badge
+========================================================== */
+
+.badge-active,
+.badge-inactive {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 80px;
+
+  padding: 8px 16px;
+
+  border-radius: 999px;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  text-transform: capitalize;
+}
+
+.badge-active {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.badge-inactive {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+/* ==========================================================
+   Access Code
+========================================================== */
+
+.code {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 100px;
+
+  padding: 8px 12px;
+
+  border-radius: 10px;
+
+  background: #f8fafc;
+
+  border: 1px solid #e2e8f0;
+
+  font-family: "Consolas", monospace;
+  font-size: 12px;
+  font-weight: 700;
+
+  letter-spacing: 2px;
+
+  color: #ec4899;
+}
+
+/* ==========================================================
+   Action Button
+========================================================== */
+
+.employee-table .btn-primary {
+  border-radius: 10px;
+
+  min-width: 96px;
+
+  padding: 8px 16px;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  transition: all .2s ease;
+}
+
+.employee-table .btn-primary:hover {
+  transform: translateY(-2px);
+
+  box-shadow: 0 8px 20px rgba(37,99,235,.25);
+}
+
+.employee-table .btn-primary i {
+  font-size: 13px;
+}
+
+/* ==========================================================
+   Modal
+========================================================== */
+
+.modal-backdrop-custom {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, .45);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-y: auto;
+  padding: 40px;
+  z-index: 2000;
+}
+
+.employee-modal {
+  width: 100%;
+  max-width: 950px;
+}
+
+.employee-modal .card {
+  border: none;
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.employee-modal .card-header {
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 22px 28px;
+}
+
+.employee-modal .card-body {
+  padding: 28px;
+  max-height: 72vh;
+  overflow-y: auto;
+}
+
+.employee-modal .card-footer {
+  background: #fff;
+  border-top: 1px solid #e5e7eb;
+  padding: 18px 28px;
+}
+
+/* ==========================================================
+   Form Sections
+========================================================== */
+
+.form-section {
+  background: #fafafa;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 22px;
+  margin-bottom: 20px;
+}
+
+.section-title {
+  font-size: .85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #475569;
+  margin-bottom: 18px;
+}
+
+.form-label {
+  font-size: .82rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.form-control,
+.form-select {
+  min-height: 46px;
+  border-radius: 10px;
+  border: 1px solid #dbe2ea;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 .2rem rgba(37,99,235,.12);
+}
+
+/* ==========================================================
+   Employee Drawer
+========================================================== */
+
+.employee-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+
+  width: 470px;
+  height: 100vh;
+
+  background: #fff;
+
+  box-shadow: -12px 0 30px rgba(0,0,0,.12);
+
+  overflow-y: auto;
+
+  z-index: 2100;
+}
+
+.employee-view-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.employee-view-section {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 18px;
+}
+
+.employee-view-title {
+  font-size: .82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #64748b;
+
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.employee-view-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+
+  padding: 12px 0;
+
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.employee-view-row:last-child {
+  border-bottom: none;
+}
+
+.employee-view-label {
+  color: #64748b;
+  font-size: .82rem;
+  font-weight: 600;
+}
+
+.employee-view-value {
+  color: #0f172a;
+  font-size: .9rem;
+  font-weight: 600;
+  text-align: right;
+}
+
+/* ==========================================================
+   Scrollbar
+========================================================== */
+
+.employee-modal .card-body::-webkit-scrollbar,
+.employee-drawer::-webkit-scrollbar {
+  width: 8px;
+}
+
+.employee-modal .card-body::-webkit-scrollbar-thumb,
+.employee-drawer::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 20px;
+}
+
+/* ==========================================================
+   Responsive
+========================================================== */
+
+@media (max-width: 1200px) {
+
+  .employee-table {
+    min-width: 980px;
+  }
+
+}
+
+@media (max-width: 992px) {
+
+  .employee-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .employee-search {
+    width: 100%;
+  }
+
+  .employee-drawer {
+    width: 100%;
+  }
+
+}
+
+@media (max-width: 768px) {
+
+  .employees-page {
+    padding: 18px;
+  }
+
+  .page-header h2 {
+    font-size: 1.6rem;
+  }
+
+  .stat-card {
+    min-height: auto;
+  }
+
+}
+
+@media (max-width: 576px) {
+
+  .employees-page {
+    padding: 14px;
+  }
+
+  .modal-backdrop-custom {
+    padding: 12px;
+  }
+
+  .employee-view-row {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .employee-view-value {
+    text-align: left;
+  }
+
+}
+

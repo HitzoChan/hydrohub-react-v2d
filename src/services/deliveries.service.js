@@ -820,6 +820,26 @@ export async function updateDeliveryStatus(
   if (orderError)
     throw orderError;
 
+    //----------------------------------
+    // Start archive countdown
+    //----------------------------------
+
+    if (status === "delivered") {
+
+      const { error: conversationError } = await supabase
+        .from("conversations")
+        .update({
+          delivered_at: new Date().toISOString(),
+          status: "active",
+        })
+        .eq("order_id", selected.order_id);
+
+      if (conversationError) {
+        throw conversationError;
+      }
+
+    }  
+
   return true;
 
 }

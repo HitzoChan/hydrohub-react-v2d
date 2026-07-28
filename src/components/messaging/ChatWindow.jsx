@@ -22,6 +22,8 @@ export default function ChatWindow({
     const driverStatus = (
     conversation?.driverStatus || "offline"
     ).toLowerCase();
+    const isArchived =
+    conversation?.conversationStatus === "archived";
 
     console.log("Driver Status:", driverStatus);
 
@@ -211,6 +213,31 @@ function handleEmojiClick(emojiData) {
     {/* ==========================
         Messages
     ========================== */}
+    {isArchived && (
+      <div className="archived-banner">
+        <div className="archived-icon">
+          📦
+        </div>
+
+        <div>
+          <strong>Archived Conversation</strong>
+
+          <p>
+            This delivery has been completed.
+            This conversation is now read-only.
+          </p>
+
+          {conversation.archivedAt && (
+            <small>
+              Archived on{" "}
+              {new Date(
+                conversation.archivedAt
+              ).toLocaleString()}
+            </small>
+          )}
+        </div>
+      </div>
+    )}
 
     <div className="chat-body">
 
@@ -334,9 +361,11 @@ function handleEmojiClick(emojiData) {
         Modern Message Composer
     ========================== */}
 
+    {!isArchived ? (
+
     <form
-    className="chat-footer"
-    onSubmit={handleSend}
+      className="chat-footer"
+      onSubmit={handleSend}
     >
 
         <div className="chat-composer">
@@ -369,7 +398,9 @@ function handleEmojiClick(emojiData) {
                 className="composer-input"
                 placeholder="Type a message..."
                 value={message}
-                onChange={(e) => setMessage(e.target.value)}
+                onChange={(e) =>
+                    setMessage(e.target.value)
+                }
             />
 
             <button
@@ -383,6 +414,21 @@ function handleEmojiClick(emojiData) {
         </div>
 
     </form>
+
+    ) : (
+
+    <div className="chat-footer archived-footer">
+
+        <i className="bi bi-lock-fill"></i>
+
+        <span>
+            This conversation has been archived.
+            Sending new messages is disabled.
+        </span>
+
+    </div>
+
+    )}
     </>
   );
 }

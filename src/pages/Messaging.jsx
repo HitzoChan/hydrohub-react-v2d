@@ -9,7 +9,7 @@ import ConversationList from "../components/messaging/ConversationList";
 import ChatWindow from "../components/messaging/ChatWindow";
 import ConversationDetails from "../components/messaging/ConversationDetails";
 
-import { getConversations } from "../services/messaging.service";
+import { getConversations, archiveExpiredConversations, } from "../services/messaging.service";
 
 import "../styles/pages/messaging.css";
 
@@ -20,13 +20,27 @@ export default function Messaging() {
   const [conversations, setConversations] = useState([]);
   const [selectedConversation, setSelectedConversation] = useState(null);
 
-  // Controls the customer details drawer
-  const [showDetails, setShowDetails] = useState(false);
+const [showDetails, setShowDetails] = useState(false);
+
+const [activeTab, setActiveTab] = useState("active");
+const [activeCount, setActiveCount] = useState(0);
+const [archivedCount, setArchivedCount] = useState(0);
 
 useEffect(() => {
   async function fetchConversations() {
     try {
-      const data = await getConversations();
+      // Archive expired conversations first
+      await archiveExpiredConversations();
+
+      // Load selected tab
+      const data = await getConversations(activeTab);
+
+      // Load counts for tabs
+      const active = await getConversations("active");
+      const archived = await getConversations("archived");
+
+      setActiveCount(active.length);
+      setArchivedCount(archived.length);
 
       setConversations(data);
 
@@ -36,13 +50,17 @@ useEffect(() => {
         }
 
         const updated = data.find(
-          (conversation) => conversation.id === current.id
+          (conversation) =>
+            conversation.id === current.id
         );
 
         return updated || data[0] || null;
       });
     } catch (error) {
-      console.error("Failed to load conversations:", error);
+      console.error(
+        "Failed to load conversations:",
+        error
+      );
     } finally {
       setLoading(false);
     }
@@ -50,11 +68,14 @@ useEffect(() => {
 
   fetchConversations();
 
-  // Refresh every 5 seconds
-  const interval = setInterval(fetchConversations, 5000);
+  const interval = setInterval(
+    fetchConversations,
+    5000
+  );
 
   return () => clearInterval(interval);
-}, []);
+
+}, [activeTab]);
 
   /* =====================================
       QUICK ACTION HANDLERS
@@ -103,13 +124,18 @@ useEffect(() => {
 
             <div className="conversation-counter">
 
-              <span className="counter-number">
-                {conversations.length}
-              </span>
+                <span className="counter-number">
+                  {activeTab === "active"
+                    ? activeCount
+                    : archivedCount}
+                </span>
 
-              <span className="counter-label">
-                Conversation{conversations.length !== 1 ? "s" : ""}
-              </span>
+                <span className="counter-label">
+                  {activeTab === "active"
+                    ? "Active Conversation"
+                    : "Archived Conversation"}
+                  {conversations.length !== 1 ? "s" : ""}
+                </span>
 
             </div>
 
@@ -131,13 +157,45 @@ useEffect(() => {
 
                 <div>
 
-                  <h5>All Messages</h5>
+                  <h5>
+                    {activeTab === "active"
+                      ? "Active Messages"
+                      : "Archived Messages"}
+                  </h5><h5>Messages</h5>
 
-                  <small>
-                    Open customer conversations
-                  </small>
+                    <small>
+                      {activeTab === "active"
+                        ? "Manage active customer conversations."
+                        : "Completed delivery conversations."}
+                    </small>
 
                 </div>
+
+              </div>
+
+              <div className="conversation-tabs">
+
+                <button
+                  className={
+                    activeTab === "active"
+                      ? "tab-btn active"
+                      : "tab-btn"
+                  }
+                  onClick={() => setActiveTab("active")}
+                >
+                  🟢 Active ({activeCount})
+                </button>
+
+                <button
+                  className={
+                    activeTab === "archived"
+                      ? "tab-btn active"
+                      : "tab-btn"
+                  }
+                  onClick={() => setActiveTab("archived")}
+                >
+                  📦 Archived ({archivedCount})
+                </button>
 
               </div>
 
