@@ -1,0 +1,414 @@
+/* =========================================
+   SETTINGS PAGE
+========================================= */
+
+body {
+    background: #f6f8fb;
+    color: #111827;
+}
+
+/* =========================================
+   SETTINGS LAYOUT
+========================================= */
+
+.settings-wrapper {
+    width: 100%;
+}
+
+.settings-content {
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+}
+
+.settings-main {
+    width: 100%;
+    min-width: 0;
+}
+
+.settings-main .card {
+    width: 100%;
+}
+
+.settings-main .card + .card {
+    margin-top: 24px;
+}
+
+/* =========================================
+   SETTINGS MENU
+========================================= */
+
+.settings-container{
+    display:grid;
+    grid-template-columns:260px 1fr;
+    gap:32px;
+    align-items:start;
+}
+
+.settings-content{
+    width:100%;
+}
+
+.settings-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(320px,1fr));
+    gap:24px;
+}
+
+.settings-card{
+    border:none;
+    border-radius:18px;
+    box-shadow:0 8px 25px rgba(0,0,0,.06);
+    transition:.25s;
+}
+
+.settings-card:hover{
+    transform:translateY(-3px);
+}
+
+.settings-card.large{
+    grid-column:span 2;
+}
+
+@media(max-width:1200px){
+
+.settings-container{
+    grid-template-columns:1fr;
+}
+
+.settings-grid{
+    grid-template-columns:1fr;
+}
+
+.settings-card.large{
+    grid-column:auto;
+}
+
+}
+
+.settings-menu {
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    overflow: hidden;
+    position: sticky;
+    top: 20px;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, .05);
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 16px 18px;
+    border: none;
+    border-bottom: 1px solid #eef2f7;
+    background: #ffffff;
+    color: #374151;
+    font-size: .95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all .25s ease;
+}
+
+.menu-item:last-child {
+    border-bottom: none;
+}
+
+.menu-item:hover {
+    background: #f8fafc;
+    color: #2563eb;
+}
+
+.menu-item.active {
+    background: #2563eb;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+
+
+/* =========================================
+   SETTINGS CARDS
+========================================= */
+
+.settings-card,
+.card {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, .06);
+    overflow: hidden;
+}
+
+.card-header {
+    background: #ffffff;
+    padding: 18px 24px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.card-body {
+    padding: 24px;
+}
+
+/* =========================================
+   SECTION TITLE
+========================================= */
+
+.section-title {
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+/* =========================================
+   BRAND DISPLAY
+========================================= */
+
+.brand-display {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px;
+    border-radius: 14px;
+    background: #f8fbff;
+    border: 1px solid #dbeafe;
+}
+
+.brand-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #2563eb, #0f766e);
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+/* =========================================
+   GRID
+========================================= */
+
+.fields-grid,
+.switch-grid {
+    display: grid;
+    gap: 18px;
+}
+
+.fields-grid.two-col,
+.switch-grid.two-col {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.fields-grid.one-col {
+    grid-template-columns: 1fr;
+}
+
+.field-span-2 {
+    grid-column: span 2;
+}
+
+/* =========================================
+   LABELS
+========================================= */
+
+.form-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: .85rem;
+    font-weight: 600;
+    color: #4b5563;
+}
+
+/* =========================================
+   INPUTS
+========================================= */
+
+.form-control {
+    min-height: 46px;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+    transition: .25s;
+}
+
+.form-control:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, .15);
+}
+
+.form-control:disabled {
+    background: #f3f4f6;
+    color: #9ca3af;
+}
+
+/* =========================================
+   SWITCHES
+========================================= */
+
+.switch-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    background: #f9fafb;
+}
+
+.form-switch .form-check-input {
+    width: 2.8em;
+    height: 1.45em;
+}
+
+.form-switch .form-check-input:checked {
+    background-color: #2563eb;
+    border-color: #2563eb;
+}
+
+/* =========================================
+   ACCOUNT
+========================================= */
+
+.account-group {
+    padding: 20px;
+    border-radius: 14px;
+    border: 1px solid #e5e7eb;
+    background: #fcfdff;
+}
+
+.group-label {
+    margin-bottom: 14px;
+    font-weight: 600;
+}
+
+.danger-zone {
+    background: #fff8f8;
+    border-color: #fecaca;
+}
+
+/* =========================================
+   ALERTS
+========================================= */
+
+.alert {
+    border-radius: 12px;
+}
+
+/* =========================================
+   BUTTONS
+========================================= */
+
+.settings-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 30px;
+}
+
+.settings-actions .btn {
+    min-width: 190px;
+    border-radius: 10px;
+    padding: 12px 24px;
+}
+
+.btn-dark {
+    background: #2563eb;
+    border: none;
+}
+
+.btn-dark:hover {
+    background: #1d4ed8;
+}
+
+/* =========================================
+   FOOTER
+========================================= */
+
+#footer-container {
+    margin-top: 30px;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 992px) {
+
+    .settings-content {
+        grid-template-columns: 1fr;
+    }
+
+    .settings-menu {
+        position: relative;
+        top: 0;
+        margin-bottom: 20px;
+    }
+
+    .fields-grid.two-col,
+    .switch-grid.two-col {
+        grid-template-columns: 1fr;
+    }
+
+    .field-span-2 {
+        grid-column: auto;
+    }
+
+    .brand-display {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .settings-actions {
+        justify-content: stretch;
+    }
+
+    .settings-actions .btn {
+        width: 100%;
+    }
+
+}
+
+.table-responsive{
+    overflow-x:auto;
+}
+
+.table td,
+.table th{
+    vertical-align:middle;
+}
+
+.card{
+    overflow:visible;
+}
+
+.products-table {
+    font-size: 0.85rem;
+}
+
+.products-table th {
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.products-table td {
+    font-size: 0.84rem;
+    vertical-align: middle;
+}
+
+.products-table .badge {
+    font-size: 0.72rem;
+    padding: 6px 10px;
+}
+
+.products-table .btn {
+    font-size: 0.75rem;
+}
+

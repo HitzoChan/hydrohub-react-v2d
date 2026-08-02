@@ -161,11 +161,14 @@ export default function EmployeeModal({
 
         </div>
 
-        <form onSubmit={handleSubmit}>
+        <form
+          onSubmit={handleSubmit}
+          className="employee-modal-form"
+        >
 
           <div className="employee-modal-body">
 
-                      {/* =============================
+            {/* =============================
                 PERSONAL INFORMATION
             ============================= */}
 

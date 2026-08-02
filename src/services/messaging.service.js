@@ -8,19 +8,18 @@ import { supabase } from "../lib/supabase";
 
 export async function archiveExpiredConversations() {
   try {
-    const cutoff = new Date(
-      Date.now() - 24 * 60 * 60 * 1000
-    ).toISOString();
+      const cutoff = new Date(
+        Date.now() - 2 * 60 * 1000
+      ).toISOString();
 
-    const { error } = await supabase
-      .from("conversations")
-      .update({
-        status: "archived",
-        archived_at: new Date().toISOString(),
-      })
-      .eq("status", "active")
-      .not("delivered_at", "is", null)
-      .lte("delivered_at", cutoff);
+      const { error } = await supabase
+        .from("conversations")
+        .update({
+          status: "archived",
+          archived_at: new Date().toISOString(),
+        })
+        .eq("status", "active")
+        .lte("last_message_at", cutoff);
 
     if (error) throw error;
   } catch (error) {
@@ -281,8 +280,15 @@ export async function sendMessage({
   const { error: updateError } = await supabase
     .from("conversations")
     .update({
-      last_message: message,
-      last_message_at: new Date().toISOString(),
+
+        last_message: message,
+
+        last_message_at: new Date().toISOString(),
+
+        status: "active",
+
+        archived_at: null,
+
     })
     .eq("id", conversationId);
 
@@ -322,34 +328,80 @@ export async function markAsRead(
 |--------------------------------------------------------------------------
 */
 
-export async function createConversation(
-  orderId
-) {
-  const {
-    data: existing,
-    error: existingError,
-  } = await supabase
+export async function createConversation(orderId) {
+
+  // -----------------------------
+  // Get the order first
+  // -----------------------------
+
+  const { data: order, error: orderError } = await supabase
+    .from("orders")
+    .select("*")
+    .eq("id", orderId)
+    .single();
+
+  if (orderError) throw orderError;
+
+  // -----------------------------
+  // Look for existing conversation
+  // by customer
+  // -----------------------------
+
+  const { data: existing, error: existingError } = await supabase
     .from("conversations")
     .select("*")
-    .eq("order_id", orderId)
+    .eq("customer_id", order.customer_id)
     .maybeSingle();
 
-  if (existingError)
-    throw existingError;
+  if (existingError) throw existingError;
+
+  // -----------------------------
+  // Conversation exists
+  // -----------------------------
 
   if (existing) {
-    return existing;
-  }
 
-  const { data, error } =
     await supabase
       .from("conversations")
-      .insert({
-        order_id: orderId,
+      .update({
+
+        order_id: order.id,
+
         status: "active",
+
+        archived_at: null,
+
+        last_message_at: new Date().toISOString(),
+
       })
-      .select()
-      .single();
+      .eq("id", existing.id);
+
+    return {
+      ...existing,
+      order_id: order.id,
+      status: "active",
+    };
+  }
+
+  // -----------------------------
+  // Create new conversation
+  // -----------------------------
+
+  const { data, error } = await supabase
+    .from("conversations")
+    .insert({
+
+      customer_id: order.customer_id,
+
+      order_id: order.id,
+
+      status: "active",
+
+      last_message_at: new Date().toISOString(),
+
+    })
+    .select()
+    .single();
 
   if (error) throw error;
 

@@ -74,6 +74,8 @@ export default function ChatWindow({
     });
   }, [messages]);
 
+
+
 function handleEmojiClick(emojiData) {
 
   setMessage((prev) => prev + emojiData.emoji);
@@ -215,27 +217,37 @@ function handleEmojiClick(emojiData) {
     ========================== */}
     {isArchived && (
       <div className="archived-banner">
+
         <div className="archived-icon">
           📦
         </div>
 
-        <div>
-          <strong>Archived Conversation</strong>
+        <div className="archived-content">
 
-          <p>
-            This delivery has been completed.
-            This conversation is now read-only.
-          </p>
+          <strong>
+            Archived Conversation
+            <span className="archived-badge">
+              Read-only
+            </span>
+          </strong>
 
           {conversation.archivedAt && (
-            <small>
+            <p>
               Archived on{" "}
               {new Date(
                 conversation.archivedAt
-              ).toLocaleString()}
-            </small>
+              ).toLocaleString([], {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+                hour: "numeric",
+                minute: "2-digit",
+              })}
+            </p>
           )}
+
         </div>
+
       </div>
     )}
 

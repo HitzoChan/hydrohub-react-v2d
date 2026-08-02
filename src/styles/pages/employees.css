@@ -370,20 +370,54 @@
 ========================================================== */
 
 .modal-backdrop-custom {
-  position: fixed;
-  inset: 0;
-  background: rgba(15, 23, 42, .45);
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  overflow-y: auto;
-  padding: 40px;
-  z-index: 2000;
+    position: fixed;
+    inset: 0;
+
+    background: rgba(15, 23, 42, 0.55);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 24px;
+
+    z-index: 2000;
 }
 
 .employee-modal {
-  width: 100%;
-  max-width: 950px;
+
+    width: min(1100px, 95vw);
+
+    height: min(92vh, 900px);
+
+    background: #fff;
+
+    border-radius: 20px;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 24px 60px rgba(15,23,42,.20);
+
+}
+
+.employee-modal-header{
+
+    padding:26px 34px;
+
+    background:#ffffff;
+
+    border-bottom:1px solid #e5e7eb;
+
+    position:sticky;
+
+    top:0;
+
+    z-index:20;
+
 }
 
 .employee-modal .card {
@@ -398,10 +432,16 @@
   padding: 22px 28px;
 }
 
-.employee-modal .card-body {
-  padding: 28px;
-  max-height: 72vh;
-  overflow-y: auto;
+.employee-modal-body{
+
+    flex:1;
+
+    overflow-y:auto;
+
+    padding:30px 34px;
+
+    background:#f8fafc;
+
 }
 
 .employee-modal .card-footer {
@@ -414,39 +454,82 @@
    Form Sections
 ========================================================== */
 
-.form-section {
-  background: #fafafa;
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-  padding: 22px;
-  margin-bottom: 20px;
+.form-section{
+
+    background:#ffffff;
+
+    border:1px solid #e5e7eb;
+
+    border-radius:18px;
+
+    padding:24px;
+
+    margin-bottom:24px;
+
+    transition:.25s ease;
+
 }
 
-.section-title {
-  font-size: .85rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: #475569;
-  margin-bottom: 18px;
+.form-section:hover{
+
+    border-color:#cbd5e1;
+
+    box-shadow:
+        0 8px 24px rgba(15,23,42,.05);
+
 }
 
-.form-label {
-  font-size: .82rem;
-  font-weight: 600;
-  color: #64748b;
+.section-title{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    color:#334155;
+
+    margin-bottom:22px;
+
+}
+
+.form-label{
+
+    font-size:13px;
+
+    font-weight:600;
+
+    color:#475569;
+
+    margin-bottom:8px;
+
 }
 
 .form-control,
-.form-select {
-  min-height: 46px;
-  border-radius: 10px;
-  border: 1px solid #dbe2ea;
+.form-select{
+
+    min-height:50px;
+
+    border-radius:12px;
+
+    border:1px solid #dbe2ea;
+
+    transition:.2s ease;
+
 }
 
 .form-control:focus,
-.form-select:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 .2rem rgba(37,99,235,.12);
+.form-select:focus{
+
+    border-color:#2563eb;
+
+    box-shadow:
+        0 0 0 .25rem rgba(37,99,235,.12);
+
 }
 
 /* ==========================================================
@@ -526,15 +609,76 @@
    Scrollbar
 ========================================================== */
 
-.employee-modal .card-body::-webkit-scrollbar,
+.employee-modal-body::-webkit-scrollbar,
 .employee-drawer::-webkit-scrollbar {
   width: 8px;
 }
 
-.employee-modal .card-body::-webkit-scrollbar-thumb,
+.employee-modal-body::-webkit-scrollbar-track,
+.employee-drawer::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.employee-modal-body::-webkit-scrollbar-thumb,
 .employee-drawer::-webkit-scrollbar-thumb {
   background: #cbd5e1;
   border-radius: 20px;
+}
+
+.employee-modal-body::-webkit-scrollbar-thumb:hover,
+.employee-drawer::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* ==========================================================
+   Employee Modal Form
+========================================================== */
+
+.employee-modal-form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* ==========================================================
+   Employee Modal Body
+========================================================== */
+
+.employee-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+
+  padding: 28px 32px;
+
+  background: #f8fafc;
+}
+
+/* ==========================================================
+   Employee Modal Footer
+========================================================== */
+
+.employee-modal-footer {
+  flex-shrink: 0;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+
+  padding: 18px 32px;
+
+  background: #ffffff;
+
+  border-top: 1px solid #e5e7eb;
+
+  position: sticky;
+  bottom: 0;
+
+  z-index: 20;
 }
 
 /* ==========================================================

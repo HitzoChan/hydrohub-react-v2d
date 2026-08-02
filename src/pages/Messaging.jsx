@@ -29,13 +29,10 @@ const [archivedCount, setArchivedCount] = useState(0);
 useEffect(() => {
   async function fetchConversations() {
     try {
-      // Archive expired conversations first
-      await archiveExpiredConversations();
-
       // Load selected tab
       const data = await getConversations(activeTab);
 
-      // Load counts for tabs
+      // Load counts
       const active = await getConversations("active");
       const archived = await getConversations("archived");
 
@@ -50,28 +47,26 @@ useEffect(() => {
         }
 
         const updated = data.find(
-          (conversation) =>
-            conversation.id === current.id
+          (conversation) => conversation.id === current.id
         );
 
         return updated || data[0] || null;
       });
     } catch (error) {
-      console.error(
-        "Failed to load conversations:",
-        error
-      );
+      console.error("Failed to load conversations:", error);
     } finally {
       setLoading(false);
     }
   }
 
+  // ✅ Archive only once when this effect runs
+  archiveExpiredConversations();
+
+  // ✅ Load conversations immediately
   fetchConversations();
 
-  const interval = setInterval(
-    fetchConversations,
-    5000
-  );
+  // ✅ Refresh every 5 seconds
+  const interval = setInterval(fetchConversations, 5000);
 
   return () => clearInterval(interval);
 

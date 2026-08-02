@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 
 // Pages
+import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Orders from "./pages/Orders";
 import Deliveries from "./pages/Deliveries";
@@ -8,77 +9,127 @@ import Employees from "./pages/Employees";
 import Customers from "./pages/Customers";
 import MapMonitoring from "./pages/MapMonitoring";
 import Messaging from "./pages/Messaging";
+import Settings from "./pages/Settings";
+
+// Protected Route
+import ProtectedRoute from "./routes/ProtectedRoute";
 
 function NotFound() {
-  return (
-    <div className="container py-5 text-center">
-      <h1 className="display-5 fw-bold">404</h1>
+    return (
+        <div className="container py-5 text-center">
+            <h1 className="display-5 fw-bold">404</h1>
 
-      <p className="text-muted">
-        The page you're looking for doesn't exist.
-      </p>
-    </div>
-  );
+            <p className="text-muted">
+                The page you're looking for doesn't exist.
+            </p>
+        </div>
+    );
 }
 
 function App() {
-  return (
-    <Routes>
-      {/* Redirect Home */}
-      <Route
-        path="/"
-        element={<Navigate to="/dashboard" replace />}
-      />
+    return (
+        <Routes>
 
-      {/* Dashboard */}
-      <Route
-        path="/dashboard"
-        element={<Dashboard />}
-      />
+            {/* Default Route */}
+            <Route
+                path="/"
+                element={<Navigate to="/login" replace />}
+            />
 
-      {/* Orders */}
-      <Route
-        path="/orders"
-        element={<Orders />}
-      />
+            {/* Login */}
+            <Route
+                path="/login"
+                element={<Login />}
+            />
 
-      {/* Deliveries */}
-      <Route
-        path="/deliveries"
-        element={<Deliveries />}
-      />
+            {/* Dashboard */}
+            <Route
+                path="/dashboard"
+                element={
+                    <ProtectedRoute>
+                        <Dashboard />
+                    </ProtectedRoute>
+                }
+            />
 
-      {/* Employees */}
-      <Route
-        path="/employees"
-        element={<Employees />}
-      />
+            {/* Orders */}
+            <Route
+                path="/orders"
+                element={
+                    <ProtectedRoute>
+                        <Orders />
+                    </ProtectedRoute>
+                }
+            />
 
-      {/* Customers */}
-      <Route
-        path="/customers"
-        element={<Customers />}
-      />
+            {/* Deliveries */}
+            <Route
+                path="/deliveries"
+                element={
+                    <ProtectedRoute>
+                        <Deliveries />
+                    </ProtectedRoute>
+                }
+            />
 
-      {/* Map Monitoring */}
-      <Route
-        path="/map"
-        element={<MapMonitoring />}
-      />
+            {/* Employees */}
+            <Route
+                path="/employees"
+                element={
+                    <ProtectedRoute>
+                        <Employees />
+                    </ProtectedRoute>
+                }
+            />
 
-      {/* Messaging */}
-      <Route
-        path="/messaging"
-        element={<Messaging />}
-      />
+            {/* Customers */}
+            <Route
+                path="/customers"
+                element={
+                    <ProtectedRoute>
+                        <Customers />
+                    </ProtectedRoute>
+                }
+            />
 
-      {/* 404 */}
-      <Route
-        path="*"
-        element={<NotFound />}
-      />
-    </Routes>
-  );
+            {/* Map Monitoring */}
+            <Route
+                path="/map"
+                element={
+                    <ProtectedRoute>
+                        <MapMonitoring />
+                    </ProtectedRoute>
+                }
+            />
+
+            {/* Messaging */}
+            <Route
+                path="/messaging"
+                element={
+                    <ProtectedRoute>
+                        <Messaging />
+                    </ProtectedRoute>
+                }
+            />
+
+            {/* Settings */}
+            <Route
+                path="/settings"
+                element={
+                    <ProtectedRoute>
+                        <Settings />
+                    </ProtectedRoute>
+                }
+            />
+
+            {/* 404 */}
+            <Route
+                path="*"
+                element={<NotFound />}
+            />
+
+        </Routes>
+    );
 }
 
 export default App;
