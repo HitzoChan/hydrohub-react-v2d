@@ -1,6 +1,9 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 
-// Pages
+// ============================================================
+// PAGES
+// ============================================================
+
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Orders from "./pages/Orders";
@@ -9,15 +12,25 @@ import Employees from "./pages/Employees";
 import Customers from "./pages/Customers";
 import MapMonitoring from "./pages/MapMonitoring";
 import Messaging from "./pages/Messaging";
+import Inventory from "./pages/Inventory";
 import Settings from "./pages/Settings";
 
-// Protected Route
+// ============================================================
+// PROTECTED ROUTE
+// ============================================================
+
 import ProtectedRoute from "./routes/ProtectedRoute";
+
+// ============================================================
+// 404 PAGE
+// ============================================================
 
 function NotFound() {
     return (
         <div className="container py-5 text-center">
-            <h1 className="display-5 fw-bold">404</h1>
+            <h1 className="display-5 fw-bold">
+                404
+            </h1>
 
             <p className="text-muted">
                 The page you're looking for doesn't exist.
@@ -26,23 +39,41 @@ function NotFound() {
     );
 }
 
+// ============================================================
+// APP
+// ============================================================
+
 function App() {
     return (
         <Routes>
 
-            {/* Default Route */}
+            {/* ==================================================
+                DEFAULT ROUTE
+            ================================================== */}
+
             <Route
                 path="/"
-                element={<Navigate to="/login" replace />}
+                element={
+                    <Navigate
+                        to="/login"
+                        replace
+                    />
+                }
             />
 
-            {/* Login */}
+            {/* ==================================================
+                LOGIN
+            ================================================== */}
+
             <Route
                 path="/login"
                 element={<Login />}
             />
 
-            {/* Dashboard */}
+            {/* ==================================================
+                DASHBOARD
+            ================================================== */}
+
             <Route
                 path="/dashboard"
                 element={
@@ -52,7 +83,10 @@ function App() {
                 }
             />
 
-            {/* Orders */}
+            {/* ==================================================
+                ORDERS
+            ================================================== */}
+
             <Route
                 path="/orders"
                 element={
@@ -62,7 +96,10 @@ function App() {
                 }
             />
 
-            {/* Deliveries */}
+            {/* ==================================================
+                DELIVERIES
+            ================================================== */}
+
             <Route
                 path="/deliveries"
                 element={
@@ -72,17 +109,10 @@ function App() {
                 }
             />
 
-            {/* Employees */}
-            <Route
-                path="/employees"
-                element={
-                    <ProtectedRoute>
-                        <Employees />
-                    </ProtectedRoute>
-                }
-            />
+            {/* ==================================================
+                CUSTOMERS
+            ================================================== */}
 
-            {/* Customers */}
             <Route
                 path="/customers"
                 element={
@@ -92,7 +122,36 @@ function App() {
                 }
             />
 
-            {/* Map Monitoring */}
+            {/* ==================================================
+                INVENTORY
+            ================================================== */}
+
+            <Route
+                path="/inventory"
+                element={
+                    <ProtectedRoute>
+                        <Inventory />
+                    </ProtectedRoute>
+                }
+            />
+
+            {/* ==================================================
+                EMPLOYEES
+            ================================================== */}
+
+            <Route
+                path="/employees"
+                element={
+                    <ProtectedRoute>
+                        <Employees />
+                    </ProtectedRoute>
+                }
+            />
+
+            {/* ==================================================
+                MAP MONITORING
+            ================================================== */}
+
             <Route
                 path="/map"
                 element={
@@ -102,7 +161,10 @@ function App() {
                 }
             />
 
-            {/* Messaging */}
+            {/* ==================================================
+                MESSAGING
+            ================================================== */}
+
             <Route
                 path="/messaging"
                 element={
@@ -112,7 +174,10 @@ function App() {
                 }
             />
 
-            {/* Settings */}
+            {/* ==================================================
+                SETTINGS
+            ================================================== */}
+
             <Route
                 path="/settings"
                 element={
@@ -122,7 +187,10 @@ function App() {
                 }
             />
 
-            {/* 404 */}
+            {/* ==================================================
+                404
+            ================================================== */}
+
             <Route
                 path="*"
                 element={<NotFound />}

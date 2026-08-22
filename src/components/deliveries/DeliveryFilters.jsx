@@ -29,12 +29,15 @@ function DeliveryFilters({
                 className="form-control border-start-0"
                 placeholder="Search Customer or Order ID..."
                 value={search}
-                onChange={(e) => onSearch(e.target.value)}
+                onChange={(e) =>
+                  onSearch(e.target.value)
+                }
               />
 
             </div>
 
           </div>
+
 
           {/* Status Filter */}
 
@@ -47,6 +50,7 @@ function DeliveryFilters({
                 onStatusChange(e.target.value)
               }
             >
+
               <option value="all">
                 All Status
               </option>
@@ -71,15 +75,21 @@ function DeliveryFilters({
                 Cancelled
               </option>
 
+              <option value="rejected">
+                Rejected
+              </option>
+
             </select>
 
           </div>
+
 
           {/* Reset */}
 
           <div className="col-lg-auto">
 
             <button
+              type="button"
               className="btn btn-outline-secondary w-100"
               onClick={onReset}
             >

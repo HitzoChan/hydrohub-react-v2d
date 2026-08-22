@@ -18,12 +18,14 @@ function TodayDeliveriesChart({
   pending = 0,
   scheduled = 0,
   cancelled = 0,
+  rejected = 0,
 }) {
   const total =
     delivered +
     pending +
     scheduled +
-    cancelled;
+    cancelled +
+    rejected;
 
   const data = {
     labels: [
@@ -31,6 +33,7 @@ function TodayDeliveriesChart({
       "Pending",
       "Scheduled",
       "Cancelled",
+      "Rejected",
     ],
 
     datasets: [
@@ -43,16 +46,18 @@ function TodayDeliveriesChart({
                 pending,
                 scheduled,
                 cancelled,
+                rejected,
               ],
 
         backgroundColor:
           total === 0
             ? ["#e5e7eb"]
             : [
-                "#22c55e",
-                "#f59e0b",
-                "#3b82f6",
-                "#ef4444",
+                "#22c55e", // Delivered
+                "#f59e0b", // Pending
+                "#3b82f6", // Scheduled
+                "#ef4444", // Cancelled
+                "#8b5cf6", // Rejected
               ],
 
         borderWidth: 0,
@@ -129,7 +134,7 @@ function TodayDeliveriesChart({
       {/* Legend */}
       <div
         style={{
-          width: "180px",
+          width: "190px",
         }}
       >
         <div className="d-flex justify-content-between align-items-center mb-2">
@@ -143,13 +148,7 @@ function TodayDeliveriesChart({
             ● Delivered
           </span>
 
-          <strong
-            style={{
-              fontSize: "14px",
-            }}
-          >
-            {delivered}
-          </strong>
+          <strong>{delivered}</strong>
         </div>
 
         <div className="d-flex justify-content-between align-items-center mb-2">
@@ -163,13 +162,7 @@ function TodayDeliveriesChart({
             ● Pending
           </span>
 
-          <strong
-            style={{
-              fontSize: "14px",
-            }}
-          >
-            {pending}
-          </strong>
+          <strong>{pending}</strong>
         </div>
 
         <div className="d-flex justify-content-between align-items-center mb-2">
@@ -183,16 +176,10 @@ function TodayDeliveriesChart({
             ● Scheduled
           </span>
 
-          <strong
-            style={{
-              fontSize: "14px",
-            }}
-          >
-            {scheduled}
-          </strong>
+          <strong>{scheduled}</strong>
         </div>
 
-        <div className="d-flex justify-content-between align-items-center">
+        <div className="d-flex justify-content-between align-items-center mb-2">
           <span
             style={{
               color: "#ef4444",
@@ -203,13 +190,21 @@ function TodayDeliveriesChart({
             ● Cancelled
           </span>
 
-          <strong
+          <strong>{cancelled}</strong>
+        </div>
+
+        <div className="d-flex justify-content-between align-items-center">
+          <span
             style={{
+              color: "#8b5cf6",
               fontSize: "14px",
+              fontWeight: 500,
             }}
           >
-            {cancelled}
-          </strong>
+            ● Rejected
+          </span>
+
+          <strong>{rejected}</strong>
         </div>
       </div>
     </div>

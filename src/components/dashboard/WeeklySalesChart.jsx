@@ -20,15 +20,61 @@ ChartJS.register(
   ChartDataLabels
 );
 
-function WeeklySalesChart({ sales }) {
+function WeeklySalesChart({ sales = [] }) {
+
+  /*
+  |--------------------------------------------------------------------------
+  | Prepare Weekly Sales Data
+  |--------------------------------------------------------------------------
+  |
+  | getWeeklySales() returns:
+  |
+  | [
+  |   Monday,
+  |   Tuesday,
+  |   Wednesday,
+  |   Thursday,
+  |   Friday,
+  |   Saturday,
+  |   Sunday
+  | ]
+  |
+  | The values come directly from the orders table.
+  |
+  */
+
+  const weeklySales = Array.from(
+    { length: 7 },
+    (_, index) => Number(sales?.[index] || 0)
+  );
+
+  const totalWeeklySales = weeklySales.reduce(
+    (sum, value) => sum + value,
+    0
+  );
+
+  /*
+  |--------------------------------------------------------------------------
+  | Chart Data
+  |--------------------------------------------------------------------------
+  */
+
   const data = {
-    labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    labels: [
+      "Mon",
+      "Tue",
+      "Wed",
+      "Thu",
+      "Fri",
+      "Sat",
+      "Sun",
+    ],
 
     datasets: [
       {
         label: "Revenue",
 
-        data: sales,
+        data: weeklySales,
 
         backgroundColor: [
           "#2563eb",
@@ -49,30 +95,38 @@ function WeeklySalesChart({ sales }) {
     ],
   };
 
+  /*
+  |--------------------------------------------------------------------------
+  | Chart Options
+  |--------------------------------------------------------------------------
+  */
+
   const options = {
     responsive: true,
 
     maintainAspectRatio: false,
 
     layout: {
-        padding: {
-            top: 10,
-            bottom: 5,
-            left: 10,
-            right: 10,
-        },
+      padding: {
+        top: 25,
+        bottom: 5,
+        left: 10,
+        right: 10,
+      },
     },
 
     animation: {
-      duration: 1200,
+      duration: 800,
     },
 
     plugins: {
+
       legend: {
         display: false,
       },
 
       tooltip: {
+
         backgroundColor: "#1e293b",
 
         padding: 12,
@@ -82,13 +136,29 @@ function WeeklySalesChart({ sales }) {
         bodyColor: "#fff",
 
         callbacks: {
+
           label(context) {
-            return `₱${context.raw.toLocaleString()}`;
+
+            const value = Number(
+              context.raw || 0
+            );
+
+            return `₱${value.toLocaleString(
+              "en-PH",
+              {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              }
+            )}`;
+
           },
+
         },
+
       },
 
       datalabels: {
+
         anchor: "end",
 
         align: "top",
@@ -101,48 +171,150 @@ function WeeklySalesChart({ sales }) {
         },
 
         formatter(value) {
-          return "₱" + value.toLocaleString();
+
+          if (!value || value <= 0) {
+            return "";
+          }
+
+          return (
+            "₱" +
+            Number(value).toLocaleString(
+              "en-PH",
+              {
+                maximumFractionDigits: 0,
+              }
+            )
+          );
+
         },
+
       },
+
     },
 
     scales: {
+
       x: {
+
         grid: {
           display: false,
         },
 
         ticks: {
+
           color: "#64748b",
 
           font: {
             weight: "600",
           },
+
         },
+
       },
 
       y: {
+
         beginAtZero: true,
 
         ticks: {
+
           color: "#64748b",
 
           callback(value) {
-            return "₱" + value;
+
+            return (
+              "₱" +
+              Number(value).toLocaleString(
+                "en-PH",
+                {
+                  maximumFractionDigits: 0,
+                }
+              )
+            );
+
           },
+
         },
 
         grid: {
           color: "#edf2f7",
         },
+
       },
+
     },
+
   };
 
+  /*
+  |--------------------------------------------------------------------------
+  | Render
+  |--------------------------------------------------------------------------
+  */
+
   return (
-    <div style={{ height: "280px", paddingTop: "20px" }}>
-      <Bar data={data} options={options} />
+
+    <div>
+
+      {/* Weekly total */}
+
+      <div
+        className="d-flex justify-content-between align-items-center mb-2"
+        style={{
+          padding: "0 10px",
+        }}
+      >
+
+        <div>
+
+          <small
+            className="text-muted"
+            style={{
+              fontSize: "12px",
+            }}
+          >
+            Total Revenue This Week
+          </small>
+
+          <div
+            style={{
+              fontSize: "20px",
+              fontWeight: 700,
+              color: "#1f2937",
+            }}
+          >
+            ₱
+            {totalWeeklySales.toLocaleString(
+              "en-PH",
+              {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              }
+            )}
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* Chart */}
+
+      <div
+        style={{
+          height: "250px",
+          paddingTop: "10px",
+        }}
+      >
+
+        <Bar
+          data={data}
+          options={options}
+        />
+
+      </div>
+
     </div>
+
   );
 }
 

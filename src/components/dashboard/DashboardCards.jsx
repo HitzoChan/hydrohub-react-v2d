@@ -1,8 +1,26 @@
-function DashboardCards({ stats }) {
+function DashboardCards({ stats = {} }) {
+  const totalOrders = Number(
+    stats.totalOrders || 0
+  );
+
+  const activeOrders = Number(
+    stats.activeOrders || 0
+  );
+
+  const totalCustomers = Number(
+    stats.totalCustomers || 0
+  );
+
+  const revenue = Number(
+    stats.revenue || 0
+  );
+
   return (
     <div className="row g-4 mb-4">
 
-      {/* Total Orders */}
+      {/* =====================================================
+          TOTAL ORDERS TODAY
+      ===================================================== */}
       <div className="col-xl-3 col-lg-6">
 
         <div className="card dashboard-blue h-100">
@@ -11,12 +29,16 @@ function DashboardCards({ stats }) {
 
             <div className="dashboard-content">
 
-              <small>Total Orders Today</small>
+              <small>
+                Total Orders Today
+              </small>
 
-              <h3>{stats.totalOrders}</h3>
+              <h3>
+                {totalOrders}
+              </h3>
 
               <p className="dashboard-subtitle mb-0">
-                Customer orders received
+                Valid customer orders received
               </p>
 
             </div>
@@ -33,7 +55,10 @@ function DashboardCards({ stats }) {
 
       </div>
 
-      {/* Active Deliveries */}
+
+      {/* =====================================================
+          ACTIVE DELIVERIES
+      ===================================================== */}
       <div className="col-xl-3 col-lg-6">
 
         <div className="card dashboard-green h-100">
@@ -42,12 +67,16 @@ function DashboardCards({ stats }) {
 
             <div className="dashboard-content">
 
-              <small>Active Deliveries</small>
+              <small>
+                Active Deliveries
+              </small>
 
-              <h3>{stats.activeOrders}</h3>
+              <h3>
+                {activeOrders}
+              </h3>
 
               <p className="dashboard-subtitle mb-0">
-                Orders currently in transit
+                Assigned or currently in transit
               </p>
 
             </div>
@@ -64,7 +93,10 @@ function DashboardCards({ stats }) {
 
       </div>
 
-      {/* Total Customers */}
+
+      {/* =====================================================
+          TOTAL CUSTOMERS
+      ===================================================== */}
       <div className="col-xl-3 col-lg-6">
 
         <div className="card dashboard-purple h-100">
@@ -73,12 +105,16 @@ function DashboardCards({ stats }) {
 
             <div className="dashboard-content">
 
-              <small>Total Customers</small>
+              <small>
+                Total Customers
+              </small>
 
-              <h3>{stats.totalCustomers}</h3>
+              <h3>
+                {totalCustomers}
+              </h3>
 
               <p className="dashboard-subtitle mb-0">
-                Registered customers
+                Customers with valid orders
               </p>
 
             </div>
@@ -95,7 +131,10 @@ function DashboardCards({ stats }) {
 
       </div>
 
-      {/* Revenue */}
+
+      {/* =====================================================
+          REVENUE TODAY
+      ===================================================== */}
       <div className="col-xl-3 col-lg-6">
 
         <div className="card dashboard-yellow h-100">
@@ -104,12 +143,16 @@ function DashboardCards({ stats }) {
 
             <div className="dashboard-content">
 
-              <small>Revenue Today</small>
+              <small>
+                Revenue Today
+              </small>
 
-              <h3>₱{stats.revenue.toLocaleString()}</h3>
+              <h3>
+                ₱{revenue.toLocaleString()}
+              </h3>
 
               <p className="dashboard-subtitle mb-0">
-                Total sales collected
+                Completed sales today
               </p>
 
             </div>

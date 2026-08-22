@@ -1,83 +1,254 @@
 import { supabase } from "./supabase";
 
+/*
+|--------------------------------------------------------------------------
+| Helpers
+|--------------------------------------------------------------------------
+*/
+
+/**
+ * Check if an order has a rejected payment.
+ *
+ * Rejected-payment orders should not be included
+ * in dashboard statistics.
+ */
+function isRejectedPayment(order) {
+  const paymentStatus = String(
+    order?.payment_status || ""
+  )
+    .trim()
+    .toLowerCase();
+
+  return paymentStatus === "rejected";
+}
+
+/**
+ * Remove rejected-payment orders from dashboard data.
+ */
+function filterValidOrders(orders = []) {
+  return orders.filter(
+    (order) => !isRejectedPayment(order)
+  );
+}
+
+/**
+ * Normalize order status.
+ */
+function normalizeStatus(status = "") {
+  const value = String(status)
+    .trim()
+    .toLowerCase();
+
+  switch (value) {
+    case "pending":
+      return "pending";
+
+    case "assigned":
+      return "assigned";
+
+    case "on_the_way":
+    case "on the way":
+    case "in_transit":
+    case "in transit":
+    case "in_progress":
+    case "in progress":
+      return "on_the_way";
+
+    case "delivered":
+    case "completed":
+      return "delivered";
+
+    case "cancelled":
+    case "canceled":
+      return "cancelled";
+
+    case "ready":
+    case "ready_for_delivery":
+    case "ready for delivery":
+      return "assigned";
+
+    default:
+      return value;
+  }
+}
+
+/**
+ * Check whether a date belongs to today.
+ */
+function isToday(dateValue) {
+  if (!dateValue) {
+    return false;
+  }
+
+  const date = new Date(dateValue);
+
+  if (Number.isNaN(date.getTime())) {
+    return false;
+  }
+
+  const today = new Date();
+
+  return (
+    date.getFullYear() === today.getFullYear() &&
+    date.getMonth() === today.getMonth() &&
+    date.getDate() === today.getDate()
+  );
+}
+
+/*
+|--------------------------------------------------------------------------
+| Customer Count
+|--------------------------------------------------------------------------
+*/
+
+/**
+ * Get the actual customer count from customer_profiles.
+ *
+ * IMPORTANT:
+ * We do NOT count customers from orders.
+ *
+ * This keeps the Dashboard consistent with the
+ * Customer Management page.
+ */
+async function getCustomerCount() {
+  try {
+    const { data, error } = await supabase
+      .from("customer_profiles")
+      .select("id");
+
+    if (error) {
+      throw error;
+    }
+
+    return Array.isArray(data)
+      ? data.length
+      : 0;
+  } catch (error) {
+    console.error(
+      "Failed to load customer count:",
+      error
+    );
+
+    return 0;
+  }
+}
+
+/*
+|--------------------------------------------------------------------------
+| Dashboard Cards
+|--------------------------------------------------------------------------
+*/
+
 /**
  * Dashboard Cards
  */
 export async function getDashboardStats() {
   try {
-    const { data: orders, error } = await supabase
+    /*
+    |--------------------------------------------------------------------------
+    | Get Orders
+    |--------------------------------------------------------------------------
+    */
+
+    const {
+      data: orders,
+      error: ordersError,
+    } = await supabase
       .from("orders")
       .select("*");
 
-    if (error) throw error;
+    if (ordersError) {
+      throw ordersError;
+    }
 
-    //----------------------------------
-    // Total Orders
-    //----------------------------------
+    /*
+    |--------------------------------------------------------------------------
+    | Remove rejected-payment orders
+    |--------------------------------------------------------------------------
+    */
 
-    const totalOrders = orders.length;
+    const validOrders = filterValidOrders(
+      orders || []
+    );
 
-    //----------------------------------
-    // Active Deliveries
-    //----------------------------------
+    /*
+    |--------------------------------------------------------------------------
+    | Total Orders Today
+    |--------------------------------------------------------------------------
+    */
 
-    const activeOrders = orders.filter((order) => {
-      const status = String(order.status)
-        .trim()
-        .toLowerCase();
+    const totalOrders = validOrders.filter(
+      (order) =>
+        isToday(order.created_at)
+    ).length;
 
-      return (
-        status === "pending" ||
-        status === "assigned" ||
-        status === "in_transit"
-      );
-    }).length;
+    /*
+    |--------------------------------------------------------------------------
+    | Active Deliveries
+    |--------------------------------------------------------------------------
+    */
 
-    //----------------------------------
-    // Customers
-    //----------------------------------
+    const activeOrders = validOrders.filter(
+      (order) => {
+        const status = normalizeStatus(
+          order.status
+        );
 
-    const totalCustomers = new Set(
-      orders.map((order) => order.customer_id)
-    ).size;
+        return (
+          status === "assigned" ||
+          status === "on_the_way"
+        );
+      }
+    ).length;
 
-    //----------------------------------
-    // Revenue Today
-    //----------------------------------
+    /*
+    |--------------------------------------------------------------------------
+    | Total Customers
+    |--------------------------------------------------------------------------
+    |
+    | IMPORTANT:
+    | Customer count now comes from customer_profiles
+    | instead of counting customer_id values in orders.
+    |
+    */
 
-    const today = new Date();
+    const totalCustomers =
+      await getCustomerCount();
 
-    const start = new Date(today);
-    start.setHours(0, 0, 0, 0);
+    /*
+    |--------------------------------------------------------------------------
+    | Revenue Today
+    |--------------------------------------------------------------------------
+    */
 
-    const end = new Date(today);
-    end.setHours(23, 59, 59, 999);
-
-    const revenue = orders
+    const revenue = validOrders
       .filter((order) => {
-        const status = String(order.status)
-          .trim()
-          .toLowerCase();
+        const status = normalizeStatus(
+          order.status
+        );
 
-        if (
-          status !== "delivered" &&
-          status !== "completed"
-        ) {
+        if (status !== "delivered") {
           return false;
         }
 
-        const orderDate = new Date(order.created_at);
-
-        return (
-          orderDate >= start &&
-          orderDate <= end
+        return isToday(
+          order.created_at
         );
       })
       .reduce(
         (sum, order) =>
-          sum + Number(order.total_price || 0),
+          sum +
+          Number(
+            order.total_price || 0
+          ),
         0
       );
+
+    /*
+    |--------------------------------------------------------------------------
+    | Return Dashboard Statistics
+    |--------------------------------------------------------------------------
+    */
 
     return {
       totalOrders,
@@ -85,10 +256,11 @@ export async function getDashboardStats() {
       totalCustomers,
       revenue,
     };
-
   } catch (error) {
-
-    console.error(error);
+    console.error(
+      "Failed to load dashboard stats:",
+      error
+    );
 
     return {
       totalOrders: 0,
@@ -96,93 +268,210 @@ export async function getDashboardStats() {
       totalCustomers: 0,
       revenue: 0,
     };
-
   }
 }
+
+/*
+|--------------------------------------------------------------------------
+| Weekly Sales
+|--------------------------------------------------------------------------
+*/
 
 /**
- * Weekly Sales (Monday - Sunday)
+ * Weekly Sales
+ * Monday - Sunday
  */
 export async function getWeeklySales() {
-
   try {
-
     const today = new Date();
 
+    /*
+    |--------------------------------------------------------------------------
+    | Monday
+    |--------------------------------------------------------------------------
+    */
+
     const monday = new Date(today);
+
     monday.setDate(
-      today.getDate() - ((today.getDay() + 6) % 7)
+      today.getDate() -
+        ((today.getDay() + 6) % 7)
     );
-    monday.setHours(0, 0, 0, 0);
 
-    const sunday = new Date(monday);
-    sunday.setDate(monday.getDate() + 6);
-    sunday.setHours(23, 59, 59, 999);
+    monday.setHours(
+      0,
+      0,
+      0,
+      0
+    );
 
-    const { data, error } = await supabase
+    /*
+    |--------------------------------------------------------------------------
+    | Sunday
+    |--------------------------------------------------------------------------
+    */
+
+    const sunday = new Date(
+      monday
+    );
+
+    sunday.setDate(
+      monday.getDate() + 6
+    );
+
+    sunday.setHours(
+      23,
+      59,
+      59,
+      999
+    );
+
+    /*
+    |--------------------------------------------------------------------------
+    | Get Orders
+    |--------------------------------------------------------------------------
+    */
+
+    const {
+      data,
+      error,
+    } = await supabase
       .from("orders")
-      .select("created_at,total_price,status");
+      .select(
+        "created_at,total_price,status,payment_status"
+      );
 
-    if (error) throw error;
+    if (error) {
+      throw error;
+    }
 
-    const weekly = [0, 0, 0, 0, 0, 0, 0];
+    /*
+    |--------------------------------------------------------------------------
+    | Remove rejected payments
+    |--------------------------------------------------------------------------
+    */
 
-    data.forEach((order) => {
+    const validOrders =
+      filterValidOrders(
+        data || []
+      );
 
-      const status = String(order.status)
-        .trim()
-        .toLowerCase();
+    const weekly = [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+    ];
 
-      if (
-        status !== "delivered" &&
-        status !== "completed"
-      ) {
-        return;
+    validOrders.forEach(
+      (order) => {
+        const status =
+          normalizeStatus(
+            order.status
+          );
+
+        /*
+        | Only completed deliveries
+        | contribute to sales.
+        */
+
+        if (
+          status !== "delivered"
+        ) {
+          return;
+        }
+
+        const date = new Date(
+          order.created_at
+        );
+
+        if (
+          Number.isNaN(
+            date.getTime()
+          )
+        ) {
+          return;
+        }
+
+        if (
+          date < monday ||
+          date > sunday
+        ) {
+          return;
+        }
+
+        /*
+        | Monday = 0
+        | Tuesday = 1
+        | ...
+        | Sunday = 6
+        */
+
+        const index =
+          (date.getDay() + 6) % 7;
+
+        weekly[index] += Number(
+          order.total_price || 0
+        );
       }
-
-      const date = new Date(order.created_at);
-
-      if (date < monday || date > sunday) {
-        return;
-      }
-
-      const index = (date.getDay() + 6) % 7;
-
-      weekly[index] += Number(order.total_price || 0);
-
-    });
+    );
 
     return weekly;
-
   } catch (error) {
+    console.error(
+      "Failed to load weekly sales:",
+      error
+    );
 
-    console.error(error);
-
-    return [0, 0, 0, 0, 0, 0, 0];
-
+    return [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+    ];
   }
 }
+
+/*
+|--------------------------------------------------------------------------
+| Today's Deliveries
+|--------------------------------------------------------------------------
+*/
 
 /**
  * Today's Deliveries
  */
 export async function getTodayDeliveries() {
-
   try {
-
-    const { data, error } = await supabase
+    const {
+      data,
+      error,
+    } = await supabase
       .from("orders")
-      .select("status, created_at");
+      .select(
+        "status,created_at,payment_status"
+      );
 
-    if (error) throw error;
+    if (error) {
+      throw error;
+    }
 
-    const today = new Date();
+    /*
+    |--------------------------------------------------------------------------
+    | Remove rejected-payment orders
+    |--------------------------------------------------------------------------
+    */
 
-    const start = new Date(today);
-    start.setHours(0, 0, 0, 0);
-
-    const end = new Date(today);
-    end.setHours(23, 59, 59, 999);
+    const validOrders =
+      filterValidOrders(
+        data || []
+      );
 
     const result = {
       delivered: 0,
@@ -191,50 +480,55 @@ export async function getTodayDeliveries() {
       cancelled: 0,
     };
 
-    data.forEach((order) => {
+    validOrders.forEach(
+      (order) => {
+        /*
+        | Only today's orders.
+        */
 
-      const orderDate = new Date(order.created_at);
+        if (
+          !isToday(
+            order.created_at
+          )
+        ) {
+          return;
+        }
 
-      if (orderDate < start || orderDate > end) {
-        return;
+        const status =
+          normalizeStatus(
+            order.status
+          );
+
+        switch (status) {
+          case "delivered":
+            result.delivered++;
+            break;
+
+          case "pending":
+            result.pending++;
+            break;
+
+          case "assigned":
+          case "on_the_way":
+            result.scheduled++;
+            break;
+
+          case "cancelled":
+            result.cancelled++;
+            break;
+
+          default:
+            break;
+        }
       }
-
-      const status = String(order.status)
-        .trim()
-        .toLowerCase();
-
-      switch (status) {
-
-        case "delivered":
-        case "completed":
-          result.delivered++;
-          break;
-
-        case "pending":
-          result.pending++;
-          break;
-
-        case "assigned":
-        case "in_transit":
-          result.scheduled++;
-          break;
-
-        case "cancelled":
-          result.cancelled++;
-          break;
-
-        default:
-          break;
-
-      }
-
-    });
+    );
 
     return result;
-
   } catch (error) {
-
-    console.error(error);
+    console.error(
+      "Failed to load today's deliveries:",
+      error
+    );
 
     return {
       delivered: 0,
@@ -242,6 +536,5 @@ export async function getTodayDeliveries() {
       scheduled: 0,
       cancelled: 0,
     };
-
   }
 }

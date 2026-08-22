@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { updateProduct } from "../../../services/product.service";
 
 export default function EditProductModal({
@@ -7,239 +7,424 @@ export default function EditProductModal({
     onSuccess,
     product
 }) {
-
-    const [form, setForm] = useState(() => ({
-        product_name: product?.product_name ?? "",
-        capacity: product?.capacity ?? "",
-        base_price: product?.base_price ?? "",
-        exchange_price: product?.exchange_price ?? "",
-        exchange_required: product?.exchange_required ?? true,
-        enabled: product?.enabled ?? true
-    }));
+    const [form, setForm] = useState({
+        product_name: "",
+        capacity: "",
+        initial_containers: 0,
+        base_price: "",
+        exchange_price: "",
+        exchange_required: true,
+        enabled: true
+    });
 
     const [saving, setSaving] = useState(false);
 
-    const handleChange = (field, value) => {
-        setForm(prev => ({
+    /*
+    |--------------------------------------------------------------------------
+    | LOAD PRODUCT DATA
+    |--------------------------------------------------------------------------
+    */
+
+    useEffect(() => {
+        if (product) {
+            setForm({
+                product_name: product.product_name ?? "",
+                capacity: product.capacity ?? "",
+                initial_containers:
+                    product.initial_containers ?? 0,
+                base_price: product.base_price ?? "",
+                exchange_price:
+                    product.exchange_price ?? "",
+                exchange_required:
+                    product.exchange_required ?? true,
+                enabled:
+                    product.enabled ?? true
+            });
+        }
+    }, [product]);
+
+    /*
+    |--------------------------------------------------------------------------
+    | HANDLE INPUT
+    |--------------------------------------------------------------------------
+    */
+
+    function handleChange(field, value) {
+        setForm((prev) => ({
             ...prev,
             [field]: value
         }));
-    };
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | SAVE PRODUCT
+    |--------------------------------------------------------------------------
+    */
 
     async function handleSubmit(e) {
         e.preventDefault();
 
         if (!product) return;
 
-        try {
+        if (
+            form.initial_containers === "" ||
+            Number(form.initial_containers) < 0
+        ) {
+            alert(
+                "Initial container quantity cannot be negative."
+            );
+            return;
+        }
 
+        try {
             setSaving(true);
 
-            await updateProduct(product.id, {
-                ...form,
-                base_price: Number(form.base_price),
-                exchange_price: Number(form.exchange_price)
-            });
+            const updates = {
+                product_name:
+                    form.product_name.trim(),
 
-            onSuccess();
+                capacity:
+                    form.capacity.trim(),
+
+                initial_containers:
+                    Number(form.initial_containers),
+
+                base_price:
+                    Number(form.base_price),
+
+                exchange_price:
+                    Number(form.exchange_price),
+
+                exchange_required:
+                    form.exchange_required,
+
+                enabled:
+                    form.enabled
+            };
+
+            await updateProduct(
+                product.id,
+                updates
+            );
+
+            if (onSuccess) {
+                await onSuccess();
+            }
+
             onClose();
 
         } catch (err) {
+            console.error(
+                "Update product error:",
+                err
+            );
 
-            console.error(err);
-            alert(err.message);
+            alert(
+                err?.message ||
+                "Failed to update product."
+            );
 
         } finally {
-
             setSaving(false);
-
         }
     }
 
-    console.log("Modal render:", show);
-    if (!show || !product) return null;
+    /*
+    |--------------------------------------------------------------------------
+    | CLOSE
+    |--------------------------------------------------------------------------
+    */
+
+    function handleClose() {
+        if (saving) return;
+
+        onClose();
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | MODAL
+    |--------------------------------------------------------------------------
+    */
+
+    if (!show || !product) {
+        return null;
+    }
 
     return (
         <div
             className="modal fade show d-block"
-            style={{ background: "rgba(0,0,0,.5)" }}
+            style={{
+                background:
+                    "rgba(0, 0, 0, 0.5)"
+            }}
         >
-            <div className="modal-dialog">
+            <div className="modal-dialog modal-dialog-centered">
+
                 <div className="modal-content">
+
+                    {/* =================================================
+                        HEADER
+                    ================================================= */}
+
+                    <div className="modal-header">
+
+                        <h5 className="modal-title">
+                            Edit Product
+                        </h5>
+
+                        <button
+                            type="button"
+                            className="btn-close"
+                            onClick={handleClose}
+                            disabled={saving}
+                        />
+
+                    </div>
+
+                    {/* =================================================
+                        FORM
+                    ================================================= */}
 
                     <form onSubmit={handleSubmit}>
 
-                        <div className="modal-header">
-
-                            <h5 className="modal-title">
-                                Edit Product
-                            </h5>
-
-                            <button
-                                type="button"
-                                className="btn-close"
-                                onClick={onClose}
-                            />
-
-                        </div>
-
                         <div className="modal-body">
+
+                            {/* PRODUCT NAME */}
 
                             <div className="mb-3">
 
-                                <label className="form-label">
+                                <label className="form-label fw-semibold">
                                     Product Name
                                 </label>
 
                                 <input
+                                    type="text"
                                     className="form-control"
-                                    value={form.product_name}
-                                    onChange={(e) =>
-                                        handleChange("product_name", e.target.value)
+                                    value={
+                                        form.product_name
                                     }
+                                    onChange={(e) =>
+                                        handleChange(
+                                            "product_name",
+                                            e.target.value
+                                        )
+                                    }
+                                    placeholder="Example: Purified Water"
+                                    required
                                 />
 
                             </div>
 
+                            {/* CAPACITY */}
+
                             <div className="mb-3">
 
-                                <label className="form-label">
+                                <label className="form-label fw-semibold">
                                     Capacity
                                 </label>
 
                                 <input
+                                    type="text"
                                     className="form-control"
-                                    value={form.capacity}
-                                    onChange={(e) =>
-                                        handleChange("capacity", e.target.value)
+                                    value={
+                                        form.capacity
                                     }
+                                    onChange={(e) =>
+                                        handleChange(
+                                            "capacity",
+                                            e.target.value
+                                        )
+                                    }
+                                    placeholder="Example: 5 Gallon"
+                                    required
                                 />
 
                             </div>
 
-                            <div className="row">
+                            {/* INITIAL CONTAINERS */}
 
-                                <div className="col">
+                            <div className="mb-3">
 
-                                    <label className="form-label">
+                                <label className="form-label fw-semibold">
+                                    Initial Containers
+                                </label>
+
+                                <input
+                                    type="number"
+                                    min="0"
+                                    step="1"
+                                    className="form-control"
+                                    value={
+                                        form.initial_containers
+                                    }
+                                    onChange={(e) =>
+                                        handleChange(
+                                            "initial_containers",
+                                            e.target.value
+                                        )
+                                    }
+                                    required
+                                />
+
+                                <div className="form-text">
+                                    Total number of containers
+                                    owned by the station at
+                                    the start of inventory.
+                                </div>
+
+                            </div>
+
+                            {/* PRICES */}
+
+                            <div className="row g-3">
+
+                                <div className="col-md-6">
+
+                                    <label className="form-label fw-semibold">
                                         Base Price
                                     </label>
 
                                     <input
                                         type="number"
+                                        min="0"
+                                        step="0.01"
                                         className="form-control"
-                                        value={form.base_price}
-                                        onChange={(e) =>
-                                            handleChange("base_price", e.target.value)
+                                        value={
+                                            form.base_price
                                         }
+                                        onChange={(e) =>
+                                            handleChange(
+                                                "base_price",
+                                                e.target.value
+                                            )
+                                        }
+                                        required
                                     />
 
                                 </div>
 
-                                <div className="col">
+                                <div className="col-md-6">
 
-                                    <label className="form-label">
+                                    <label className="form-label fw-semibold">
                                         Exchange Price
                                     </label>
 
                                     <input
                                         type="number"
+                                        min="0"
+                                        step="0.01"
                                         className="form-control"
-                                        value={form.exchange_price}
-                                        onChange={(e) =>
-                                            handleChange("exchange_price", e.target.value)
+                                        value={
+                                            form.exchange_price
                                         }
+                                        onChange={(e) =>
+                                            handleChange(
+                                                "exchange_price",
+                                                e.target.value
+                                            )
+                                        }
+                                        required
                                     />
 
                                 </div>
 
                             </div>
 
-                            <div className="form-check mt-3">
+                            {/* EXCHANGE */}
+
+                            <div className="form-check mt-4">
 
                                 <input
+                                    id="editExchangeRequired"
                                     className="form-check-input"
                                     type="checkbox"
-                                    checked={form.exchange_required}
+                                    checked={
+                                        form.exchange_required
+                                    }
                                     onChange={(e) =>
-                                        handleChange("exchange_required", e.target.checked)
+                                        handleChange(
+                                            "exchange_required",
+                                            e.target.checked
+                                        )
                                     }
                                 />
 
-                                <label className="form-check-label">
+                                <label
+                                    htmlFor="editExchangeRequired"
+                                    className="form-check-label"
+                                >
                                     Exchange Required
                                 </label>
 
                             </div>
 
+                            {/* ENABLED */}
+
                             <div className="form-check mt-2">
 
                                 <input
+                                    id="editProductEnabled"
                                     className="form-check-input"
                                     type="checkbox"
-                                    checked={form.enabled}
+                                    checked={
+                                        form.enabled
+                                    }
                                     onChange={(e) =>
-                                        handleChange("enabled", e.target.checked)
+                                        handleChange(
+                                            "enabled",
+                                            e.target.checked
+                                        )
                                     }
                                 />
 
-                                <label className="form-check-label">
-                                    Enabled
+                                <label
+                                    htmlFor="editProductEnabled"
+                                    className="form-check-label"
+                                >
+                                    Product Enabled
                                 </label>
 
                             </div>
 
                         </div>
+
+                        {/* =================================================
+                            FOOTER
+                        ================================================= */}
 
                         <div className="modal-footer">
 
                             <button
                                 type="button"
                                 className="btn btn-secondary"
-                                onClick={onClose}
+                                onClick={handleClose}
+                                disabled={saving}
                             >
                                 Cancel
                             </button>
 
                             <button
-                                type="button"
+                                type="submit"
                                 className="btn btn-primary"
                                 disabled={saving}
-                                onClick={async () => {
-                                    if (!product) return;
-
-                                    try {
-                                        setSaving(true);
-
-                                        console.log("Updating product...");
-
-                                        await updateProduct(product.id, {
-                                            ...form,
-                                            base_price: Number(form.base_price),
-                                            exchange_price: Number(form.exchange_price)
-                                        });
-
-                                        console.log("Update success");
-
-console.log("Before onSuccess");
-
-await onSuccess();
-
-console.log("After onSuccess");
-
-onClose();
-
-console.log("Modal closed");
-
-                                    } catch (err) {
-                                        console.error(err);
-                                        alert(err.message || "Failed to update product.");
-                                    } finally {
-                                        setSaving(false);
-                                    }
-                                }}
                             >
-                                {saving ? "Saving..." : "Save Changes"}
+                                {saving ? (
+                                    <>
+                                        <span
+                                            className="spinner-border spinner-border-sm me-2"
+                                            role="status"
+                                        />
+
+                                        Saving...
+                                    </>
+                                ) : (
+                                    <>
+                                        <i className="bi bi-check-lg me-2" />
+                                        Save Changes
+                                    </>
+                                )}
                             </button>
 
                         </div>
@@ -247,6 +432,7 @@ console.log("Modal closed");
                     </form>
 
                 </div>
+
             </div>
         </div>
     );
