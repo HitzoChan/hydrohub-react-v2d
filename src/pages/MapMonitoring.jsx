@@ -195,7 +195,7 @@ function MapMonitoring() {
 
             <Sidebar />
 
-            <div className="main-content">
+            <div className="main-content map-monitoring-main-content">
 
                 <Header />
 
@@ -273,7 +273,9 @@ function MapMonitoring() {
 
                 </main>
 
-                <Footer />
+                <div className="map-monitoring-footer">
+                    <Footer />
+                </div>
 
             </div>
 

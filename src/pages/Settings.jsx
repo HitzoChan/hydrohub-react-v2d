@@ -8,10 +8,9 @@ import SettingsMenu from "../components/settings/SettingsMenu";
 
 import OverviewSettings from "../components/settings/OverviewSettings";
 import ProductsSettings from "../components/settings/ProductsSettings";
-import DeliverySettings from "../components/settings/DeliverySettings";
 import PaymentSettings from "../components/settings/PaymentSettings";
-import EmployeeSettings from "../components/settings/EmployeeSettings";
 import AccountSettings from "../components/settings/AccountSettings";
+import SecuritySettings from "../components/settings/SecuritySettings";
 
 import {
     getSettings,
@@ -31,17 +30,12 @@ export default function Settings() {
 
         id: null,
 
-        // Delivery
-        maxDeliveries: 0,
-        deliveryDuration: 0,
-
         // Payment
         codEnabled: false,
         codVerification: false,
 
-        // Employee
-        autoCode: true,
-        codeLength: 6,
+        // Security
+        maxActiveOrdersPerCustomer: 3,
 
         // Account
         adminPassword: ""
@@ -64,14 +58,6 @@ export default function Settings() {
 
                         id: data.id,
 
-                        // Delivery
-                        maxDeliveries:
-                            data.max_deliveries_per_driver ?? 0,
-
-                        // Database column is still named delivery_duratioan
-                        deliveryDuration:
-                            data.delivery_duratioan ?? 0,
-
                         // Payment
                         codEnabled:
                             data.cod_enabled ?? false,
@@ -79,12 +65,9 @@ export default function Settings() {
                         codVerification:
                             data.cod_verification ?? false,
 
-                        // Employee
-                        autoCode:
-                            data.auto_generate_code ?? true,
-
-                        codeLength:
-                            data.code_length ?? 6,
+                        // Security
+                        maxActiveOrdersPerCustomer:
+                            data.max_active_orders_per_customer ?? 3,
 
                         // Account
                         adminPassword: ""
@@ -201,7 +184,7 @@ return (
 
         <Sidebar />
 
-        <div className="main-content bg-light grow overflow-auto">
+        <div className="main-content settings-main-content bg-light grow overflow-auto">
 
             <Header />
 
@@ -211,14 +194,14 @@ return (
                 {/* PAGE HEADER */}
                 {/* ===================== */}
 
-                <div className="mb-4">
+                <div className="settings-page-header mb-4">
 
                     <h2 className="fw-bold mb-1">
                         System Settings
                     </h2>
 
                     <p className="text-muted mb-0">
-                        Manage products, delivery, payment, employee, and account settings.
+                        Manage products, payments, security, and account settings.
                     </p>
 
                 </div>
@@ -227,7 +210,7 @@ return (
                 {/* SETTINGS LAYOUT */}
                 {/* ===================== */}
 
-                <div className="row g-4 align-items-start">
+                <div className="row settings-layout g-4 align-items-start">
 
                     {/* LEFT MENU */}
 
@@ -258,10 +241,10 @@ return (
 
                         )}
 
-                        {activeTab === "delivery" && (
+                        {activeTab === "security" && (
 
                             <>
-                                <DeliverySettings
+                                <SecuritySettings
                                     settings={settings}
                                     setSettings={setSettings}
                                 />
@@ -277,7 +260,7 @@ return (
                                             </h6>
 
                                             <small className="text-muted">
-                                                Changes will immediately affect new delivery schedules.
+                                                Changes will immediately protect new customer orders.
                                             </small>
 
                                         </div>
@@ -320,29 +303,6 @@ return (
 
                         )}
 
-                        {activeTab === "employee" && (
-
-                            <>
-                                <EmployeeSettings
-                                    settings={settings}
-                                    setSettings={setSettings}
-                                />
-
-                                <div className="settings-actions mt-4 text-end">
-
-                                    <button
-                                        className="btn btn-primary px-4"
-                                        onClick={handleSave}
-                                    >
-                                        Save Changes
-                                    </button>
-
-                                </div>
-
-                            </>
-
-                        )}
-
                         {activeTab === "account" && (
 
                             <AccountSettings
@@ -357,7 +317,9 @@ return (
 
                 </div>
 
-                <Footer />
+                <div className="settings-footer">
+                    <Footer />
+                </div>
 
             </div>
 

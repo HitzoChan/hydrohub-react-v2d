@@ -521,3 +521,112 @@ body {
     padding: 25px;
   }
 }
+
+/* FINAL RESPONSIVE LOGIN LAYOUT */
+
+@media (min-width: 769px) {
+
+  .auth-panel {
+    min-height: 560px;
+  }
+
+  .hero-panel,
+  .form-panel {
+    min-height: 560px;
+  }
+
+}
+
+@media (max-width: 768px) {
+
+  .login-page {
+    min-height: 100dvh;
+    padding: 16px;
+    align-items: flex-start;
+  }
+
+  .login-page::before,
+  .login-page::after {
+    display: none;
+  }
+
+  .auth-panel {
+    width: 100%;
+    min-height: 0;
+    margin: 0;
+    border-radius: 18px;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+  }
+
+  .form-panel {
+    min-height: 0;
+    padding: 0;
+  }
+
+  .login-card {
+    width: 100%;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 24px 20px;
+    border: 0;
+    border-radius: 18px;
+    box-shadow: none;
+  }
+
+  .login-card h4 {
+    margin-top: 0;
+    font-size: 1.7rem;
+  }
+
+  .login-card p {
+    margin-bottom: 1.4rem;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .form-label {
+    font-size: 13px;
+  }
+
+  .form-control {
+    min-height: 44px;
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+
+  .btn-login {
+    min-height: 44px;
+    padding: 11px 14px;
+  }
+
+  .login-card > .d-flex.justify-content-between {
+    gap: 12px;
+  }
+
+  .login-card > .d-flex.justify-content-between a {
+    font-size: 12px;
+  }
+
+}
+
+@media (max-width: 360px) {
+
+  .login-page {
+    padding: 10px;
+  }
+
+  .login-card {
+    padding: 20px 16px;
+  }
+
+  .login-card > .d-flex.justify-content-between {
+    align-items: flex-start !important;
+    flex-direction: column;
+  }
+
+}

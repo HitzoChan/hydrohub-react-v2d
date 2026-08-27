@@ -191,7 +191,7 @@ export default function Employees() {
 
           <Sidebar />
 
-          <div className="main-content">
+          <div className="main-content employees-main-content">
 
             <Header />
 
@@ -219,7 +219,9 @@ export default function Employees() {
 
             </div>
 
-            <Footer />
+            <div className="employees-footer">
+              <Footer />
+            </div>
 
           </div>
 
@@ -243,7 +245,7 @@ export default function Employees() {
 
         <Sidebar />
 
-        <div className="main-content">
+        <div className="main-content employees-main-content">
 
           <Header />
 
@@ -255,7 +257,7 @@ export default function Employees() {
                 PAGE HEADER
             ============================ */}
 
-            <div className="mb-4">
+            <div className="employees-header mb-4">
 
               <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
 
@@ -519,7 +521,9 @@ export default function Employees() {
 
         </section>
 
-        <Footer />
+        <div className="employees-footer">
+          <Footer />
+        </div>
 
       </div>
 

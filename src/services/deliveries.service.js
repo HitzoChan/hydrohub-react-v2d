@@ -1,5 +1,6 @@
 import { createConversation } from "./messaging.service";
 import { supabase } from "../lib/supabase";
+import { isReservationDue } from "./reservations.service";
 
 /*
 |--------------------------------------------------------------------------
@@ -109,6 +110,98 @@ function filterValidOrders(orders = []) {
 
 /*
 |--------------------------------------------------------------------------
+| Payment Readiness Helpers
+|--------------------------------------------------------------------------
+| COD/Cash orders can proceed immediately. GCash orders require admin
+| verification before they can enter Delivery Management.
+|--------------------------------------------------------------------------
+*/
+
+function normalizePaymentMethod(order) {
+  return String(
+    order?.payment_method || ""
+  )
+    .trim()
+    .toLowerCase();
+}
+
+function normalizePaymentStatus(order) {
+  return String(
+    order?.payment_status || ""
+  )
+    .trim()
+    .toLowerCase();
+}
+
+function isPaymentReadyForDelivery(order) {
+  const method =
+    normalizePaymentMethod(order);
+
+  const paymentStatus =
+    normalizePaymentStatus(order);
+
+  /*
+   * GCash requires admin verification.
+   */
+  if (
+    method === "gcash" ||
+    method === "g-cash"
+  ) {
+    return paymentStatus === "verified";
+  }
+
+  /*
+   * COD/Cash can proceed without payment verification.
+   */
+  if (
+    method === "cod" ||
+    method === "cash" ||
+    method === "cash on delivery"
+  ) {
+    return true;
+  }
+
+  /*
+   * Unknown payment methods are not automatically
+   * allowed into Delivery Management.
+   */
+  return false;
+}
+
+function isOrderReadyForDelivery(order) {
+  if (!order || isRejectedOrder(order)) {
+    return false;
+  }
+
+  const isScheduled =
+    String(order.delivery_type || "")
+      .trim()
+      .toLowerCase() === "scheduled";
+
+  if (
+    isScheduled &&
+    !order.driver_id &&
+    !isReservationDue(order)
+  ) {
+    return false;
+  }
+
+  return (
+    isPaymentReadyForDelivery(order)
+  );
+}
+
+function filterDeliveryReadyOrders(
+  orders = []
+) {
+  return orders.filter(
+    (order) =>
+      isOrderReadyForDelivery(order)
+  );
+}
+
+/*
+|--------------------------------------------------------------------------
 | Fetch Deliveries
 |--------------------------------------------------------------------------
 */
@@ -203,16 +296,26 @@ export async function getDeliveries() {
     /*
     |--------------------------------------------------------------------------
     | IMPORTANT:
-    | REMOVE REJECTED ORDERS
+    | Only payment-ready orders may enter Delivery Management.
+    |
+    | COD/Cash:
+    |   → Allowed immediately.
+    |
+    | GCash Pending:
+    |   → Blocked.
+    |
+    | GCash Verified:
+    |   → Allowed.
+    |
+    | GCash Rejected:
+    |   → Blocked.
     |--------------------------------------------------------------------------
-    |
-    | A rejected payment/order belongs to Order Management.
-    | It must never enter the Delivery Queue.
-    |
     */
 
     const orders =
-      filterValidOrders(allOrders);
+      filterDeliveryReadyOrders(
+        allOrders
+      );
 
     /*
     |--------------------------------------------------------------------------
@@ -222,15 +325,19 @@ export async function getDeliveries() {
 
     const deliveryMap = {};
 
-    deliveries.forEach((delivery) => {
-      if (!delivery.order_id) {
-        return;
-      }
+    deliveries.forEach(
+      (delivery) => {
+        if (!delivery.order_id) {
+          return;
+        }
 
-      deliveryMap[
-        String(delivery.order_id)
-      ] = delivery;
-    });
+        deliveryMap[
+          String(
+            delivery.order_id
+          )
+        ] = delivery;
+      }
+    );
 
     /*
     |--------------------------------------------------------------------------
@@ -240,25 +347,29 @@ export async function getDeliveries() {
 
     const driverMap = {};
 
-    drivers.forEach((driver) => {
-      if (!driver.id) {
-        return;
+    drivers.forEach(
+      (driver) => {
+        if (!driver.id) {
+          return;
+        }
+
+        driverMap[
+          String(driver.id)
+        ] = {
+          ...driver,
+
+          name:
+            driver.name ||
+            driver.full_name ||
+            "Unknown Driver",
+
+          phone:
+            driver.phone ||
+            driver.contact_number ||
+            "",
+        };
       }
-
-      driverMap[String(driver.id)] = {
-        ...driver,
-
-        name:
-          driver.name ||
-          driver.full_name ||
-          "Unknown Driver",
-
-        phone:
-          driver.phone ||
-          driver.contact_number ||
-          "",
-      };
-    });
+    );
 
     /*
     |--------------------------------------------------------------------------
@@ -268,19 +379,21 @@ export async function getDeliveries() {
 
     const customerMap = {};
 
-    customers.forEach((customer) => {
-      if (customer.id) {
-        customerMap[
-          String(customer.id)
-        ] = customer;
-      }
+    customers.forEach(
+      (customer) => {
+        if (customer.id) {
+          customerMap[
+            String(customer.id)
+          ] = customer;
+        }
 
-      if (customer.user_id) {
-        customerMap[
-          String(customer.user_id)
-        ] = customer;
+        if (customer.user_id) {
+          customerMap[
+            String(customer.user_id)
+          ] = customer;
+        }
       }
-    });
+    );
 
     /*
     |--------------------------------------------------------------------------
@@ -289,6 +402,7 @@ export async function getDeliveries() {
     */
 
     const merged = orders
+
       /*
       |--------------------------------------------------------------------------
       | SECOND SAFETY FILTER
@@ -297,7 +411,9 @@ export async function getDeliveries() {
 
       .filter(
         (order) =>
-          !isRejectedOrder(order)
+          isOrderReadyForDelivery(
+            order
+          )
       )
 
       .map((order) => {
@@ -320,7 +436,9 @@ export async function getDeliveries() {
 
         const customer =
           customerMap[
-            String(order.customer_id)
+            String(
+              order.customer_id
+            )
           ] || {};
 
         /*
@@ -367,7 +485,9 @@ export async function getDeliveries() {
           customer.phone || "";
 
         const gallons =
-          Number(order.gallons ?? 0);
+          Number(
+            order.gallons ?? 0
+          );
 
         /*
         |--------------------------------------------------------------------------
@@ -377,11 +497,15 @@ export async function getDeliveries() {
 
         let scheduledAt = null;
 
-        if (order.scheduled_date) {
+        if (
+          order.scheduled_date
+        ) {
           scheduledAt =
             order.scheduled_date;
 
-          if (order.scheduled_time) {
+          if (
+            order.scheduled_time
+          ) {
             scheduledAt +=
               " " +
               order.scheduled_time;
@@ -523,9 +647,11 @@ export async function getDeliveries() {
 
           driver: driver
             ? {
-                id: driver.id,
+                id:
+                  driver.id,
 
-                name: driver.name,
+                name:
+                  driver.name,
 
                 phone:
                   driver.phone,
@@ -554,7 +680,10 @@ export async function getDeliveries() {
             `ORD-${String(
               order.id
             )
-              .substring(0, 8)
+              .substring(
+                0,
+                8
+              )
               .toUpperCase()}`,
 
           deliveryType:
@@ -577,14 +706,20 @@ export async function getDeliveries() {
     */
 
     return {
-      deliveries: merged,
+      deliveries:
+        merged,
 
       drivers,
 
       /*
-      | Return ONLY valid orders.
-      | Rejected orders are intentionally excluded.
+      |--------------------------------------------------------------------------
+      | Only payment-ready orders are returned for delivery.
+      |
+      | Pending GCash orders remain available through the Orders
+      | Management service/page for admin verification.
+      |--------------------------------------------------------------------------
       */
+
       orders,
     };
   } catch (error) {
@@ -701,18 +836,20 @@ export function getDeliveryStats(
     activeDrivers:
       new Set(
         activeDeliveries
-          .filter((delivery) => {
-            const status =
-              normalizeStatus(
-                delivery.status
-              );
+          .filter(
+            (delivery) => {
+              const status =
+                normalizeStatus(
+                  delivery.status
+                );
 
-            return (
-              delivery.driver &&
-              status !==
-                "delivered"
-            );
-          })
+              return (
+                delivery.driver &&
+                status !==
+                  "delivered"
+              );
+            }
+          )
           .map(
             (delivery) =>
               delivery.driver.id
@@ -723,7 +860,7 @@ export function getDeliveryStats(
 
 /*
 |--------------------------------------------------------------------------
-| Search & Filter
+| Filter Deliveries
 |--------------------------------------------------------------------------
 */
 
@@ -733,7 +870,7 @@ export function filterDeliveries(
   status = "all"
 ) {
   const keyword =
-    search
+    String(search || "")
       .toLowerCase()
       .trim();
 
@@ -753,34 +890,56 @@ export function filterDeliveries(
 
   return visibleDeliveries.filter(
     (delivery) => {
+      const customerName =
+        String(
+          delivery.customerName ||
+            delivery.customer_name ||
+            ""
+        ).toLowerCase();
+
+      const address =
+        String(
+          delivery.address ||
+            delivery.address_text ||
+            ""
+        ).toLowerCase();
+
+      const orderNumber =
+        String(
+          delivery.orderNumber ||
+            ""
+        ).toLowerCase();
+
+      const driverName =
+        String(
+          delivery.driver?.name ||
+            ""
+        ).toLowerCase();
+
       const matchesSearch =
-        delivery.customerName
-          ?.toLowerCase()
-          .includes(keyword)
+        keyword === "" ||
+        customerName.includes(
+          keyword
+        ) ||
+        address.includes(
+          keyword
+        ) ||
+        orderNumber.includes(
+          keyword
+        ) ||
+        driverName.includes(
+          keyword
+        );
 
-        ||
-
-        delivery.address
-          ?.toLowerCase()
-          .includes(keyword)
-
-        ||
-
-        delivery.orderNumber
-          ?.toLowerCase()
-          .includes(keyword)
-
-        ||
-
-        delivery.driver?.name
-          ?.toLowerCase()
-          .includes(keyword);
+      const normalizedStatus =
+        normalizeStatus(
+          delivery.status
+        );
 
       const matchesStatus =
         status === "all" ||
-        normalizeStatus(
-          delivery.status
-        ) === status;
+        normalizedStatus ===
+          status;
 
       return (
         matchesSearch &&
@@ -802,7 +961,31 @@ export async function assignDriver(
 ) {
   /*
   |--------------------------------------------------------------------------
-  | Get current deliveries
+  | Validate Delivery ID
+  |--------------------------------------------------------------------------
+  */
+
+  if (!deliveryId) {
+    throw new Error(
+      "Delivery ID is required."
+    );
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | Validate Driver ID
+  |--------------------------------------------------------------------------
+  */
+
+  if (!driverId) {
+    throw new Error(
+      "Driver ID is required."
+    );
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | Get Current Deliveries
   |--------------------------------------------------------------------------
   */
 
@@ -821,7 +1004,7 @@ export async function assignDriver(
 
   /*
   |--------------------------------------------------------------------------
-  | Delivery not found
+  | Delivery Not Found
   |--------------------------------------------------------------------------
   */
 
@@ -833,7 +1016,67 @@ export async function assignDriver(
 
   /*
   |--------------------------------------------------------------------------
-  | FINAL REJECTED ORDER PROTECTION
+  | FINAL PAYMENT VERIFICATION
+  |--------------------------------------------------------------------------
+  |
+  | This is an additional protection.
+  |
+  | Even though getDeliveries() already removes unverified GCash
+  | orders, we check the order again before assigning a driver.
+  |
+  */
+
+  if (
+    !isOrderReadyForDelivery(
+      selected.order
+    )
+  ) {
+    const paymentMethod =
+      normalizePaymentMethod(
+        selected.order
+      );
+
+    const paymentStatus =
+      normalizePaymentStatus(
+        selected.order
+      );
+
+    /*
+    |--------------------------------------------------------------------------
+    | GCash Pending / Unverified
+    |--------------------------------------------------------------------------
+    */
+
+    if (
+      paymentMethod ===
+        "gcash" ||
+      paymentMethod ===
+        "g-cash"
+    ) {
+      throw new Error(
+        `This GCash order cannot be assigned yet. ` +
+        `Payment status: ${
+          paymentStatus ||
+          "pending"
+        }. ` +
+        `Please verify the GCash payment first.`
+      );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Other Invalid Payment
+    |--------------------------------------------------------------------------
+    */
+
+    throw new Error(
+      "This order is not ready for delivery."
+    );
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | Rejected Order Protection
   |--------------------------------------------------------------------------
   */
 
@@ -849,14 +1092,19 @@ export async function assignDriver(
 
   /*
   |--------------------------------------------------------------------------
-  | Don't assign completed/cancelled
+  | Don't Assign Completed/Cancelled Orders
   |--------------------------------------------------------------------------
   */
 
+  const currentStatus =
+    normalizeStatus(
+      selected.status
+    );
+
   if (
-    selected.status ===
+    currentStatus ===
       "cancelled" ||
-    selected.status ===
+    currentStatus ===
       "delivered"
   ) {
     throw new Error(
@@ -866,13 +1114,43 @@ export async function assignDriver(
 
   /*
   |--------------------------------------------------------------------------
-  | Check if delivery exists
+  | Verify Driver
   |--------------------------------------------------------------------------
   */
 
   const {
-    data: existing,
-    error: existingError,
+    data: driver,
+    error:
+      driverError,
+  } = await supabase
+    .from("employees")
+    .select("*")
+    .eq(
+      "id",
+      driverId
+    )
+    .maybeSingle();
+
+  if (driverError) {
+    throw driverError;
+  }
+
+  if (!driver) {
+    throw new Error(
+      "Driver not found."
+    );
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | Check Existing Delivery
+  |--------------------------------------------------------------------------
+  */
+
+  const {
+    data: existingDelivery,
+    error:
+      existingError,
   } = await supabase
     .from("deliveries")
     .select("*")
@@ -892,7 +1170,7 @@ export async function assignDriver(
   |--------------------------------------------------------------------------
   */
 
-  if (existing) {
+  if (existingDelivery) {
     const {
       error,
     } = await supabase
@@ -906,7 +1184,7 @@ export async function assignDriver(
       })
       .eq(
         "id",
-        existing.id
+        existingDelivery.id
       );
 
     if (error) {
@@ -958,12 +1236,13 @@ export async function assignDriver(
 
   /*
   |--------------------------------------------------------------------------
-  | Keep Orders Synchronized
+  | Synchronize Orders Table
   |--------------------------------------------------------------------------
   */
 
   const {
-    error: orderError,
+    error:
+      orderError,
   } = await supabase
     .from("orders")
     .update({
@@ -984,13 +1263,28 @@ export async function assignDriver(
 
   /*
   |--------------------------------------------------------------------------
-  | Automatically create conversation
+  | Create Conversation
   |--------------------------------------------------------------------------
+  |
+  | The customer and assigned driver can communicate
+  | through the order conversation.
+  |
   */
 
-  await createConversation(
-    selected.order_id
-  );
+  try {
+    await createConversation(
+      selected.order_id
+    );
+  } catch (error) {
+    /*
+     * Conversation creation should not undo a successful
+     * driver assignment.
+     */
+    console.error(
+      "Failed to create delivery conversation:",
+      error
+    );
+  }
 
   return true;
 }
@@ -1007,16 +1301,54 @@ export async function updateDeliveryStatus(
 ) {
   /*
   |--------------------------------------------------------------------------
-  | Normalize status
+  | Validate Delivery ID
   |--------------------------------------------------------------------------
   */
 
-  status =
-    normalizeStatus(status);
+  if (!deliveryId) {
+    throw new Error(
+      "Delivery ID is required."
+    );
+  }
 
   /*
   |--------------------------------------------------------------------------
-  | Get current deliveries
+  | Normalize Requested Status
+  |--------------------------------------------------------------------------
+  */
+
+  const normalizedStatus =
+    normalizeStatus(
+      status
+    );
+
+  /*
+  |--------------------------------------------------------------------------
+  | Validate Status
+  |--------------------------------------------------------------------------
+  */
+
+  const validStatuses = [
+    "pending",
+    "assigned",
+    "in_transit",
+    "delivered",
+    "cancelled",
+  ];
+
+  if (
+    !validStatuses.includes(
+      normalizedStatus
+    )
+  ) {
+    throw new Error(
+      `Invalid delivery status: ${status}`
+    );
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | Get Current Deliveries
   |--------------------------------------------------------------------------
   */
 
@@ -1035,7 +1367,7 @@ export async function updateDeliveryStatus(
 
   /*
   |--------------------------------------------------------------------------
-  | Delivery not found
+  | Delivery Not Found
   |--------------------------------------------------------------------------
   */
 
@@ -1047,7 +1379,52 @@ export async function updateDeliveryStatus(
 
   /*
   |--------------------------------------------------------------------------
-  | FINAL REJECTED ORDER PROTECTION
+  | FINAL PAYMENT VERIFICATION
+  |--------------------------------------------------------------------------
+  |
+  | An unverified GCash order must never be moved through
+  | Delivery Management.
+  |
+  */
+
+  if (
+    !isOrderReadyForDelivery(
+      selected.order
+    )
+  ) {
+    const paymentMethod =
+      normalizePaymentMethod(
+        selected.order
+      );
+
+    const paymentStatus =
+      normalizePaymentStatus(
+        selected.order
+      );
+
+    if (
+      paymentMethod ===
+        "gcash" ||
+      paymentMethod ===
+        "g-cash"
+    ) {
+      throw new Error(
+        `This GCash order cannot be processed because its payment ` +
+        `has not been verified. Current payment status: ${
+          paymentStatus ||
+          "pending"
+        }.`
+      );
+    }
+
+    throw new Error(
+      "This order is not ready for delivery."
+    );
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | Rejected Order Protection
   |--------------------------------------------------------------------------
   */
 
@@ -1063,13 +1440,14 @@ export async function updateDeliveryStatus(
 
   /*
   |--------------------------------------------------------------------------
-  | Find delivery row
+  | Get Existing Delivery
   |--------------------------------------------------------------------------
   */
 
   const {
-    data: existing,
-    error: existingError,
+    data: existingDelivery,
+    error:
+      existingError,
   } = await supabase
     .from("deliveries")
     .select("*")
@@ -1085,23 +1463,32 @@ export async function updateDeliveryStatus(
 
   /*
   |--------------------------------------------------------------------------
-  | Update Delivery
+  | Update Existing Delivery
   |--------------------------------------------------------------------------
   */
 
-  if (existing) {
+  if (existingDelivery) {
     const updateData = {
-      status,
+      status:
+        normalizedStatus,
     };
+
+    if (
+      normalizedStatus ===
+      "delivered"
+    ) {
+      updateData.delivered_at =
+        new Date().toISOString();
+    }
 
     /*
     |--------------------------------------------------------------------------
-    | Remove driver if cancelled
+    | Remove driver when cancelled
     |--------------------------------------------------------------------------
     */
 
     if (
-      status ===
+      normalizedStatus ===
       "cancelled"
     ) {
       updateData.driver_id =
@@ -1115,7 +1502,7 @@ export async function updateDeliveryStatus(
       .update(updateData)
       .eq(
         "id",
-        existing.id
+        existingDelivery.id
       );
 
     if (error) {
@@ -1125,7 +1512,7 @@ export async function updateDeliveryStatus(
 
   /*
   |--------------------------------------------------------------------------
-  | Create Delivery if Missing
+  | Create Missing Delivery
   |--------------------------------------------------------------------------
   */
 
@@ -1154,14 +1541,21 @@ export async function updateDeliveryStatus(
           selected.longitude,
 
         driver_id:
-          status ===
+          normalizedStatus ===
           "cancelled"
             ? null
             : selected
                 .driver?.id ||
               null,
 
-        status,
+        status:
+          normalizedStatus,
+
+        delivered_at:
+          normalizedStatus ===
+          "delivered"
+            ? new Date().toISOString()
+            : null,
       });
 
     if (error) {
@@ -1171,22 +1565,23 @@ export async function updateDeliveryStatus(
 
   /*
   |--------------------------------------------------------------------------
-  | Update Orders Table
+  | Synchronize Orders Table
   |--------------------------------------------------------------------------
   */
 
   const orderUpdate = {
-    status,
+    status:
+      normalizedStatus,
   };
 
   /*
   |--------------------------------------------------------------------------
-  | Remove driver if cancelled
+  | Remove Driver When Cancelled
   |--------------------------------------------------------------------------
   */
 
   if (
-    status ===
+    normalizedStatus ===
     "cancelled"
   ) {
     orderUpdate.driver_id =
@@ -1194,7 +1589,8 @@ export async function updateDeliveryStatus(
   }
 
   const {
-    error: orderError,
+    error:
+      orderError,
   } = await supabase
     .from("orders")
     .update(orderUpdate)
@@ -1209,12 +1605,12 @@ export async function updateDeliveryStatus(
 
   /*
   |--------------------------------------------------------------------------
-  | Start Archive Countdown
+  | Delivered Conversation Handling
   |--------------------------------------------------------------------------
   */
 
   if (
-    status ===
+    normalizedStatus ===
     "delivered"
   ) {
     const {
@@ -1234,10 +1630,617 @@ export async function updateDeliveryStatus(
         selected.order_id
       );
 
-    if (conversationError) {
-      throw conversationError;
+    if (
+      conversationError
+    ) {
+      /*
+       * Do not undo a successfully completed delivery because
+       * conversation updating failed.
+       */
+      console.error(
+        "Failed to update conversation after delivery:",
+        conversationError
+      );
     }
   }
 
   return true;
 }
+
+/*
+|--------------------------------------------------------------------------
+| Get Delivery By ID
+|--------------------------------------------------------------------------
+*/
+
+export async function getDeliveryById(
+  deliveryId
+) {
+  if (!deliveryId) {
+    throw new Error(
+      "Delivery ID is required."
+    );
+  }
+
+  const {
+    data: delivery,
+    error,
+  } = await supabase
+    .from("deliveries")
+    .select("*")
+    .eq(
+      "id",
+      deliveryId
+    )
+    .maybeSingle();
+
+  if (error) {
+    console.error(
+      "getDeliveryById()",
+      error
+    );
+
+    throw error;
+  }
+
+  if (!delivery) {
+    return null;
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | Load Related Order
+  |--------------------------------------------------------------------------
+  */
+
+  let order = null;
+
+  if (delivery.order_id) {
+    const {
+      data: orderData,
+      error: orderError,
+    } = await supabase
+      .from("orders")
+      .select("*")
+      .eq(
+        "id",
+        delivery.order_id
+      )
+      .maybeSingle();
+
+    if (orderError) {
+      throw orderError;
+    }
+
+    order =
+      orderData || null;
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | Determine Payment/Delivery Eligibility
+  |--------------------------------------------------------------------------
+  */
+
+  const readyForDelivery =
+    order
+      ? isOrderReadyForDelivery(
+          order
+        )
+      : false;
+
+  return {
+    ...delivery,
+
+    order,
+
+    readyForDelivery,
+  };
+}
+
+/*
+|--------------------------------------------------------------------------
+| Get Pending Orders Ready For Delivery
+|--------------------------------------------------------------------------
+*/
+
+export async function getPendingOrdersForDelivery() {
+  const {
+    data,
+    error,
+  } = await supabase
+    .from("orders")
+    .select("*")
+    .eq(
+      "status",
+      "pending"
+    )
+    .order(
+      "created_at",
+      {
+        ascending: true,
+      }
+    );
+
+  if (error) {
+    console.error(
+      "getPendingOrdersForDelivery()",
+      error
+    );
+
+    throw error;
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | IMPORTANT:
+  |
+  | Apply the same payment eligibility rule used by
+  | getDeliveries().
+  |
+  | This means:
+  |
+  | COD/Cash       -> included
+  | GCash Pending  -> excluded
+  | GCash Verified -> included
+  | GCash Rejected -> excluded
+  |--------------------------------------------------------------------------
+  */
+
+  return (
+    data || []
+  ).filter(
+    (order) =>
+      isOrderReadyForDelivery(
+        order
+      )
+  );
+}
+
+/*
+|--------------------------------------------------------------------------
+| Get Available Drivers
+|--------------------------------------------------------------------------
+*/
+
+export async function getAvailableDrivers() {
+  const {
+    data,
+    error,
+  } = await supabase
+    .from("employees")
+    .select("*")
+    .ilike(
+      "role",
+      "driver"
+    );
+
+  if (error) {
+    console.error(
+      "getAvailableDrivers()",
+      error
+    );
+
+    throw error;
+  }
+
+  return data || [];
+}
+
+/*
+|--------------------------------------------------------------------------
+| Get Driver Deliveries
+|--------------------------------------------------------------------------
+*/
+
+export async function getDriverDeliveries(
+  driverId
+) {
+  if (!driverId) {
+    throw new Error(
+      "Driver ID is required."
+    );
+  }
+
+  const {
+    data,
+    error,
+  } = await supabase
+    .from("deliveries")
+    .select("*")
+    .eq(
+      "driver_id",
+      driverId
+    )
+    .order(
+      "created_at",
+      {
+        ascending: false,
+      }
+    );
+
+  if (error) {
+    console.error(
+      "getDriverDeliveries()",
+      error
+    );
+
+    throw error;
+  }
+
+  const deliveries =
+    data || [];
+
+  /*
+  |--------------------------------------------------------------------------
+  | No deliveries
+  |--------------------------------------------------------------------------
+  */
+
+  if (
+    deliveries.length ===
+    0
+  ) {
+    return [];
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | Get Related Order IDs
+  |--------------------------------------------------------------------------
+  */
+
+  const orderIds =
+    deliveries
+      .map(
+        (delivery) =>
+          delivery.order_id
+      )
+      .filter(Boolean);
+
+  if (
+    orderIds.length ===
+    0
+  ) {
+    return deliveries;
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | Load Orders
+  |--------------------------------------------------------------------------
+  */
+
+  const {
+    data: orders,
+    error: ordersError,
+  } = await supabase
+    .from("orders")
+    .select("*")
+    .in(
+      "id",
+      orderIds
+    );
+
+  if (ordersError) {
+    throw ordersError;
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | Create Order Map
+  |--------------------------------------------------------------------------
+  */
+
+  const orderMap = {};
+
+  (
+    orders || []
+  ).forEach(
+    (order) => {
+      orderMap[
+        String(
+          order.id
+        )
+      ] = order;
+    }
+  );
+
+  /*
+  |--------------------------------------------------------------------------
+  | Merge Delivery + Order
+  |--------------------------------------------------------------------------
+  */
+
+  return deliveries.map(
+    (delivery) => {
+      const order =
+        orderMap[
+          String(
+            delivery.order_id
+          )
+        ] || null;
+
+      return {
+        ...delivery,
+
+        order,
+
+        readyForDelivery:
+          order
+            ? isOrderReadyForDelivery(
+                order
+              )
+            : false,
+      };
+    }
+  );
+}
+
+/*
+|--------------------------------------------------------------------------
+| Cancel Delivery
+|--------------------------------------------------------------------------
+*/
+
+export async function cancelDelivery(
+  deliveryId
+) {
+  if (!deliveryId) {
+    throw new Error(
+      "Delivery ID is required."
+    );
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | Find Delivery
+  |--------------------------------------------------------------------------
+  */
+
+  const {
+    data: delivery,
+    error: deliveryError,
+  } = await supabase
+    .from("deliveries")
+    .select("*")
+    .eq(
+      "id",
+      deliveryId
+    )
+    .maybeSingle();
+
+  if (deliveryError) {
+    throw deliveryError;
+  }
+
+  if (!delivery) {
+    throw new Error(
+      "Delivery not found."
+    );
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | Get Related Order
+  |--------------------------------------------------------------------------
+  */
+
+  let order = null;
+
+  if (delivery.order_id) {
+    const {
+      data: orderData,
+      error: orderError,
+    } = await supabase
+      .from("orders")
+      .select("*")
+      .eq(
+        "id",
+        delivery.order_id
+      )
+      .maybeSingle();
+
+    if (orderError) {
+      throw orderError;
+    }
+
+    order =
+      orderData || null;
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | Do Not Cancel Delivered Order
+  |--------------------------------------------------------------------------
+  */
+
+  if (
+    order &&
+    normalizeStatus(
+      order.status
+    ) === "delivered"
+  ) {
+    throw new Error(
+      "A delivered order cannot be cancelled."
+    );
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | Cancel Delivery
+  |--------------------------------------------------------------------------
+  */
+
+  const {
+    error,
+  } = await supabase
+    .from("deliveries")
+    .update({
+      status:
+        "cancelled",
+
+      driver_id:
+        null,
+    })
+    .eq(
+      "id",
+      deliveryId
+    );
+
+  if (error) {
+    throw error;
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | Cancel Related Order
+  |--------------------------------------------------------------------------
+  */
+
+  if (delivery.order_id) {
+    const {
+      error:
+        orderUpdateError,
+    } = await supabase
+      .from("orders")
+      .update({
+        status:
+          "cancelled",
+
+        driver_id:
+          null,
+      })
+      .eq(
+        "id",
+        delivery.order_id
+      );
+
+    if (
+      orderUpdateError
+    ) {
+      throw orderUpdateError;
+    }
+  }
+
+  return true;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Unassign Driver
+|--------------------------------------------------------------------------
+*/
+
+export async function unassignDriver(
+  deliveryId
+) {
+  if (!deliveryId) {
+    throw new Error(
+      "Delivery ID is required."
+    );
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | Find Delivery
+  |--------------------------------------------------------------------------
+  */
+
+  const {
+    data: delivery,
+    error,
+  } = await supabase
+    .from("deliveries")
+    .select("*")
+    .eq(
+      "id",
+      deliveryId
+    )
+    .maybeSingle();
+
+  if (error) {
+    throw error;
+  }
+
+  if (!delivery) {
+    throw new Error(
+      "Delivery not found."
+    );
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | Don't Unassign Delivered Delivery
+  |--------------------------------------------------------------------------
+  */
+
+  if (
+    normalizeStatus(
+      delivery.status
+    ) === "delivered"
+  ) {
+    throw new Error(
+      "A delivered order cannot be unassigned."
+    );
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | Remove Driver
+  |--------------------------------------------------------------------------
+  */
+
+  const {
+    error:
+      updateError,
+  } = await supabase
+    .from("deliveries")
+    .update({
+      driver_id:
+        null,
+
+      status:
+        "pending",
+    })
+    .eq(
+      "id",
+      deliveryId
+    );
+
+  if (updateError) {
+    throw updateError;
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | Reset Order
+  |--------------------------------------------------------------------------
+  */
+
+  if (delivery.order_id) {
+    const {
+      error:
+        orderError,
+    } = await supabase
+      .from("orders")
+      .update({
+        driver_id:
+          null,
+
+        status:
+          "pending",
+      })
+      .eq(
+        "id",
+        delivery.order_id
+      );
+
+    if (orderError) {
+      throw orderError;
+    }
+  }
+
+  return true;
+}
+

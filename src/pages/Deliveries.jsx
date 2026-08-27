@@ -849,7 +849,7 @@ function Deliveries() {
 
         <Sidebar />
 
-        <div className="main-content">
+        <div className="main-content deliveries-main-content">
 
           <Header />
 
@@ -857,7 +857,7 @@ function Deliveries() {
               PAGE HEADER
           ================================================= */}
 
-          <div className="page-header mb-3">
+          <div className="page-header delivery-page-header mb-3">
 
             <div className="d-flex align-items-center justify-content-between">
 
@@ -885,26 +885,6 @@ function Deliveries() {
               {/* RIGHT */}
 
               <div className="d-flex align-items-center gap-3 ms-auto">
-
-                {lastUpdated && (
-                  <div className="text-end">
-
-                    <small className="text-muted d-block">
-                      Updated
-                    </small>
-
-                    <strong>
-                      {lastUpdated.toLocaleTimeString(
-                        [],
-                        {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        }
-                      )}
-                    </strong>
-
-                  </div>
-                )}
 
                 <button
                   className="btn btn-primary px-4"
@@ -1114,7 +1094,9 @@ function Deliveries() {
             }
           />
 
-          <Footer />
+          <div className="deliveries-footer">
+            <Footer />
+          </div>
 
         </div>
 

@@ -51,6 +51,7 @@ export async function getConversations(
       ordersResult,
       customersResult,
       employeesResult,
+      messagesResult,
     ] = await Promise.all([
       /*
       |--------------------------------------------------------------------------
@@ -95,6 +96,20 @@ export async function getConversations(
       supabase
         .from("employees")
         .select("*"),
+
+      /*
+      |--------------------------------------------------------------------------
+      | Messages
+      |--------------------------------------------------------------------------
+      |
+      | Support conversations should only appear after the customer starts
+      | the conversation. Delivery conversations remain unaffected.
+      |
+      */
+
+      supabase
+        .from("messages")
+        .select("conversation_id, sender_type"),
     ]);
 
     /*
@@ -119,6 +134,13 @@ export async function getConversations(
       throw employeesResult.error;
     }
 
+    if (messagesResult.error) {
+      console.warn(
+        "Unable to check customer support messages:",
+        messagesResult.error
+      );
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Safe Defaults
@@ -136,6 +158,101 @@ export async function getConversations(
 
     const employees =
       employeesResult.data ?? [];
+
+    const messages =
+      messagesResult.data ?? [];
+
+    const customerMessageConversationIds =
+      new Set(
+        messages
+          .filter(
+            (message) =>
+              String(
+                message?.sender_type || ""
+              )
+                .toLowerCase()
+                .trim() === "customer"
+          )
+          .map(
+            (message) =>
+              String(
+                message.conversation_id
+              )
+          )
+      );
+
+    const visibleConversations =
+      conversations.filter((conversation) => {
+        if (
+          conversation?.conversation_type !==
+          "support"
+        ) {
+          return true;
+        }
+
+        return customerMessageConversationIds.has(
+          String(conversation.id)
+        );
+      });
+
+    const uniqueConversations = [];
+    const deliveryConversationIndexes = new Map();
+
+    visibleConversations.forEach((conversation) => {
+      if (
+        conversation?.conversation_type !==
+        "delivery"
+      ) {
+        uniqueConversations.push(conversation);
+        return;
+      }
+
+      const customerId =
+        conversation.customer_id ||
+        conversation.participant_id;
+
+      if (!customerId) {
+        uniqueConversations.push(conversation);
+        return;
+      }
+
+      const key = String(customerId);
+      const existingIndex =
+        deliveryConversationIndexes.get(key);
+
+      if (existingIndex === undefined) {
+        deliveryConversationIndexes.set(
+          key,
+          uniqueConversations.length
+        );
+        uniqueConversations.push(conversation);
+        return;
+      }
+
+      const existing =
+        uniqueConversations[existingIndex];
+
+      const existingTime =
+        new Date(
+          existing?.last_message_at ||
+            existing?.updated_at ||
+            existing?.created_at ||
+            0
+        ).getTime();
+
+      const currentTime =
+        new Date(
+          conversation?.last_message_at ||
+            conversation?.updated_at ||
+            conversation?.created_at ||
+            0
+        ).getTime();
+
+      if (currentTime > existingTime) {
+        uniqueConversations[existingIndex] =
+          conversation;
+      }
+    });
 
     /*
     |--------------------------------------------------------------------------
@@ -214,7 +331,7 @@ export async function getConversations(
     |--------------------------------------------------------------------------
     */
 
-    return conversations.map(
+    return uniqueConversations.map(
       (conversation) => {
         /*
         |--------------------------------------------------------------------------

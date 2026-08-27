@@ -73,9 +73,9 @@ export default function EmployeeSettings({
 
                             className="form-control"
 
-                            name="max_deliveries_per_driver"
+                            name="maxDeliveries"
 
-                            value={settings.max_deliveries_per_driver}
+                            value={settings.maxDeliveries}
 
                             onChange={handleInput}
 
@@ -103,9 +103,9 @@ export default function EmployeeSettings({
 
                             id="autoCode"
 
-                            name="auto_generate_code"
+                            name="autoCode"
 
-                            checked={settings.auto_generate_code}
+                            checked={settings.autoCode}
 
                             onChange={handleCheckbox}
 
@@ -140,13 +140,13 @@ export default function EmployeeSettings({
 
                             className="form-control"
 
-                            name="code_length"
+                            name="codeLength"
 
-                            value={settings.code_length}
+                            value={settings.codeLength}
 
                             onChange={handleInput}
 
-                            disabled={!settings.auto_generate_code}
+                            disabled={!settings.autoCode}
 
                         />
 
@@ -155,80 +155,6 @@ export default function EmployeeSettings({
                             Recommended length is between 6 and 8 characters.
 
                         </small>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div className="card border-0 shadow-sm">
-
-                <div className="card-header bg-light">
-
-                    <h6 className="mb-0">
-
-                        Current Configuration
-
-                    </h6>
-
-                </div>
-
-                <div className="card-body">
-
-                    <div className="d-flex justify-content-between mb-3">
-
-                        <span>
-
-                            Maximum Deliveries
-
-                        </span>
-
-                        <strong>
-
-                            {settings.max_deliveries_per_driver}
-
-                        </strong>
-
-                    </div>
-
-                    <div className="d-flex justify-content-between mb-3">
-
-                        <span>
-
-                            Auto Generate Code
-
-                        </span>
-
-                        <span
-                            className={`badge ${
-                                settings.auto_generate_code
-                                    ? "bg-success"
-                                    : "bg-danger"
-                            }`}
-                        >
-
-                            {settings.auto_generate_code
-                                ? "Enabled"
-                                : "Disabled"}
-
-                        </span>
-
-                    </div>
-
-                    <div className="d-flex justify-content-between">
-
-                        <span>
-
-                            Access Code Length
-
-                        </span>
-
-                        <strong>
-
-                            {settings.code_length} Characters
-
-                        </strong>
 
                     </div>
 

@@ -25,6 +25,14 @@
   overflow-y: auto;
 }
 
+.sidebar-backdrop {
+  display: none;
+}
+
+.mobile-menu-button {
+  display: none;
+}
+
 .sidebar h5 {
   font-weight: 600;
 }
@@ -81,6 +89,10 @@
   padding: 20px;
   border-radius: 16px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.topbar > div:last-child {
+  margin-left: auto;
 }
 
 .topbar input {
@@ -381,11 +393,21 @@
   border-right: 1px solid #e5e7eb;
 }
 
+.dashboard-footer {
+  width: 100%;
+}
+
 /* =======================
    RESPONSIVE
 ======================= */
 
 @media (max-width:992px) {
+
+  .mobile-menu-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
 
   .main-content {
     margin-left: 0;
@@ -395,10 +417,19 @@
 
   .sidebar {
     left: -230px;
+    box-shadow: 12px 0 30px rgba(15, 23, 42, 0.16);
   }
 
   .sidebar.active {
     left: 0;
+  }
+
+  .sidebar-backdrop.visible {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    background: rgba(15, 23, 42, 0.42);
   }
 
 }
@@ -406,8 +437,29 @@
 @media (max-width:768px) {
 
   .topbar {
-    flex-direction: column;
-    gap: 10px;
+    align-items: center !important;
+    flex-direction: row;
+    gap: 12px;
+    padding: 14px;
+  }
+
+  .topbar-left {
+    gap: 10px !important;
+  }
+
+  .topbar > div:last-child {
+    justify-content: flex-end;
+    margin-left: auto;
+  }
+
+  .topbar .btn {
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
   }
 
   .topbar input {
@@ -416,7 +468,31 @@
   }
 
   .card {
-    padding: 15px;
+    max-width: 100%;
+    padding: 16px;
+  }
+
+  .row {
+    --bs-gutter-x: 1rem;
+  }
+
+  .table-responsive,
+  .table-wrapper {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .modal-dialog {
+    width: auto;
+    max-width: calc(100% - 24px);
+    margin: 12px auto;
+  }
+
+  input,
+  select,
+  textarea,
+  button {
+    max-width: 100%;
   }
 
   .footer {
@@ -435,9 +511,37 @@
     padding-right: 0;
   }
 
+  .dashboard-footer .footer {
+    margin-top: 18px;
+    padding: 14px 0 8px;
+    row-gap: 8px;
+  }
+
+  .dashboard-footer .footer-links {
+    gap: 12px !important;
+  }
+
 }
 
 @media (max-width:576px) {
+
+  .dashboard-footer .footer {
+    align-items: center !important;
+    flex-direction: column;
+    gap: 6px !important;
+    margin-top: 12px;
+    padding: 12px 0 4px;
+    font-size: 12px;
+  }
+
+  .dashboard-footer .footer-copy {
+    line-height: 1.4;
+  }
+
+  .dashboard-footer .footer-links {
+    gap: 14px !important;
+    line-height: 1.4;
+  }
 
   h4 {
     font-size: 18px;

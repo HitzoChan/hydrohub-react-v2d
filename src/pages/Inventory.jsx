@@ -846,7 +846,7 @@ function Inventory() {
         <div className="d-flex">
           <Sidebar />
 
-          <div className="main-content">
+          <div className="main-content inventory-main-content">
             <Header />
 
             <div
@@ -890,7 +890,7 @@ function Inventory() {
         <div className="d-flex">
           <Sidebar />
 
-          <div className="main-content">
+          <div className="main-content inventory-main-content">
             <Header />
 
             <div className="container-fluid py-4">
@@ -937,7 +937,7 @@ function Inventory() {
 
         {/* MAIN CONTENT */}
 
-        <div className="main-content">
+        <div className="main-content inventory-main-content">
           {/* HEADER */}
 
           <Header />

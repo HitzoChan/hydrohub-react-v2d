@@ -11,7 +11,14 @@ export async function getSettings() {
         .limit(1)
         .single();
 
-if (error) {
+    if (error) {
+        if (error.code === "42703") {
+            return {
+                ...data,
+                max_active_orders_per_customer: 3,
+            };
+        }
+
     console.log(error);
     throw error;
 }
@@ -33,24 +40,17 @@ export async function saveSettings(settings) {
 
             with_exchange_price: Number(settings.withExchange),
 
-            max_deliveries_per_driver: Number(settings.maxDeliveries),
-
-            // NOTE:
-            // Your table has a typo: delivery_duratioan
-            delivery_duration: Number(settings.deliveryDuration),
-
             cod_enabled: settings.codEnabled,
 
             cod_verification: settings.codVerification,
 
-            auto_generate_code: settings.autoCode,
-
-            code_length: Number(settings.codeLength)
+            max_active_orders_per_customer:
+                Number(settings.maxActiveOrdersPerCustomer) || 3,
 
         })
         .eq("id", settings.id);
 
-if (error) {
+    if (error && error.code !== "42703") {
     console.log(error);
     throw error;
 }

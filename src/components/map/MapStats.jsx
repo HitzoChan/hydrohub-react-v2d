@@ -48,23 +48,7 @@ function MapStats({ stats }) {
 
                     <div className="map-stat-card h-100">
 
-                        <div
-                            className={`map-stat-icon ${card.bg}`}
-                        >
-
-                            <i
-                                className={`bi ${card.icon} text-${card.color}`}
-                            ></i>
-
-                        </div>
-
                         <div className="map-stat-content">
-
-                            <p className="map-stat-title">
-
-                                {card.title}
-
-                            </p>
 
                             <h2 className="map-stat-value">
 
@@ -79,6 +63,26 @@ function MapStats({ stats }) {
                                 {card.subtitle}
 
                             </span>
+
+                        </div>
+
+                        <div className="map-stat-visual">
+
+                            <div
+                                className={`map-stat-icon ${card.bg}`}
+                            >
+
+                                <i
+                                    className={`bi ${card.icon} text-${card.color}`}
+                                ></i>
+
+                            </div>
+
+                            <p className="map-stat-title">
+
+                                {card.title}
+
+                            </p>
 
                         </div>
 

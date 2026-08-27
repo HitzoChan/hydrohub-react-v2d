@@ -651,3 +651,25 @@
     }
 
 }
+
+@media (max-width: 600px) {
+
+    .inventory-main-content > .footer {
+        justify-content: center !important;
+        margin-top: 18px;
+        padding: 14px 0 8px;
+        text-align: center;
+    }
+
+    .inventory-main-content > .footer .footer-links {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .inventory-main-content > .footer .footer-version {
+        border: 0;
+        padding-right: 0;
+    }
+
+}

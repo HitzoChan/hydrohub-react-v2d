@@ -27,13 +27,13 @@ function Customers() {
 
         {/* Main Content */}
 
-        <div className="main-content">
+        <div className="main-content customers-main-content">
 
           <Header />
 
           {/* Page Header */}
 
-          <div className="d-flex justify-content-between align-items-center mb-4">
+          <div className="customer-page-header d-flex justify-content-between align-items-start mb-4">
 
             <div>
 
@@ -53,7 +53,7 @@ function Customers() {
 
             </div>
 
-            <button className="btn btn-dark">
+            <button className="customer-export-button btn btn-dark">
 
               <i className="bi bi-download me-2"></i>
 
@@ -83,7 +83,9 @@ function Customers() {
             status={status}
           />
 
-          <Footer />
+          <div className="customers-footer">
+            <Footer />
+          </div>
 
         </div>
 

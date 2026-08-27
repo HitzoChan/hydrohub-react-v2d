@@ -12,6 +12,10 @@
   color: #6b7280;
 }
 
+.orders-footer {
+  width: 100%;
+}
+
 /* ==========================================================
    STATISTICS CARDS
 ========================================================== */
@@ -274,6 +278,29 @@
 
   .card-header {
     text-align: center;
+  }
+
+  .orders-footer .footer {
+    justify-content: center !important;
+    align-items: center !important;
+    flex-direction: column;
+    gap: 6px !important;
+    margin-top: 18px;
+    padding: 14px 0 8px;
+    text-align: center;
+    font-size: 12px;
+  }
+
+  .orders-footer .footer-links {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px !important;
+  }
+
+  .orders-footer .footer-version {
+    border: 0;
+    padding-right: 0;
   }
 }
 

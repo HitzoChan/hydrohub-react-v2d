@@ -142,7 +142,7 @@ function Orders() {
 
         <Sidebar />
 
-        <div className="main-content">
+        <div className="main-content orders-main-content">
 
           <Header />
 
@@ -557,7 +557,9 @@ function Orders() {
             onClose={() => setSelectedOrder(null)}
           />
 
-          <Footer />
+          <div className="orders-footer">
+            <Footer />
+          </div>
 
         </div>
 

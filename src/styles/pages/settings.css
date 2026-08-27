@@ -15,6 +15,42 @@ body {
     width: 100%;
 }
 
+.settings-footer {
+    width: 100%;
+}
+
+.security-setting-field {
+    max-width: 520px;
+}
+
+.security-rule-summary {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    padding: 16px;
+    border: 1px solid #dbeafe;
+    border-radius: 12px;
+    background: #eff6ff;
+    color: #1e3a8a;
+}
+
+.security-rule-summary > i {
+    flex: 0 0 auto;
+    font-size: 20px;
+}
+
+.security-rule-summary strong {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.security-rule-summary p {
+    margin: 0;
+    color: #475569;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
 .settings-content {
     display: grid;
     grid-template-columns: 280px minmax(0, 1fr);
@@ -371,6 +407,68 @@ body {
 
     .settings-actions .btn {
         width: 100%;
+    }
+
+}
+
+@media (max-width: 576px) {
+
+    .settings-main-content > .container-fluid {
+        padding-right: 16px !important;
+        padding-left: 16px !important;
+    }
+
+    .settings-layout {
+        flex-direction: column;
+    }
+
+    .settings-layout > .col-auto,
+    .settings-layout > .col {
+        width: 100%;
+        max-width: 100%;
+        flex: 0 0 auto;
+    }
+
+    .settings-menu {
+        position: static;
+        margin-bottom: 0;
+    }
+
+    .menu-item {
+        padding: 13px 16px;
+    }
+
+    .settings-main-content .card-body {
+        padding: 16px;
+    }
+
+    .settings-main-content .card-body.d-flex {
+        align-items: stretch !important;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .settings-footer .footer {
+        justify-content: center !important;
+        align-items: center !important;
+        flex-direction: column;
+        gap: 6px !important;
+        margin-top: 18px;
+        padding: 14px 0 8px;
+        text-align: center;
+        font-size: 12px;
+    }
+
+    .settings-footer .footer-links {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 12px !important;
+    }
+
+    .settings-footer .footer-version {
+        border: 0;
+        padding-right: 0;
     }
 
 }

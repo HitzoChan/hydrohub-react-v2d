@@ -7,12 +7,16 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Orders from "./pages/Orders";
+import Reservations from "./pages/Reservations";
 import Deliveries from "./pages/Deliveries";
 import Employees from "./pages/Employees";
 import Customers from "./pages/Customers";
 import MapMonitoring from "./pages/MapMonitoring";
 import Messaging from "./pages/Messaging";
 import Inventory from "./pages/Inventory";
+import Expenses from "./pages/Expenses";
+import Feedback from "./pages/Feedback";
+import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
 
 // ============================================================
@@ -28,6 +32,7 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 function NotFound() {
     return (
         <div className="container py-5 text-center">
+
             <h1 className="display-5 fw-bold">
                 404
             </h1>
@@ -35,6 +40,7 @@ function NotFound() {
             <p className="text-muted">
                 The page you're looking for doesn't exist.
             </p>
+
         </div>
     );
 }
@@ -61,6 +67,7 @@ function App() {
                 }
             />
 
+
             {/* ==================================================
                 LOGIN
             ================================================== */}
@@ -69,6 +76,7 @@ function App() {
                 path="/login"
                 element={<Login />}
             />
+
 
             {/* ==================================================
                 DASHBOARD
@@ -83,6 +91,7 @@ function App() {
                 }
             />
 
+
             {/* ==================================================
                 ORDERS
             ================================================== */}
@@ -95,6 +104,21 @@ function App() {
                     </ProtectedRoute>
                 }
             />
+
+
+            {/* ==================================================
+                RESERVATIONS
+            ================================================== */}
+
+            <Route
+                path="/reservations"
+                element={
+                    <ProtectedRoute>
+                        <Reservations />
+                    </ProtectedRoute>
+                }
+            />
+
 
             {/* ==================================================
                 DELIVERIES
@@ -109,6 +133,7 @@ function App() {
                 }
             />
 
+
             {/* ==================================================
                 CUSTOMERS
             ================================================== */}
@@ -121,6 +146,7 @@ function App() {
                     </ProtectedRoute>
                 }
             />
+
 
             {/* ==================================================
                 INVENTORY
@@ -135,6 +161,49 @@ function App() {
                 }
             />
 
+
+            {/* ==================================================
+                EXPENSES
+            ================================================== */}
+
+            <Route
+                path="/expenses"
+                element={
+                    <ProtectedRoute>
+                        <Expenses />
+                    </ProtectedRoute>
+                }
+            />
+
+
+            {/* ==================================================
+                FEEDBACK
+            ================================================== */}
+
+            <Route
+                path="/feedback"
+                element={
+                    <ProtectedRoute>
+                        <Feedback />
+                    </ProtectedRoute>
+                }
+            />
+
+
+            {/* ==================================================
+                REPORTS
+            ================================================== */}
+
+            <Route
+                path="/reports"
+                element={
+                    <ProtectedRoute>
+                        <Reports />
+                    </ProtectedRoute>
+                }
+            />
+
+
             {/* ==================================================
                 EMPLOYEES
             ================================================== */}
@@ -147,6 +216,7 @@ function App() {
                     </ProtectedRoute>
                 }
             />
+
 
             {/* ==================================================
                 MAP MONITORING
@@ -161,6 +231,7 @@ function App() {
                 }
             />
 
+
             {/* ==================================================
                 MESSAGING
             ================================================== */}
@@ -174,6 +245,7 @@ function App() {
                 }
             />
 
+
             {/* ==================================================
                 SETTINGS
             ================================================== */}
@@ -186,6 +258,7 @@ function App() {
                     </ProtectedRoute>
                 }
             />
+
 
             {/* ==================================================
                 404

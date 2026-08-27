@@ -218,6 +218,71 @@
 
 }
 
+@media (max-width:768px){
+
+    .card-header{
+
+        padding:16px 18px;
+
+    }
+
+    .card-body{
+        padding:18px;
+    }
+
+    .card-footer{
+        padding:14px 18px;
+    }
+
+    .stat-card{
+        gap:12px;
+        padding:18px;
+    }
+
+    .stat-value{
+        font-size:28px;
+    }
+
+    .stat-icon{
+        width:52px;
+        height:52px;
+        border-radius:14px;
+        font-size:23px;
+    }
+
+}
+
+@media (max-width:576px){
+
+    .card{
+
+        max-width:100%;
+
+        border-radius:14px;
+
+        overflow-wrap:break-word;
+
+    }
+
+    .card-header{
+        padding:14px 16px;
+    }
+
+    .card-body{
+        padding:16px;
+    }
+
+    .stat-card{
+        min-height:0;
+        padding:16px;
+    }
+
+    .stat-value{
+        font-size:25px;
+    }
+
+}
+
 .bg-danger{
 
     background:var(--danger);

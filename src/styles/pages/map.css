@@ -92,6 +92,14 @@
 
 .map-stat-card{
 
+    display:flex;
+
+    align-items:flex-end;
+
+    justify-content:space-between;
+
+    gap:16px;
+
     background:var(--card-bg);
 
     border:1px solid var(--border);
@@ -186,6 +194,38 @@
 
     font-size:22px;
 
+    flex:0 0 auto;
+
+}
+
+.map-stat-content{
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:flex-start;
+
+    flex:1;
+
+    min-width:0;
+
+}
+
+.map-stat-visual{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    min-width:0;
+
+    text-align:center;
+
 }
 
 .drivers .map-stat-icon{
@@ -222,7 +262,7 @@
 
 .map-stat-title{
 
-    margin-top:14px;
+    margin:8px 0 0;
 
     font-size:14px;
 
@@ -234,7 +274,7 @@
 
 .map-stat-value{
 
-    margin:8px 0;
+    margin:0;
 
     font-size:42px;
 
@@ -247,6 +287,8 @@
 }
 
 .map-stat-subtitle{
+
+    margin-top:8px;
 
     font-size:13px;
 
@@ -489,6 +531,39 @@
 .active-deliveries-card{
 
     height:100%;
+
+}
+
+.active-deliveries-card .card-footer > div{
+
+    gap:12px;
+
+}
+
+.active-deliveries-card .pagination{
+
+    display:flex;
+
+    flex-wrap:nowrap;
+
+    margin:0;
+
+}
+
+.active-deliveries-card .page-link{
+
+    min-width:38px;
+
+    white-space:nowrap;
+
+    text-align:center;
+
+}
+
+.active-deliveries-card .page-item:first-child .page-link,
+.active-deliveries-card .page-item:last-child .page-link{
+
+    min-width:72px;
 
 }
 
@@ -1294,6 +1369,114 @@
 
 @media (max-width:576px){
 
+    .map-card{
+
+        border-radius:14px;
+
+    }
+
+    .map-card-header{
+
+        padding:14px 16px;
+
+    }
+
+    .map-card-header > div{
+
+        gap:10px;
+
+    }
+
+    .map-card-header h5{
+
+        font-size:20px;
+
+        line-height:1.15;
+
+    }
+
+    .map-card-header h5 i{
+
+        margin-right:6px !important;
+
+    }
+
+    .map-card-header small{
+
+        margin-top:3px;
+
+        font-size:12px;
+
+        line-height:1.35;
+
+    }
+
+    .live-badge{
+
+        display:flex;
+
+        align-items:center;
+
+        gap:5px;
+
+        flex:0 0 auto;
+
+        font-size:11px;
+
+        white-space:nowrap;
+
+    }
+
+    .map-stat-card{
+
+        height:auto;
+
+        min-height:0;
+
+        padding:12px;
+
+        border-radius:14px;
+
+        gap:12px;
+
+    }
+
+    .map-stat-icon{
+
+        width:44px;
+
+        height:44px;
+
+        border-radius:12px;
+
+        font-size:19px;
+
+    }
+
+    .map-stat-title{
+
+        margin:6px 0 0;
+
+        font-size:13px;
+
+    }
+
+    .map-stat-value{
+
+        margin:5px 0;
+
+        font-size:30px;
+
+    }
+
+    .map-stat-subtitle{
+
+        margin-top:6px;
+
+        font-size:12px;
+
+    }
+
     .delivery-map{
 
         height:260px;
@@ -1310,6 +1493,27 @@
 
     }
 
+    .active-deliveries-card .card-footer > div{
+
+        align-items:flex-start !important;
+
+        flex-direction:column;
+
+    }
+
+    .active-deliveries-card .card-footer nav,
+    .active-deliveries-card .pagination{
+
+        width:100%;
+
+    }
+
+    .active-deliveries-card .pagination{
+
+        justify-content:flex-start;
+
+    }
+
     .delivery-avatar{
 
         margin-bottom:10px;
@@ -1319,6 +1523,50 @@
     .map-legend{
 
         gap:14px;
+
+    }
+
+}
+
+@media (max-width:576px){
+
+    .map-monitoring-footer .footer{
+
+        justify-content:center !important;
+
+        align-items:center !important;
+
+        flex-direction:column;
+
+        gap:6px !important;
+
+        margin-top:18px;
+
+        padding:14px 0 8px;
+
+        text-align:center;
+
+        font-size:12px;
+
+    }
+
+    .map-monitoring-footer .footer-links{
+
+        width:100%;
+
+        justify-content:center;
+
+        flex-wrap:wrap;
+
+        gap:12px !important;
+
+    }
+
+    .map-monitoring-footer .footer-version{
+
+        border:0;
+
+        padding-right:0;
 
     }
 

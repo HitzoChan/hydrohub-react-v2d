@@ -2138,6 +2138,38 @@
         font-size:18px;
     }
 
+    .messaging-layout{
+
+        height:auto;
+
+    }
+
+    .messaging-footer{
+
+        margin-top:18px;
+
+    }
+
+    .messaging-footer .footer{
+
+        justify-content:center !important;
+
+        padding:14px 0 8px;
+
+        text-align:center;
+
+    }
+
+    .messaging-footer .footer-links{
+
+        width:100%;
+
+        justify-content:center;
+
+        flex-wrap:wrap;
+
+    }
+
 }
 
 @media (max-width:576px){

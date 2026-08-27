@@ -1,10 +1,9 @@
 import {
     House,
     Droplet,
-    Truck,
     CreditCard,
-    People,
-    PersonCircle
+    PersonCircle,
+    ShieldLock
 } from "react-bootstrap-icons";
 
 export default function SettingsMenu({
@@ -27,21 +26,15 @@ export default function SettingsMenu({
         },
 
         {
-            id: "delivery",
-            label: "Delivery",
-            icon: <Truck size={18} />
+            id: "security",
+            label: "Security",
+            icon: <ShieldLock size={18} />
         },
 
         {
             id: "payment",
             label: "Payment",
             icon: <CreditCard size={18} />
-        },
-
-        {
-            id: "employee",
-            label: "Employee",
-            icon: <People size={18} />
         },
 
         {

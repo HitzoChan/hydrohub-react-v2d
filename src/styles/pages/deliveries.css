@@ -31,6 +31,10 @@
     margin-left: auto;
 }
 
+.deliveries-footer {
+    width: 100%;
+}
+
 /* ========================================
    STATISTICS CARDS
 ======================================== */
@@ -505,6 +509,33 @@
 
 @media(max-width:768px){
 
+    .page-header > div:first-child > div {
+        align-items: stretch !important;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .page-header > div:first-child > div > div:first-child {
+        min-width: 0;
+    }
+
+    .page-header > div:first-child > div > div:last-child {
+        width: 100%;
+        justify-content: flex-start;
+        margin-left: 0 !important;
+    }
+
+    .page-header h2 {
+        font-size: 28px;
+        line-height: 1.15;
+    }
+
+    .page-header p {
+        max-width: 28rem;
+        font-size: 15px;
+        line-height: 1.5;
+    }
+
     .page-header{
 
         flex-direction:column;
@@ -528,6 +559,249 @@
     .form-select{
 
         width:100% !important;
+
+    }
+
+}
+
+@media(max-width:576px){
+
+    .deliveries-footer .footer {
+
+        justify-content:center !important;
+
+        align-items:center !important;
+
+        flex-direction:column;
+
+        gap:6px !important;
+
+        margin-top:18px;
+
+        padding:14px 0 8px;
+
+        text-align:center;
+
+        font-size:12px;
+
+    }
+
+    .deliveries-footer .footer-links {
+
+        width:100%;
+
+        justify-content:center;
+
+        flex-wrap:wrap;
+
+        gap:12px !important;
+
+    }
+
+    .deliveries-footer .footer-version {
+
+        border:0;
+
+        padding-right:0;
+
+    }
+
+    .delivery-page-header > div:first-child > div{
+
+        align-items:flex-start !important;
+
+        flex-direction:row;
+
+        gap:12px;
+
+    }
+
+    .delivery-page-header > div:first-child > div > div:first-child{
+
+        flex:1;
+
+    }
+
+    .delivery-page-header > div:first-child > div > div:last-child{
+
+        width:auto;
+
+        flex:0 0 auto;
+
+        margin-left:0 !important;
+
+    }
+
+    .page-header.delivery-page-header .btn{
+
+        min-width:96px;
+
+        padding:8px 12px;
+
+        font-size:14px;
+
+    }
+
+    .page-header > div:first-child > div{
+
+        align-items:flex-start !important;
+
+        flex-direction:column;
+
+        gap:10px;
+
+    }
+
+    .page-header > div:first-child > div > div:first-child{
+
+        flex:1;
+
+    }
+
+    .page-header > div:first-child > div > div:last-child{
+
+        width:100%;
+
+        flex:0 0 auto;
+
+        flex-direction:row;
+
+        align-items:center;
+
+        justify-content:flex-end;
+
+        gap:8px !important;
+
+    }
+
+    .page-header h2{
+
+        font-size:24px;
+
+        line-height:1.15;
+
+    }
+
+    .page-header h2 i{
+
+        margin-right:6px !important;
+
+    }
+
+    .page-header p{
+
+        font-size:13px;
+
+        line-height:1.4;
+
+    }
+
+    .page-header > div:first-child > div > div:last-child .text-end{
+
+        line-height:1.15;
+
+    }
+
+    .page-header > div:first-child > div > div:last-child .text-end small{
+
+        font-size:11px;
+
+    }
+
+    .page-header > div:first-child > div > div:last-child .text-end strong{
+
+        font-size:15px;
+
+    }
+
+    .page-header .btn{
+
+        width:auto;
+
+        min-width:92px;
+
+        padding:8px 12px;
+
+        font-size:14px;
+
+    }
+
+    .page-header .btn i{
+
+        margin-right:5px !important;
+
+    }
+
+}
+
+@media(max-width:576px){
+
+    .page-header.delivery-page-header > div:first-child > div{
+
+        align-items:flex-start !important;
+
+        flex-direction:row;
+
+        gap:12px;
+
+    }
+
+    .page-header.delivery-page-header > div:first-child > div > div:first-child{
+
+        flex:1;
+
+        min-width:0;
+
+        text-align:left;
+
+    }
+
+    .page-header.delivery-page-header h2,
+    .page-header.delivery-page-header p{
+
+        text-align:left;
+
+    }
+
+    .page-header.delivery-page-header > div:first-child > div > div:last-child{
+
+        width:auto;
+
+        flex:0 0 auto;
+
+        flex-direction:row;
+
+        align-items:flex-start;
+
+        justify-content:flex-end;
+
+    }
+
+    .page-header.delivery-page-header .btn{
+
+        display:inline-flex;
+
+        align-items:center;
+
+        justify-content:center;
+
+        width:auto;
+
+        min-width:82px;
+
+        height:46px;
+
+        padding:6px 12px;
+
+        font-size:13px;
+
+        white-space:nowrap;
+
+    }
+
+    .page-header.delivery-page-header .btn i{
+
+        margin-right:4px !important;
 
     }
 

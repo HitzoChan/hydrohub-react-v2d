@@ -130,7 +130,7 @@ async function handleDeactivateEmployee() {
       {/* Drawer */}
 
       <div
-        className="position-fixed top-0 end-0 bg-white shadow-lg"
+        className="employee-drawer position-fixed top-0 end-0 bg-white shadow-lg"
         style={{
           width: "470px",
           height: "100vh",

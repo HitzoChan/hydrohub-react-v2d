@@ -105,7 +105,9 @@ setDeliveryStats(deliveries);
               </div>
             </div>
 
-            <Footer />
+            <div className="dashboard-footer">
+              <Footer />
+            </div>
           </div>
         </div>
       </div>
@@ -184,7 +186,9 @@ setDeliveryStats(deliveries);
 
           <RecentTransactions />
 
-          <Footer />
+          <div className="dashboard-footer">
+            <Footer />
+          </div>
         </div>
       </div>
     </div>

@@ -8,6 +8,28 @@
   color: #1f2937;
 }
 
+.customer-page-header {
+  gap: 16px;
+}
+
+.customer-page-header > div {
+  min-width: 0;
+}
+
+.customer-page-header .page-title {
+  margin-bottom: 6px;
+  line-height: 1.2;
+}
+
+.customer-page-header > .customer-export-button {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.customers-footer {
+  width: 100%;
+}
+
 /* ======================================================
    STATISTICS CARDS
 ====================================================== */
@@ -156,12 +178,53 @@
 
 @media (max-width: 768px) {
 
+  .customer-page-header {
+    align-items: flex-start !important;
+    gap: 12px;
+  }
+
+  .customer-page-header .page-title {
+    font-size: 1.5rem;
+  }
+
+  .customer-page-header > div {
+    flex: 1;
+  }
+
+  .customer-page-header > .customer-export-button {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+
   .page-title {
     font-size: 1.5rem;
   }
 
   .stats-value {
     font-size: 24px;
+  }
+
+  .customers-footer .footer {
+    justify-content: center !important;
+    align-items: center !important;
+    flex-direction: column;
+    gap: 6px !important;
+    margin-top: 18px;
+    padding: 14px 0 8px;
+    text-align: center;
+    font-size: 12px;
+  }
+
+  .customers-footer .footer-links {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px !important;
+  }
+
+  .customers-footer .footer-version {
+    border: 0;
+    padding-right: 0;
   }
 
   .custom-table {

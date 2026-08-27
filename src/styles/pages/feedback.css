@@ -1,0 +1,1553 @@
+/* =========================================================
+   HYDROHUB - FEEDBACK & REVIEWS
+   ========================================================= */
+
+
+/* =========================================================
+   PAGE
+   ========================================================= */
+
+.feedback-page {
+    width: 100%;
+    padding: 24px;
+}
+
+.feedback-footer {
+    width: 100%;
+}
+
+
+/* =========================================================
+   PAGE HEADER
+   ========================================================= */
+
+.feedback-page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 24px;
+}
+
+.feedback-page-header h1 {
+    margin: 0;
+
+    color: #111827;
+
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.feedback-page-header p {
+    margin: 6px 0 0;
+
+    color: #6b7280;
+
+    font-size: 15px;
+}
+
+.feedback-main-content .feedback-page-header > div:first-child > div {
+    min-width: 0;
+}
+
+
+/* =========================================================
+   REFRESH BUTTON
+   ========================================================= */
+
+.feedback-refresh-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    min-height: 42px;
+
+    padding: 0 18px;
+
+    border: 0;
+    border-radius: 9px;
+
+    background: #2563eb;
+    color: #ffffff;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.feedback-refresh-button:hover:not(:disabled) {
+    background: #1d4ed8;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 5px 12px rgba(37, 99, 235, 0.2);
+}
+
+.feedback-refresh-button:disabled {
+    opacity: 0.65;
+
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+.feedback-error {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    margin-bottom: 20px;
+
+    padding: 14px 16px;
+
+    border: 1px solid #fecaca;
+    border-radius: 10px;
+
+    background: #fef2f2;
+    color: #991b1b;
+
+    font-size: 14px;
+}
+
+.feedback-error > i {
+    font-size: 18px;
+}
+
+.feedback-error span {
+    flex: 1;
+}
+
+.feedback-error button {
+    border: 1px solid #dc2626;
+    border-radius: 7px;
+
+    background: transparent;
+    color: #b91c1c;
+
+    padding: 7px 12px;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.feedback-error button:hover {
+    background: #fee2e2;
+}
+
+
+/* =========================================================
+   STAT CARDS
+   ========================================================= */
+
+.feedback-stat-card {
+    display: flex;
+    align-items: center;
+
+    gap: 16px;
+
+    min-height: 125px;
+
+    padding: 20px;
+
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+
+    box-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.03);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.feedback-stat-card:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 20px rgba(15, 23, 42, 0.08);
+}
+
+
+/* =========================================================
+   STAT ICON
+   ========================================================= */
+
+.feedback-stat-icon {
+    flex: 0 0 52px;
+
+    width: 52px;
+    height: 52px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    font-size: 21px;
+}
+
+.feedback-rating-icon {
+    background: #fff7d6;
+    color: #d97706;
+}
+
+.feedback-reviews-icon {
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.feedback-five-star-icon {
+    background: #fef3c7;
+    color: #ca8a04;
+}
+
+.feedback-satisfaction-icon {
+    background: #ecfdf5;
+    color: #059669;
+}
+
+
+/* =========================================================
+   STAT CONTENT
+   ========================================================= */
+
+.feedback-stat-content {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.feedback-stat-label {
+    margin-bottom: 4px;
+
+    color: #6b7280;
+
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.feedback-stat-content h3 {
+    margin: 0;
+
+    color: #111827;
+
+    font-size: 28px;
+    line-height: 1.2;
+    font-weight: 700;
+}
+
+.feedback-stat-content small {
+    margin-top: 4px;
+
+    color: #9ca3af;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   STAT STARS
+   ========================================================= */
+
+.feedback-stat-stars {
+    display: flex;
+
+    gap: 2px;
+
+    margin-top: 5px;
+
+    color: #f59e0b;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   FEEDBACK PANEL
+   ========================================================= */
+
+.feedback-panel {
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 12px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.feedback-panel .card-header {
+    padding: 20px 20px 10px;
+}
+
+.feedback-panel .card-body {
+    padding: 20px;
+}
+
+
+/* =========================================================
+   RATING AVERAGE
+   ========================================================= */
+
+.feedback-average {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding: 10px 0 24px;
+
+    text-align: center;
+}
+
+.feedback-average h2 {
+    margin: 0 0 5px;
+
+    color: #111827;
+
+    font-size: 42px;
+    line-height: 1;
+
+    font-weight: 700;
+}
+
+.feedback-average span {
+    margin-top: 7px;
+
+    color: #6b7280;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   STARS
+   ========================================================= */
+
+.feedback-stars {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 1px;
+
+    color: #cbd5e1;
+
+    white-space: nowrap;
+}
+
+.feedback-stars span {
+    display: inline-block;
+
+    color: #cbd5e1;
+
+    font-size: 18px;
+    line-height: 1;
+
+    transition:
+        color 0.15s ease;
+}
+
+.feedback-stars span.star-filled {
+    color: #f59e0b;
+}
+
+.feedback-stars span.star-empty {
+    color: #cbd5e1;
+}
+
+
+/*
+   Keep compatibility with any older star elements
+   that may still exist elsewhere in Feedback.
+*/
+
+.feedback-stars i {
+    font-size: 15px;
+}
+
+.feedback-stars i.filled {
+    color: #f59e0b;
+}
+
+
+/* =========================================================
+   RATING BARS
+   ========================================================= */
+
+.rating-bars {
+    display: flex;
+    flex-direction: column;
+
+    gap: 13px;
+}
+
+.rating-bar-row {
+    display: grid;
+
+    grid-template-columns:
+        42px
+        minmax(0, 1fr)
+        36px;
+
+    align-items: center;
+
+    gap: 10px;
+}
+
+.rating-label {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 4px;
+
+    color: #374151;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.rating-label i {
+    color: #f59e0b;
+
+    font-size: 11px;
+}
+
+.rating-progress {
+    width: 100%;
+    height: 9px;
+
+    overflow: hidden;
+
+    border-radius: 999px;
+
+    background: #eef2f7;
+}
+
+.rating-progress-fill {
+    height: 100%;
+
+    border-radius: inherit;
+
+    background: #f59e0b;
+
+    transition:
+        width 0.4s ease;
+}
+
+.rating-count {
+    color: #6b7280;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    text-align: right;
+}
+
+
+/* =========================================================
+   FILTERS
+   ========================================================= */
+
+.feedback-filters {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    margin-bottom: 18px;
+}
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+.feedback-search {
+    position: relative;
+
+    flex: 1;
+
+    min-width: 200px;
+}
+
+.feedback-search > i {
+    position: absolute;
+
+    left: 14px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    color: #9ca3af;
+
+    font-size: 15px;
+
+    pointer-events: none;
+}
+
+.feedback-search input {
+    width: 100%;
+    height: 42px;
+
+    padding:
+        0 42px
+        0 40px;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 8px;
+
+    outline: none;
+
+    background: #ffffff;
+
+    color: #111827;
+
+    font-size: 14px;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.feedback-search input::placeholder {
+    color: #9ca3af;
+}
+
+.feedback-search input:focus {
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+
+/* =========================================================
+   SEARCH CLEAR
+   ========================================================= */
+
+.feedback-search-clear {
+    position: absolute;
+
+    right: 11px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 26px;
+    height: 26px;
+
+    border: 0;
+
+    background: transparent;
+
+    color: #9ca3af;
+
+    cursor: pointer;
+}
+
+.feedback-search-clear:hover {
+    color: #4b5563;
+}
+
+
+/* =========================================================
+   RATING SELECT
+   ========================================================= */
+
+.feedback-rating-filter {
+    height: 42px;
+
+    min-width: 145px;
+
+    padding: 0 35px 0 12px;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 8px;
+
+    background: #ffffff;
+
+    color: #374151;
+
+    font-size: 14px;
+
+    outline: none;
+
+    cursor: pointer;
+}
+
+.feedback-rating-filter:focus {
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+.feedback-reset-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    height: 42px;
+
+    padding: 0 13px;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 8px;
+
+    background: #ffffff;
+
+    color: #4b5563;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.feedback-reset-button:hover {
+    background: #f9fafb;
+
+    border-color: #9ca3af;
+}
+
+
+/* =========================================================
+   REVIEW LIST
+   ========================================================= */
+
+.feedback-list {
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* =========================================================
+   COMPACT REVIEW ITEM
+   ========================================================= */
+
+.feedback-review-item {
+    width: 100%;
+
+    background: #ffffff;
+
+    border-bottom: 1px solid #eef0f3;
+}
+
+.feedback-review-item:last-child {
+    border-bottom: 0;
+}
+
+
+/* =========================================================
+   COMPACT REVIEW HEADER
+   ========================================================= */
+
+.feedback-review-header {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 14px;
+
+    margin: 0;
+
+    padding: 14px 8px;
+
+    border: 0;
+
+    border-radius: 8px;
+
+    background: transparent;
+
+    color: inherit;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease;
+}
+
+.feedback-review-header:hover {
+    background: #f8fafc;
+}
+
+.feedback-review-header:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+}
+
+
+/* =========================================================
+   CUSTOMER INFORMATION
+   ========================================================= */
+
+.feedback-customer-info {
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+
+    min-width: 0;
+
+    flex: 1;
+}
+
+.feedback-avatar {
+    width: 40px;
+    height: 40px;
+
+    min-width: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #eff6ff;
+
+    color: #2563eb;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+}
+
+.feedback-customer-details {
+    min-width: 0;
+}
+
+.feedback-customer-name {
+    overflow: hidden;
+
+    color: #111827;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    line-height: 1.3;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.feedback-review-date {
+    margin-top: 3px;
+
+    color: #94a3b8;
+
+    font-size: 12px;
+
+    line-height: 1.3;
+}
+
+
+/* =========================================================
+   HEADER RIGHT
+   ========================================================= */
+
+.feedback-header-right {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    flex-shrink: 0;
+}
+
+.feedback-header-right .feedback-star-rating {
+    display: flex;
+    align-items: center;
+}
+
+.feedback-header-right .feedback-stars {
+    gap: 1px;
+}
+
+.feedback-header-right .feedback-stars span {
+    font-size: 18px;
+}
+
+
+/* =========================================================
+   EXPAND ICON
+   ========================================================= */
+
+.feedback-expand-icon {
+    width: 28px;
+    height: 28px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 6px;
+
+    color: #64748b;
+
+    transition:
+        color 0.2s ease,
+        background 0.2s ease;
+}
+
+.feedback-review-header:hover
+.feedback-expand-icon {
+    background: #eff6ff;
+
+    color: #2563eb;
+}
+
+
+/* =========================================================
+   EXPANDED REVIEW DETAILS
+   ========================================================= */
+
+.feedback-review-details {
+    padding:
+        0
+        8px
+        16px
+        59px;
+
+    animation:
+        feedback-expand
+        0.18s
+        ease-out;
+}
+
+@keyframes feedback-expand {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(-4px);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0);
+    }
+
+}
+
+
+/* =========================================================
+   RATING SUMMARY
+   ========================================================= */
+
+.feedback-rating-summary {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            2,
+            minmax(0, 1fr)
+        );
+
+    gap: 10px;
+
+    margin-bottom: 10px;
+}
+
+.feedback-rating-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    min-height: 48px;
+
+    padding: 9px 12px;
+
+    background: #f8fafc;
+
+    border: 1px solid #eef2f7;
+
+    border-radius: 8px;
+}
+
+.feedback-rating-label {
+    color: #475569;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    white-space: nowrap;
+}
+
+.feedback-rating-box .feedback-star-rating {
+    display: flex;
+    align-items: center;
+
+    gap: 6px;
+}
+
+.feedback-rating-box .feedback-stars {
+    gap: 1px;
+}
+
+.feedback-rating-box .feedback-stars span {
+    font-size: 16px;
+}
+
+.feedback-rating-value {
+    color: #334155;
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   COMMENT
+   ========================================================= */
+
+.feedback-comment {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 9px;
+
+    margin-bottom: 10px;
+
+    padding: 10px 12px;
+
+    border-left: 3px solid #2563eb;
+
+    border-radius: 0 7px 7px 0;
+
+    background: #f8fafc;
+}
+
+.feedback-comment svg {
+    flex-shrink: 0;
+
+    margin-top: 2px;
+
+    color: #2563eb;
+}
+
+.feedback-comment p {
+    margin: 0;
+
+    color: #475569;
+
+    font-size: 13px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   FEEDBACK META
+   ========================================================= */
+
+.feedback-meta {
+    display: flex;
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    gap: 18px;
+}
+
+.feedback-meta-item {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 6px;
+
+    color: #64748b;
+
+    font-size: 12px;
+}
+
+.feedback-meta-item svg {
+    flex-shrink: 0;
+
+    color: #64748b;
+}
+
+.feedback-meta-item span {
+    color: #64748b;
+}
+
+.feedback-meta-item strong {
+    color: #334155;
+
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   REVIEW COUNT
+   ========================================================= */
+
+.review-count-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 34px;
+    height: 30px;
+
+    padding: 0 10px;
+
+    border-radius: 7px;
+
+    background: #eff6ff;
+
+    color: #2563eb;
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.feedback-loading {
+    min-height: 240px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 12px;
+
+    color: #6b7280;
+
+    font-size: 14px;
+}
+
+.feedback-spinner {
+    width: 30px;
+    height: 30px;
+
+    border: 3px solid #e5e7eb;
+
+    border-top-color: #2563eb;
+
+    border-radius: 50%;
+
+    animation:
+        feedback-spin
+        0.8s
+        linear
+        infinite;
+}
+
+@keyframes feedback-spin {
+
+    to {
+        transform:
+            rotate(360deg);
+    }
+
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.feedback-empty {
+    min-height: 260px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    padding: 30px;
+
+    text-align: center;
+}
+
+.feedback-empty-icon {
+    width: 58px;
+    height: 58px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 14px;
+
+    border-radius: 50%;
+
+    background: #eff6ff;
+
+    color: #2563eb;
+
+    font-size: 24px;
+}
+
+.feedback-empty h3 {
+    margin: 0;
+
+    color: #111827;
+
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.feedback-empty p {
+    max-width: 420px;
+
+    margin: 7px 0 16px;
+
+    color: #6b7280;
+
+    font-size: 14px;
+
+    line-height: 1.5;
+}
+
+.feedback-empty-reset {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 7px;
+
+    height: 38px;
+
+    padding: 0 14px;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 7px;
+
+    background: #ffffff;
+
+    color: #374151;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.feedback-empty-reset:hover {
+    background: #f9fafb;
+
+    border-color: #9ca3af;
+}
+
+
+/* =========================================================
+   RESPONSIVE - TABLET
+   ========================================================= */
+
+@media (max-width: 1199px) {
+
+    .feedback-page {
+        padding: 20px;
+    }
+
+    .feedback-page-header h1 {
+        font-size: 25px;
+    }
+
+    .feedback-stat-content h3 {
+        font-size: 25px;
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE - SMALL TABLET
+   ========================================================= */
+
+@media (max-width: 991px) {
+
+    .feedback-page-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+    .feedback-refresh-button {
+        align-self: flex-start;
+    }
+
+    .feedback-filters {
+        flex-wrap: wrap;
+    }
+
+    .feedback-search {
+        flex-basis: 100%;
+    }
+
+    .feedback-rating-summary {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE - MOBILE
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+    .feedback-page {
+        padding: 16px;
+    }
+
+    .feedback-page-header h1 {
+        font-size: 22px;
+    }
+
+    .feedback-page-header p {
+        font-size: 14px;
+    }
+
+    .feedback-stat-card {
+        min-height: 105px;
+
+        padding: 16px;
+    }
+
+    .feedback-stat-icon {
+        flex-basis: 44px;
+
+        width: 44px;
+        height: 44px;
+
+        font-size: 18px;
+    }
+
+    .feedback-stat-content h3 {
+        font-size: 23px;
+    }
+
+    .feedback-panel .card-header,
+    .feedback-panel .card-body {
+        padding: 16px;
+    }
+
+    .feedback-average h2 {
+        font-size: 36px;
+    }
+
+
+    /* --------------------------------------------------------
+       COMPACT REVIEW
+       -------------------------------------------------------- */
+
+    .feedback-review-header {
+        gap: 8px;
+
+        padding:
+            12px
+            4px;
+    }
+
+    .feedback-avatar {
+        width: 36px;
+        height: 36px;
+
+        min-width: 36px;
+
+        font-size: 14px;
+    }
+
+    .feedback-customer-name {
+        font-size: 14px;
+    }
+
+    .feedback-review-date {
+        font-size: 11px;
+    }
+
+    .feedback-header-right {
+        gap: 5px;
+    }
+
+    .feedback-header-right .feedback-stars span {
+        font-size: 16px;
+    }
+
+    .feedback-expand-icon {
+        width: 25px;
+        height: 25px;
+    }
+
+    .feedback-review-details {
+        padding:
+            0
+            4px
+            14px
+            4px;
+    }
+
+    .feedback-rating-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .feedback-rating-box {
+        min-height: 46px;
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE - SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 575px) {
+
+    .feedback-page {
+        padding: 12px;
+    }
+
+    .feedback-page-header {
+        margin-bottom: 18px;
+    }
+
+    .feedback-refresh-button {
+        width: 100%;
+    }
+
+    .feedback-filters {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .feedback-search {
+        width: 100%;
+    }
+
+    .feedback-rating-filter,
+    .feedback-reset-button {
+        width: 100%;
+    }
+
+
+    /* --------------------------------------------------------
+       REVIEW HEADER
+       -------------------------------------------------------- */
+
+    .feedback-review-header {
+        padding:
+            12px
+            2px;
+    }
+
+    .feedback-customer-info {
+        gap: 9px;
+    }
+
+    .feedback-avatar {
+        width: 34px;
+        height: 34px;
+
+        min-width: 34px;
+
+        font-size: 13px;
+    }
+
+    .feedback-customer-name {
+        max-width: 150px;
+
+        font-size: 14px;
+    }
+
+    .feedback-header-right {
+        gap: 3px;
+    }
+
+    .feedback-header-right .feedback-stars span {
+        font-size: 15px;
+    }
+
+
+    /* --------------------------------------------------------
+       EXPANDED DETAILS
+       -------------------------------------------------------- */
+
+    .feedback-rating-box {
+        flex-direction: column;
+        align-items: flex-start;
+
+        gap: 6px;
+    }
+
+    .feedback-comment {
+        padding: 9px 10px;
+    }
+
+    .feedback-comment p {
+        font-size: 13px;
+    }
+
+    .feedback-meta {
+        flex-direction: column;
+        align-items: flex-start;
+
+        gap: 8px;
+    }
+
+}
+
+
+/* =========================================================
+   ACCESSIBILITY
+   ========================================================= */
+
+.feedback-review-header:focus:not(:focus-visible) {
+    outline: none;
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .feedback-review-details {
+        animation: none;
+    }
+
+    .feedback-refresh-button,
+    .feedback-stat-card,
+    .feedback-review-header,
+    .feedback-expand-icon {
+        transition: none;
+    }
+
+}
+
+@media (max-width: 575px) {
+
+    .feedback-main-content .feedback-page-header > div:first-child > div {
+        align-items: flex-start !important;
+        flex-direction: row;
+        gap: 12px;
+    }
+
+    .feedback-main-content .feedback-page-header > div:first-child > div > div:first-child {
+        flex: 1;
+        min-width: 0;
+        text-align: left;
+    }
+
+    .feedback-main-content .feedback-page-header > div:first-child > div > div:last-child {
+        width: auto;
+        flex: 0 0 auto;
+        margin-left: 0 !important;
+    }
+
+    .feedback-main-content .feedback-page-header h2 {
+        font-size: 24px;
+        line-height: 1.15;
+        text-align: left;
+    }
+
+    .feedback-main-content .feedback-page-header p {
+        font-size: 13px;
+        line-height: 1.4;
+        text-align: left;
+    }
+
+    .feedback-main-content .feedback-refresh-button {
+        width: auto;
+        min-height: 0;
+        height: 46px;
+        min-width: 82px;
+        padding: 6px 10px;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+
+}
+
+@media (max-width: 575px) {
+
+    .feedback-footer .footer {
+        justify-content: center !important;
+        align-items: center !important;
+        flex-direction: column;
+        gap: 6px !important;
+        margin-top: 18px;
+        padding: 14px 0 8px;
+        text-align: center;
+        font-size: 12px;
+    }
+
+    .feedback-footer .footer-links {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 12px !important;
+    }
+
+    .feedback-footer .footer-version {
+        border: 0;
+        padding-right: 0;
+    }
+
+}

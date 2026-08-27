@@ -93,7 +93,7 @@ useEffect(() => {
         {/* Sidebar */}
         <Sidebar />
 
-        <div className="main-content">
+        <div className="main-content messaging-main-content">
 
           {/* Header */}
           <Header />
@@ -244,7 +244,9 @@ useEffect(() => {
 
           {/* Footer */}
 
-          <Footer />
+          <div className="messaging-footer">
+            <Footer />
+          </div>
 
         </div>
 
