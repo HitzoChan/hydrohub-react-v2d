@@ -6,9 +6,9 @@ export default function ReportHeader() {
                     HYDROHUB BUSINESS INTELLIGENCE
                 </span>
 
-                <h4 className="fw-semibold mb-1">
+                <h1 className="report-header-title mb-1">
                     Executive Sales Dashboard
-                </h4>
+                </h1>
 
                 <p className="text-muted mb-0">
                     Financial and operational insights for your water station.

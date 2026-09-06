@@ -1317,6 +1317,73 @@
 
 @media (max-width:768px){
 
+    .map-stats-grid{
+        --bs-gutter-x:.75rem;
+        --bs-gutter-y:.75rem;
+    }
+
+    .map-stat-col{
+        display:flex;
+    }
+
+    .map-stats-grid .map-stat-card{
+        width:100%;
+        min-height:0;
+        height:auto;
+        display:block;
+        padding:0;
+        border-radius:16px;
+    }
+
+    .map-stats-grid .map-stat-content{
+        width:100%;
+        min-width:0;
+        display:flex;
+        align-items:flex-start;
+        padding:42px 12px 12px;
+    }
+
+    .map-stats-grid .map-stat-value{
+        margin:7px 0 4px;
+        font-size:1.7rem;
+        line-height:1;
+    }
+
+    .map-stats-grid .map-stat-subtitle{
+        font-size:.64rem;
+        line-height:1.35;
+    }
+
+    .map-stats-grid .map-stat-visual{
+        position:static;
+    }
+
+    .map-stats-grid .map-stat-icon{
+        position:absolute;
+        top:12px;
+        right:12px;
+        width:34px;
+        height:34px;
+        border-radius:50%;
+        font-size:.9rem;
+        box-shadow:0 8px 16px rgba(15,23,42,.12), inset 0 1px 0 rgba(255,255,255,.3);
+    }
+
+    .map-stats-grid .map-stat-icon i{
+        font-size:.9rem;
+    }
+
+    .map-stats-grid .map-stat-title{
+        position:absolute;
+        top:20px;
+        left:12px;
+        right:48px;
+        margin:0;
+        font-size:.7rem;
+        line-height:1.25;
+        text-align:left;
+    }
+
     .page-title h2{
 
         font-size:30px;

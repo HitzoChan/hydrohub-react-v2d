@@ -186,13 +186,20 @@
 .dashboard-icon{
     width:60px;
     height:60px;
-    border-radius:16px;
+  border-radius:18px;
 
     display:flex;
     align-items:center;
     justify-content:center;
 
     font-size:24px;
+  box-shadow: 0 8px 16px rgba(15, 23, 42, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.dashboard-metric-card:hover .dashboard-icon {
+  transform: translateY(-2px) rotate(-4deg);
+  box-shadow: 0 11px 20px rgba(15, 23, 42, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.35);
 }
 
 .dashboard-blue{
@@ -200,7 +207,7 @@
 }
 
 .dashboard-blue .dashboard-icon{
-    background:#0D6EFD;
+  background:linear-gradient(145deg, #3185ff, #0762df);
     color:white;
 }
 
@@ -209,7 +216,7 @@
 }
 
 .dashboard-green .dashboard-icon{
-    background:#20C997;
+  background:linear-gradient(145deg, #35d8a7, #0eb889);
     color:white;
 }
 
@@ -218,7 +225,7 @@
 }
 
 .dashboard-yellow .dashboard-icon{
-    background:#FFC107;
+  background:linear-gradient(145deg, #ffd34e, #f2a900);
     color:white;
 }
 
@@ -227,7 +234,7 @@
 }
 
 .dashboard-purple .dashboard-icon{
-    background:#6F42C1;
+  background:linear-gradient(145deg, #895bdd, #6335b9);
     color:white;
 }
 
@@ -435,6 +442,72 @@
 }
 
 @media (max-width:768px) {
+
+  .dashboard-metrics {
+    --bs-gutter-x: 0.75rem;
+    --bs-gutter-y: 0.75rem;
+  }
+
+  .dashboard-metric-col {
+    display: flex;
+  }
+
+  .dashboard-metric-card {
+    width: 100%;
+    min-height: 164px;
+    padding: 0;
+    border-radius: 16px;
+  }
+
+  .dashboard-metric-card .card-body {
+    min-width: 0;
+    padding: 14px 12px;
+    display: block !important;
+    position: relative;
+  }
+
+  .dashboard-metric-card .dashboard-content {
+    min-width: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .dashboard-metric-card small {
+    max-width: 100%;
+    min-height: 2.5em;
+    padding-right: 36px;
+    font-size: 0.7rem;
+    line-height: 1.25;
+    text-align: left;
+  }
+
+  .dashboard-metric-card h3 {
+    margin: 7px 0 4px;
+    color: #111827;
+    font-size: 1.7rem;
+    line-height: 1;
+  }
+
+  .dashboard-metric-card .dashboard-subtitle {
+    width: 100%;
+    min-height: 3.9em;
+    color: #6b7280;
+    font-size: 0.64rem;
+    line-height: 1.35;
+    text-align: left;
+  }
+
+  .dashboard-metric-card .dashboard-icon {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    font-size: 0.9rem;
+  }
 
   .topbar {
     align-items: center !important;

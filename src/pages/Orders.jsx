@@ -167,9 +167,9 @@ function Orders() {
               STATISTICS
           ============================ */}
 
-          <div className="row g-4 mb-4">
+          <div className="row g-4 mb-4 orders-stat-grid">
 
-            <div className="col-xl-3 col-md-6">
+            <div className="col-6 col-xl-3 orders-stat-col">
 
               <div className="stat-card card-total">
 
@@ -199,7 +199,7 @@ function Orders() {
 
             </div>
 
-            <div className="col-xl-3 col-md-6">
+            <div className="col-6 col-xl-3 orders-stat-col">
 
               <div className="stat-card card-pending">
 
@@ -229,7 +229,7 @@ function Orders() {
 
             </div>
 
-            <div className="col-xl-3 col-md-6">
+            <div className="col-6 col-xl-3 orders-stat-col">
 
               <div className="stat-card card-ready">
 
@@ -259,7 +259,7 @@ function Orders() {
 
             </div>
 
-            <div className="col-xl-3 col-md-6">
+            <div className="col-6 col-xl-3 orders-stat-col">
 
               <div className="stat-card card-delivered">
 

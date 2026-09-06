@@ -339,11 +339,11 @@ export default function Employees() {
                 STATISTICS
             ============================ */}
 
-            <div className="row g-4 mb-4">
+            <div className="row g-4 mb-4 employee-stat-grid">
 
-              <div className="col-xl-3 col-md-6">
+              <div className="col-6 col-xl-3 employee-stat-col">
 
-                <div className="stat-card">
+                <div className="stat-card employee-stat-card">
 
                   <div className="d-flex justify-content-between">
 
@@ -369,9 +369,9 @@ export default function Employees() {
 
               </div>
 
-              <div className="col-xl-3 col-md-6">
+              <div className="col-6 col-xl-3 employee-stat-col">
 
-                <div className="stat-card">
+                <div className="stat-card employee-stat-card">
 
                   <div className="d-flex justify-content-between">
 
@@ -397,9 +397,9 @@ export default function Employees() {
 
               </div>
 
-              <div className="col-xl-3 col-md-6">
+              <div className="col-6 col-xl-3 employee-stat-col">
 
-                <div className="stat-card">
+                <div className="stat-card employee-stat-card">
 
                   <div className="d-flex justify-content-between">
 
@@ -425,9 +425,9 @@ export default function Employees() {
 
               </div>
 
-              <div className="col-xl-3 col-md-6">
+              <div className="col-6 col-xl-3 employee-stat-col">
 
-                <div className="stat-card">
+                <div className="stat-card employee-stat-card">
 
                   <div className="d-flex justify-content-between">
 

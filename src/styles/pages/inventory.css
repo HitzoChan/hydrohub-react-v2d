@@ -134,6 +134,8 @@
 
     min-height: 120px;
 
+    overflow: hidden;
+
     box-sizing: border-box;
 
     box-shadow:
@@ -218,6 +220,41 @@
 .inventory-stat-top i,
 .inventory-stat-card.danger h3 {
     color: #dc2626;
+}
+
+@media (max-width: 600px) {
+    .inventory-transaction-stats {
+        --bs-gutter-x: 0.75rem;
+        --bs-gutter-y: 0.75rem;
+    }
+
+    .inventory-transaction-stat-col {
+        display: flex;
+    }
+
+    .inventory-transaction-stat {
+        width: 100%;
+        min-height: 0;
+        padding: 14px 12px !important;
+        border-radius: 12px;
+    }
+
+    .inventory-transaction-stat .small {
+        display: block;
+        margin-bottom: 6px !important;
+        font-size: 0.7rem;
+        line-height: 1.25;
+    }
+
+    .inventory-transaction-stat .fs-4 {
+        font-size: 1.55rem !important;
+        line-height: 1;
+    }
+
+    .inventory-transaction-stat > small {
+        font-size: 0.65rem;
+        line-height: 1.25;
+    }
 }
 
 
@@ -653,6 +690,97 @@
 }
 
 @media (max-width: 600px) {
+
+    .inventory-issue-summary {
+        --bs-gutter-x: .75rem;
+        --bs-gutter-y: .75rem;
+    }
+
+    .inventory-issue-col {
+        display: flex;
+    }
+
+    .inventory-issue-card {
+        width: 100%;
+        padding: 14px !important;
+        border-radius: 12px;
+    }
+
+    .inventory-issue-card .small {
+        font-size: .72rem;
+        line-height: 1.3;
+    }
+
+    .inventory-issue-card .fs-4 {
+        margin-top: 8px !important;
+        font-size: 1.45rem !important;
+        line-height: 1;
+    }
+
+    .inventory-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .inventory-stat-card {
+        min-height: 0;
+        padding: 20px 12px 12px;
+        border-radius: 16px;
+    }
+
+    .inventory-stat-top {
+        display: block;
+        position: static;
+    }
+
+    .inventory-stat-top span {
+        display: block;
+        min-height: 2.5em;
+        padding-right: 34px;
+        font-size: .7rem;
+        line-height: 1.25;
+    }
+
+    .inventory-stat-top i {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: .9rem;
+        background: #eef5ff;
+        box-shadow: 0 8px 16px rgba(15, 23, 42, .12);
+    }
+
+    .inventory-stat-card.success .inventory-stat-top i {
+        background: #dcfce7;
+        color: #16a34a;
+    }
+
+    .inventory-stat-card.purple .inventory-stat-top i {
+        background: #ede9fe;
+        color: #7c3aed;
+    }
+
+    .inventory-stat-card.warning .inventory-stat-top i {
+        background: #fef3c7;
+        color: #d97706;
+    }
+
+    .inventory-stat-card.danger .inventory-stat-top i {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+    .inventory-stat-card h3 {
+        margin: 7px 0 0;
+        font-size: 1.7rem;
+        line-height: 1;
+    }
 
     .inventory-main-content > .footer {
         justify-content: center !important;

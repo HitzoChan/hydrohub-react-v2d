@@ -438,9 +438,9 @@ export async function getReportExpenses(
             "expense_date",
             startDate
         )
-        .lte(
+        .lt(
             "expense_date",
-            endDate
+            getNextDayDate(endDate)
         )
         .order(
             "expense_date",

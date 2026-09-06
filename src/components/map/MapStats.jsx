@@ -37,13 +37,13 @@ function MapStats({ stats }) {
 
     return (
 
-        <div className="row g-4 mb-4">
+        <div className="row g-4 mb-4 map-stats-grid">
 
             {cards.map((card) => (
 
                 <div
                     key={card.title}
-                    className="col-xl-3 col-lg-6 col-md-6"
+                    className="col-6 col-xl-3 col-lg-6 col-md-6 map-stat-col"
                 >
 
                     <div className="map-stat-card h-100">

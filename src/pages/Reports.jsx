@@ -18,9 +18,13 @@ import ReportAnalytics from "../components/reports/ReportAnalytics";
 import {
     formatCurrency,
     getReportData,
-    getStartDate,
-    getEndDate,
 } from "../services/reports.service";
+import {
+    getPreviousEquivalentRange,
+    getRangeForPreset,
+    formatPeriodLabel,
+} from "../utils/reportDateUtils";
+import { calculatePercentageChange } from "../utils/reportCalculations";
 
 import "../styles/pages/reports.css";
 
@@ -32,18 +36,13 @@ export default function Reports() {
     |--------------------------------------------------------------------------
     */
 
-    const [range, setRange] =
-        useState(7);
+    const [period, setPeriod] =
+        useState("current-month");
 
-    const [startDate, setStartDate] =
-        useState(
-            getStartDate(7)
-        );
+    const initialRange = getRangeForPreset("current-month");
 
-    const [endDate, setEndDate] =
-        useState(
-            getEndDate()
-        );
+    const [startDate, setStartDate] = useState(initialRange.startDate);
+    const [endDate, setEndDate] = useState(initialRange.endDate);
 
 
     /*
@@ -54,6 +53,8 @@ export default function Reports() {
 
     const [report, setReport] =
         useState(null);
+
+    const [comparisonReport, setComparisonReport] = useState(null);
 
 
     /*
@@ -97,18 +98,17 @@ export default function Reports() {
 
                     setError("");
 
-                    const data =
-                        await getReportData({
-                            startDate:
-                                selectedStart,
-
-                            endDate:
-                                selectedEnd,
-                        });
+                    const comparisonRange = getPreviousEquivalentRange(selectedStart, selectedEnd);
+                    const [data, previousData] = await Promise.all([
+                        getReportData({ startDate: selectedStart, endDate: selectedEnd }),
+                        getReportData(comparisonRange),
+                    ]);
 
                     setReport(
                         data
                     );
+
+                    setComparisonReport(previousData);
 
                 } catch (
                     reportError
@@ -167,28 +167,14 @@ export default function Reports() {
     |--------------------------------------------------------------------------
     */
 
-    function handleRangeChange(
-        days
-    ) {
-        const newStart =
-            getStartDate(
-                days
-            );
+    function handlePeriodChange(selectedPeriod) {
+        const nextRange = getRangeForPreset(selectedPeriod);
 
-        const newEnd =
-            getEndDate();
+        setPeriod(selectedPeriod);
 
-        setRange(
-            days
-        );
+        setStartDate(nextRange.startDate);
 
-        setStartDate(
-            newStart
-        );
-
-        setEndDate(
-            newEnd
-        );
+        setEndDate(nextRange.endDate);
     }
 
 
@@ -202,9 +188,7 @@ export default function Reports() {
         customStart,
         customEnd
     ) {
-        setRange(
-            null
-        );
+        setPeriod("custom");
 
         setStartDate(
             customStart
@@ -272,6 +256,21 @@ export default function Reports() {
                 Number(financial.expenses)) * 100
             : 0;
 
+    const previousFinancial = comparisonReport?.financial || {};
+    const previousOperations = comparisonReport?.operations || {};
+    const financialWithComparison = {
+        ...financial,
+        revenueGrowth: calculatePercentageChange(financial.revenue, previousFinancial.revenue),
+        revenueChange: calculatePercentageChange(financial.revenue, previousFinancial.revenue),
+        expenseChange: calculatePercentageChange(financial.expenses, previousFinancial.expenses),
+        profitChange: calculatePercentageChange(financial.netProfit, previousFinancial.netProfit),
+    };
+    const operationsWithComparison = {
+        ...operations,
+        orderChange: calculatePercentageChange(operations.totalOrders, previousOperations.totalOrders),
+        gallonsChange: calculatePercentageChange(operations.gallonsSold, previousOperations.gallonsSold),
+    };
+
 
     /*
     |--------------------------------------------------------------------------
@@ -306,10 +305,8 @@ export default function Reports() {
                         <ReportHeader />
 
                         <ReportFilters
-                            range={range}
-                            onRangeChange={
-                                handleRangeChange
-                            }
+                            period={period}
+                            onPeriodChange={handlePeriodChange}
                             startDate={
                                 startDate
                             }
@@ -330,7 +327,8 @@ export default function Reports() {
 
                     <p className="text-muted small mb-4">
 
-                        Showing report data from{" "}
+                        <span className="report-period-label">{formatPeriodLabel(startDate, endDate)}</span>{" "}
+                        <span className="report-period-detail">Showing report data from{" "}</span>
 
                         <strong>
                             {startDate}
@@ -398,11 +396,9 @@ export default function Reports() {
                                 {/* KPI CARDS */}
 
                                 <ReportKpiCards
-                                    financial={
-                                        financial
-                                    }
+                                    financial={financialWithComparison}
                                     operations={
-                                        operations
+                                        operationsWithComparison
                                     }
                                     containerAccountability={
                                         containerAccountability

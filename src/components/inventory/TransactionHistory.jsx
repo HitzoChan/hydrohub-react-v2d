@@ -372,11 +372,11 @@ function TransactionHistory({
             QUICK SUMMARY
         ================================================= */}
 
-        <div className="row g-3 mb-4">
+        <div className="row g-3 mb-4 inventory-transaction-stats">
           {/* DELIVERED */}
 
-          <div className="col-md-3">
-            <div className="border rounded-3 p-3 h-100">
+          <div className="col-6 col-md-3 inventory-transaction-stat-col">
+            <div className="inventory-transaction-stat border rounded-3 p-3 h-100">
               <div className="small text-muted mb-1">
                 Delivered
               </div>
@@ -393,8 +393,8 @@ function TransactionHistory({
 
           {/* RETURNED */}
 
-          <div className="col-md-3">
-            <div className="border rounded-3 p-3 h-100">
+          <div className="col-6 col-md-3 inventory-transaction-stat-col">
+            <div className="inventory-transaction-stat border rounded-3 p-3 h-100">
               <div className="small text-muted mb-1">
                 Returned
               </div>
@@ -411,8 +411,8 @@ function TransactionHistory({
 
           {/* DAMAGED */}
 
-          <div className="col-md-3">
-            <div className="border rounded-3 p-3 h-100">
+          <div className="col-6 col-md-3 inventory-transaction-stat-col">
+            <div className="inventory-transaction-stat border rounded-3 p-3 h-100">
               <div className="small text-muted mb-1">
                 Damaged
               </div>
@@ -429,8 +429,8 @@ function TransactionHistory({
 
           {/* MISSING */}
 
-          <div className="col-md-3">
-            <div className="border rounded-3 p-3 h-100">
+          <div className="col-6 col-md-3 inventory-transaction-stat-col">
+            <div className="inventory-transaction-stat border rounded-3 p-3 h-100">
               <div className="small text-muted mb-1">
                 Missing
               </div>

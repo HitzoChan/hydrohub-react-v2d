@@ -50,11 +50,11 @@ function DeliveryStats({ stats }) {
   ];
 
   return (
-    <div className="row g-4 mb-4">
+    <div className="row g-4 mb-4 delivery-stats-grid">
       {cards.map((card) => (
         <div
           key={card.title}
-          className="col-xxl-2 col-xl-4 col-lg-4 col-md-6"
+          className="col-6 col-xxl-2 col-xl-4 col-lg-4 col-md-6 delivery-stat-col"
         >
           <div
             className={`stat-box ${card.color}`}

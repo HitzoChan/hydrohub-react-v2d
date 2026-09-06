@@ -134,15 +134,15 @@ export default function ProductsSettings() {
 
         <>
 
-            <div className="card shadow-sm border-0">
+            <div className="card shadow-sm border-0 products-settings-card">
 
                 {/* =====================================================
                     HEADER
                 ===================================================== */}
 
-                <div className="card-header bg-white d-flex justify-content-between align-items-center">
+                <div className="card-header bg-white d-flex justify-content-between align-items-center products-settings-header">
 
-                    <div>
+                    <div className="products-settings-heading">
 
                         <h5 className="mb-1">
                             Product Management
@@ -159,7 +159,7 @@ export default function ProductsSettings() {
 
                     <button
                         type="button"
-                        className="btn btn-primary"
+                        className="btn btn-primary products-settings-add-button"
                         onClick={() =>
                             setShowAddModal(true)
                         }

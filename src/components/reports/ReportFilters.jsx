@@ -1,8 +1,8 @@
 import { useState } from "react";
 
 export default function ReportFilters({
-    range,
-    onRangeChange,
+    period,
+    onPeriodChange,
     startDate,
     endDate,
     onCustomRange,
@@ -60,41 +60,32 @@ export default function ReportFilters({
 
                     <select
                         className="form-select form-select-sm"
-                        value={range}
+                        value={period}
                         onChange={(event) => {
-                            setShowCustom(false);
+                            const nextPeriod = event.target.value;
+                            setShowCustom(nextPeriod === "custom");
 
-                            onRangeChange(
-                                Number(
-                                    event.target.value
-                                )
-                            );
+                            if (nextPeriod !== "custom") {
+                                onPeriodChange(nextPeriod);
+                            }
                         }}
                         style={{
                             width: "auto",
                         }}
                     >
-                        <option value={7}>
-                            Weekly
-                        </option>
-
-                        <option value={30}>
-                            Monthly
-                        </option>
-
-                        <option value={365}>
-                            Yearly
-                        </option>
+                        <option value="current-month">Current Month</option>
+                        <option value="previous-month">Previous Month</option>
+                        <option value="last-7-days">Last 7 Days</option>
+                        <option value="last-30-days">Last 30 Days</option>
+                        <option value="current-year">Current Year</option>
+                        <option value="previous-year">Previous Year</option>
+                        <option value="custom">Custom Range</option>
                     </select>
 
                     <button
                         type="button"
                         className="btn btn-outline-secondary btn-sm"
-                        onClick={() =>
-                            setShowCustom(
-                                true
-                            )
-                        }
+                        onClick={() => setShowCustom(true)}
                     >
                         Custom Range
                     </button>

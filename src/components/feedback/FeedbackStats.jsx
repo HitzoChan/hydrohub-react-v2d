@@ -14,13 +14,13 @@ function FeedbackStats({
   } = stats;
 
   return (
-    <div className="row g-3">
+    <div className="row g-3 feedback-stats-grid">
 
       {/* =====================================================
           AVERAGE RATING
       ===================================================== */}
 
-      <div className="col-xl-3 col-md-6">
+      <div className="col-6 col-xl-3 feedback-stat-col">
 
         <div className="feedback-stat-card">
 
@@ -71,7 +71,7 @@ function FeedbackStats({
           TOTAL REVIEWS
       ===================================================== */}
 
-      <div className="col-xl-3 col-md-6">
+      <div className="col-6 col-xl-3 feedback-stat-col">
 
         <div className="feedback-stat-card">
 
@@ -104,7 +104,7 @@ function FeedbackStats({
           5-STAR REVIEWS
       ===================================================== */}
 
-      <div className="col-xl-3 col-md-6">
+      <div className="col-6 col-xl-3 feedback-stat-col">
 
         <div className="feedback-stat-card">
 
@@ -143,7 +143,7 @@ function FeedbackStats({
           SATISFACTION
       ===================================================== */}
 
-      <div className="col-xl-3 col-md-6">
+      <div className="col-6 col-xl-3 feedback-stat-col">
 
         <div className="feedback-stat-card">
 

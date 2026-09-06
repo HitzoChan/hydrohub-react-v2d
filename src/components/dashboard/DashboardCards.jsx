@@ -16,14 +16,14 @@ function DashboardCards({ stats = {} }) {
   );
 
   return (
-    <div className="row g-4 mb-4">
+    <div className="row g-4 mb-4 dashboard-metrics">
 
       {/* =====================================================
           TOTAL ORDERS TODAY
       ===================================================== */}
-      <div className="col-xl-3 col-lg-6">
+      <div className="col-6 col-xl-3 dashboard-metric-col">
 
-        <div className="card dashboard-blue h-100">
+        <div className="card dashboard-metric-card dashboard-blue h-100">
 
           <div className="card-body d-flex justify-content-between align-items-center">
 
@@ -59,9 +59,9 @@ function DashboardCards({ stats = {} }) {
       {/* =====================================================
           ACTIVE DELIVERIES
       ===================================================== */}
-      <div className="col-xl-3 col-lg-6">
+      <div className="col-6 col-xl-3 dashboard-metric-col">
 
-        <div className="card dashboard-green h-100">
+        <div className="card dashboard-metric-card dashboard-green h-100">
 
           <div className="card-body d-flex justify-content-between align-items-center">
 
@@ -97,9 +97,9 @@ function DashboardCards({ stats = {} }) {
       {/* =====================================================
           TOTAL CUSTOMERS
       ===================================================== */}
-      <div className="col-xl-3 col-lg-6">
+      <div className="col-6 col-xl-3 dashboard-metric-col">
 
-        <div className="card dashboard-purple h-100">
+        <div className="card dashboard-metric-card dashboard-purple h-100">
 
           <div className="card-body d-flex justify-content-between align-items-center">
 
@@ -135,9 +135,9 @@ function DashboardCards({ stats = {} }) {
       {/* =====================================================
           REVENUE TODAY
       ===================================================== */}
-      <div className="col-xl-3 col-lg-6">
+      <div className="col-6 col-xl-3 dashboard-metric-col">
 
-        <div className="card dashboard-yellow h-100">
+        <div className="card dashboard-metric-card dashboard-yellow h-100">
 
           <div className="card-body d-flex justify-content-between align-items-center">
 

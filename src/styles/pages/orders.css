@@ -21,12 +21,11 @@
 ========================================================== */
 
 .stat-card {
-  background: #ffffff;
-  border: 1px solid #eef2f7;
+  border: 1px solid rgba(226, 232, 240, 0.9);
   border-radius: 18px;
   padding: 24px;
   transition: all 0.25s ease;
-  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.6);
   height: 100%;
 }
 
@@ -73,7 +72,7 @@
 ========================================================== */
 
 .card-total {
-  background: #eef5ff;
+  background: linear-gradient(145deg, #f5f9ff 0%, #eaf3ff 100%);
 }
 
 .card-total .stat-icon {
@@ -82,7 +81,7 @@
 }
 
 .card-pending {
-  background: #fff8e7;
+  background: linear-gradient(145deg, #fffdf3 0%, #fff5d9 100%);
 }
 
 .card-pending .stat-icon {
@@ -91,7 +90,7 @@
 }
 
 .card-ready {
-  background: #eefcf6;
+  background: linear-gradient(145deg, #f1fff9 0%, #e6faf2 100%);
 }
 
 .card-ready .stat-icon {
@@ -100,7 +99,7 @@
 }
 
 .card-delivered {
-  background: #f3f0ff;
+  background: linear-gradient(145deg, #faf8ff 0%, #f0ebff 100%);
 }
 
 .card-delivered .stat-icon {
@@ -268,8 +267,92 @@
 }
 
 @media (max-width: 768px) {
+  .orders-stat-grid {
+    --bs-gutter-x: 0.75rem;
+    --bs-gutter-y: 0.75rem;
+  }
+
+  .orders-stat-col {
+    display: flex;
+  }
+
+  .orders-stat-grid .stat-card {
+    width: 100%;
+    height: auto !important;
+    min-height: 0;
+    padding: 0;
+    border-radius: 16px;
+  }
+
+  .orders-stat-grid .stat-card > .d-flex {
+    display: block !important;
+    position: relative;
+    padding: 22px 12px 10px;
+  }
+
+  .orders-stat-grid .stat-card > .d-flex > div:first-child {
+    min-width: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .orders-stat-grid .stat-card small {
+    min-height: 2.5em;
+    padding-right: 36px;
+    font-size: 0.7rem;
+    line-height: 1.25;
+    text-align: left;
+  }
+
+  .orders-stat-grid .stat-card h2 {
+    margin: 7px 0 4px;
+    font-size: 1.7rem;
+    line-height: 1;
+  }
+
+  .orders-stat-grid .stat-card > .d-flex > div:first-child > span {
+    width: 100%;
+    min-height: 3.9em;
+    font-size: 0.64rem;
+    line-height: 1.35;
+    text-align: left;
+  }
+
+  .orders-stat-grid .stat-icon {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    font-size: 0.9rem;
+    box-shadow: 0 8px 16px rgba(15, 23, 42, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+
+  .orders-stat-grid .card-total .stat-icon {
+    background: linear-gradient(145deg, #3185ff, #0762df);
+  }
+
+  .orders-stat-grid .card-pending .stat-icon {
+    background: linear-gradient(145deg, #ffd34e, #f2a900);
+  }
+
+  .orders-stat-grid .card-ready .stat-icon {
+    background: linear-gradient(145deg, #35d8a7, #0eb889);
+  }
+
+  .orders-stat-grid .card-delivered .stat-icon {
+    background: linear-gradient(145deg, #895bdd, #6335b9);
+  }
+
   .page-header {
     text-align: center;
+  }
+
+  .orders-main-content .page-header {
+    text-align: left;
   }
 
   .table {

@@ -20,7 +20,56 @@ body {
 }
 
 .security-setting-field {
-    max-width: 520px;
+    max-width: 560px;
+    text-align: left;
+}
+
+.security-settings-card {
+    overflow: hidden;
+}
+
+.security-settings-header,
+.security-settings-body {
+    text-align: left;
+}
+
+.security-settings-header h5 {
+    color: #0f172a;
+    font-size: 1.45rem;
+    line-height: 1.2;
+}
+
+.security-settings-intro {
+    display: block;
+    max-width: 560px;
+    line-height: 1.5;
+}
+
+.security-settings-body {
+    padding: 24px;
+}
+
+.security-setting-field .form-label {
+    display: block;
+    margin-bottom: 8px;
+    color: #334155;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    line-height: 1.25;
+    text-transform: uppercase;
+}
+
+.security-setting-field .form-control {
+    max-width: 100%;
+    font-size: 1rem;
+}
+
+.security-settings-help {
+    display: block;
+    margin-top: 8px;
+    color: #64748b;
+    font-size: 0.9rem;
+    line-height: 1.55;
 }
 
 .security-rule-summary {
@@ -32,6 +81,8 @@ body {
     border-radius: 12px;
     background: #eff6ff;
     color: #1e3a8a;
+    text-align: left;
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.06);
 }
 
 .security-rule-summary > i {
@@ -42,6 +93,11 @@ body {
 .security-rule-summary strong {
     display: block;
     margin-bottom: 4px;
+    font-size: 1.05rem;
+}
+
+.security-rule-content {
+    min-width: 0;
 }
 
 .security-rule-summary p {
@@ -183,6 +239,63 @@ body {
     background: #ffffff;
     padding: 18px 24px;
     border-bottom: 1px solid #e5e7eb;
+}
+
+.products-settings-heading {
+    min-width: 0;
+}
+
+.products-settings-heading h5,
+.products-settings-heading small {
+    text-align: left;
+}
+
+.account-settings-card {
+    overflow: hidden;
+}
+
+.account-settings-header,
+.account-settings-body {
+    text-align: left;
+}
+
+.account-settings-header h5 {
+    color: #0f172a;
+    font-size: 1.45rem;
+    line-height: 1.2;
+}
+
+.account-settings-intro {
+    display: block;
+    max-width: 520px;
+    line-height: 1.5;
+}
+
+.account-settings-body {
+    padding: 24px;
+}
+
+.account-settings-label {
+    margin-bottom: 8px;
+    color: #334155;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    line-height: 1.25;
+    text-transform: uppercase;
+}
+
+.account-settings-body .form-control {
+    width: 100%;
+    min-width: 0;
+    font-size: 1rem;
+}
+
+.account-settings-help {
+    display: block;
+    margin-top: 7px;
+    color: #64748b;
+    font-size: 0.86rem;
+    line-height: 1.5;
 }
 
 .card-body {
@@ -442,10 +555,116 @@ body {
         padding: 16px;
     }
 
+    .account-settings-header {
+        padding: 18px 16px;
+    }
+
+    .account-settings-header h5 {
+        font-size: 1.35rem;
+    }
+
+    .account-settings-intro {
+        font-size: 0.88rem;
+        line-height: 1.45;
+    }
+
+    .account-settings-body {
+        padding: 18px 16px;
+    }
+
+    .account-settings-label {
+        font-size: 0.72rem;
+    }
+
+    .account-settings-help {
+        font-size: 0.84rem;
+    }
+
+    .account-password-input::placeholder {
+        font-size: 0.88rem;
+    }
+
+    .security-settings-header {
+        padding: 18px 16px;
+    }
+
+    .security-settings-header h5 {
+        font-size: 1.35rem;
+    }
+
+    .security-settings-intro {
+        font-size: 0.88rem;
+        line-height: 1.45;
+    }
+
+    .security-settings-body {
+        padding: 18px 16px;
+    }
+
+    .security-setting-field .form-label {
+        font-size: 0.72rem;
+    }
+
+    .security-settings-help {
+        font-size: 0.86rem;
+        line-height: 1.5;
+    }
+
+    .security-rule-summary {
+        align-items: flex-start;
+        gap: 12px;
+        margin-top: 20px;
+        padding: 14px;
+        border-radius: 12px;
+    }
+
+    .security-rule-summary strong {
+        font-size: 1rem;
+        line-height: 1.35;
+    }
+
+    .security-rule-summary p {
+        font-size: 0.86rem;
+        line-height: 1.5;
+    }
+
     .settings-main-content .card-body.d-flex {
         align-items: stretch !important;
         flex-direction: column;
         gap: 14px;
+    }
+
+    .products-settings-header {
+        align-items: flex-start !important;
+        flex-direction: column;
+        gap: 16px;
+        padding: 18px 16px;
+        text-align: left;
+    }
+
+    .products-settings-heading {
+        width: 100%;
+        text-align: left;
+    }
+
+    .products-settings-heading h5 {
+        font-size: 1.35rem;
+        line-height: 1.15;
+    }
+
+    .products-settings-heading small {
+        display: block;
+        max-width: 34rem;
+        font-size: 0.82rem;
+        line-height: 1.45;
+    }
+
+    .products-settings-add-button {
+        align-self: flex-start;
+        min-height: 40px;
+        border-radius: 9px;
+        padding: 7px 12px;
+        font-size: 0.9rem;
     }
 
     .settings-footer .footer {

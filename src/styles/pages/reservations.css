@@ -1237,6 +1237,44 @@
 
     .reservation-stats-grid {
         grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .reservation-stat-card {
+        min-height: 0;
+        padding: 20px 12px 12px;
+        display: block;
+        position: relative;
+        border-radius: 16px;
+    }
+
+    .reservation-stat-icon {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        width: 34px;
+        height: 34px;
+        min-width: 34px;
+        border-radius: 50%;
+        font-size: 0.9rem;
+        box-shadow: 0 8px 16px rgba(15, 23, 42, 0.12);
+    }
+
+    .reservation-stat-content {
+        min-width: 0;
+        padding-right: 34px;
+        gap: 7px;
+    }
+
+    .reservation-stat-content span {
+        min-height: 2.5em;
+        font-size: 0.7rem;
+        line-height: 1.25;
+    }
+
+    .reservation-stat-content strong {
+        font-size: 1.7rem;
+        line-height: 1;
     }
 }
 
@@ -1457,4 +1495,45 @@
     border: 1px solid #cbd5e1;
     background: #ffffff;
     color: #475569;
+}
+
+@media (max-width: 768px) {
+    .reservations-page .reservation-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .reservations-page .reservation-stat-card {
+        min-height: 0;
+        height: auto;
+        padding: 20px 12px 12px;
+        display: block;
+        position: relative;
+    }
+
+    .reservations-page .reservation-stat-icon {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        width: 34px;
+        height: 34px;
+        min-width: 34px;
+        border-radius: 50%;
+    }
+
+    .reservations-page .reservation-stat-content {
+        min-width: 0;
+        padding-right: 34px;
+    }
+
+    .reservations-page .reservation-stat-content span {
+        min-height: 2.5em;
+        font-size: 0.7rem;
+        line-height: 1.25;
+    }
+
+    .reservations-page .reservation-stat-content strong {
+        font-size: 1.7rem;
+    }
 }

@@ -1,12 +1,24 @@
 import { formatCurrency } from "../../services/reports.service";
 
 function formatNumber(value) {
+    if (typeof value === "string") {
+        return value;
+    }
+
     return new Intl.NumberFormat("en-PH").format(
         Number(value) || 0
     );
 }
 
 function Trend({ value }) {
+    if (value === null || value === undefined) {
+        return (
+            <span className="kpi-trend neutral">
+                No previous data
+            </span>
+        );
+    }
+
     const number = Number(value) || 0;
 
     if (number === 0) {
@@ -39,7 +51,7 @@ function KpiCard({
     isCurrency = false,
 }) {
     return (
-        <div className="col-xl-2 col-lg-4 col-md-6">
+        <div className="col-6 col-xl-3 col-lg-4 col-md-6 report-kpi-col">
 
             <div className="report-kpi-card">
 
@@ -117,7 +129,10 @@ export default function ReportKpiCards({
             <KpiCard
                 title="Revenue Growth"
                 value={
-                    financial.revenueGrowth || 0
+                    financial.revenueGrowth === null ||
+                    financial.revenueGrowth === undefined
+                        ? "New"
+                        : financial.revenueGrowth
                 }
                 description="Compared with previous period"
                 trend={

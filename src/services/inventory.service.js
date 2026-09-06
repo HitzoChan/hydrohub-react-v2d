@@ -2031,30 +2031,99 @@ export async function getInventory(
         accounted >
         item.total
       ) {
-        const excess =
+        let excess =
           accounted -
           item.total;
 
-        console.error(
-          "Inventory overage detected after movement reconciliation:",
-          {
-            capacity: item.capacity,
-            total: item.total,
-            excess,
+        const reduceFromBucket = (
+          bucket,
+          amount
+        ) => {
+          if (
+            amount <= 0 ||
+            bucket <= 0
+          ) {
+            return 0;
           }
-        );
 
-        /*
-         * Full stock is the only state that can safely absorb an
-         * overage after all physical movements have been accounted for.
-         * This is a defensive invariant; movement sources are reconciled
-         * above so normal data should never enter this branch.
-         */
-        item.full = Math.max(
-          0,
-          item.full -
-            excess
-        );
+          const removed =
+            Math.min(
+              bucket,
+              amount
+            );
+
+          return removed;
+        };
+
+        if (
+          excess > 0
+        ) {
+          const customerReduction =
+            reduceFromBucket(
+              item.with_customers,
+              excess
+            );
+
+          item.with_customers =
+            Math.max(
+              0,
+              item.with_customers -
+                customerReduction
+            );
+
+          excess -=
+            customerReduction;
+        }
+
+        if (
+          excess > 0
+        ) {
+          const driverReduction =
+            reduceFromBucket(
+              item.with_drivers,
+              excess
+            );
+
+          item.with_drivers =
+            Math.max(
+              0,
+              item.with_drivers -
+                driverReduction
+            );
+
+          excess -=
+            driverReduction;
+        }
+
+        if (
+          excess > 0
+        ) {
+          const emptyReduction =
+            reduceFromBucket(
+              item.empty,
+              excess
+            );
+
+          item.empty =
+            Math.max(
+              0,
+              item.empty -
+                emptyReduction
+            );
+
+          excess -=
+            emptyReduction;
+        }
+
+        if (
+          excess > 0
+        ) {
+          item.full = Math.max(
+            0,
+            item.full -
+              excess
+          );
+        }
       }
 
       const reconciledAccounted =

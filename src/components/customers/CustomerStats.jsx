@@ -88,20 +88,20 @@ function CustomerStats() {
 
   return (
 
-    <div className="row g-4 mb-4">
+    <div className="row g-4 mb-4 customer-stats-grid">
 
       {cards.map((card) => (
 
         <div
-          className="col-xl-3 col-md-6"
+          className="col-6 col-xl-3 customer-stat-col"
           key={card.title}
         >
 
-          <div className="card border-0 shadow-sm h-100">
+          <div className="card customer-stat-card border-0 shadow-sm h-100">
 
             <div className="card-body d-flex justify-content-between align-items-center">
 
-              <div>
+              <div className="customer-stat-content">
 
                 <p className="text-muted mb-1">
 
@@ -118,11 +118,7 @@ function CustomerStats() {
               </div>
 
               <div
-                className={`bg-${card.color} bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center`}
-                style={{
-                  width: "60px",
-                  height: "60px",
-                }}
+                className={`customer-stat-icon bg-${card.color} bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center`}
               >
 
                 <i

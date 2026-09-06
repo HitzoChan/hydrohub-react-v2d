@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "@lottiefiles/lottie-player";
 import "../styles/pages/login.css";
+import logo from "../assets/images/logo.png";
 
 import useAuth from "../hooks/useAuth";
 
@@ -52,7 +52,7 @@ function Login() {
                     <div className="hero-content">
 
                         <span className="eyebrow">
-                            Aqua en Lavaba
+                            Aqua en Lavada
                         </span>
 
                         <h1>
@@ -78,16 +78,12 @@ function Login() {
 
                     </div>
 
-                    <div className="hero-visual">
-
-                        <lottie-player
-                            src="https://assets10.lottiefiles.com/packages/lf20_w51pcehl.json"
-                            background="transparent"
-                            speed="1"
-                            style={{ width: "320px" }}
-                            loop
-                            autoPlay
-                        ></lottie-player>
+                    <div className="hero-visual" aria-hidden="true">
+                        <div className="gallon-art">
+                            <span className="gallon-cap"></span>
+                            <span className="gallon-label">PURE<br />WATER</span>
+                            <span className="gallon-shine"></span>
+                        </div>
 
                     </div>
 
@@ -101,10 +97,12 @@ function Login() {
 
                         <div className="brand-block text-center mb-4">
 
-                            <h4>Admin Login</h4>
+                            <img className="logo" src={logo} alt="Aqua en Lavada" />
+
+                            <h4>Welcome back</h4>
 
                             <p className="text-muted">
-                                Enter your admin credentials to access the dashboard
+                                Sign in to keep your water station flowing.
                             </p>
 
                         </div>
@@ -154,22 +152,10 @@ function Login() {
                                 className="btn btn-login w-100 mb-3"
                                 disabled={loading}
                             >
-                                {loading ? "Logging in..." : "Login"}
+                                {loading ? "Signing in..." : "Sign in to dashboard"}
                             </button>
 
                         </form>
-
-                        <div className="d-flex justify-content-between align-items-center">
-
-                            <a href="#" className="text-muted small">
-                                Forgot Password?
-                            </a>
-
-                            <a href="#" className="text-muted small">
-                                Create Account
-                            </a>
-
-                        </div>
 
                     </div>
 

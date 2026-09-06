@@ -138,14 +138,29 @@ export default function ReportAnalytics({
                 <ChartCard title="Gallon Sales by Day"><canvas ref={gallonRef} /></ChartCard>
                 <ChartCard title="Scheduled Delivery Periods"><canvas ref={scheduleRef} /></ChartCard>
             </div>
-            <div className="report-analytics-summary">
-                <span>Average order value: <strong>₱{Number(analytics.averageOrderValue || 0).toLocaleString("en-PH", { minimumFractionDigits: 2 })}</strong></span>
-                <span>Average gallons/order: <strong>{Number(analytics.averageGallonsPerOrder || 0).toFixed(1)}</strong></span>
-                <span>Unassigned deliveries: <strong>{analytics.delivery?.unassigned || 0}</strong></span>
+            <div className="report-analytics-summary" aria-label="Report quick metrics">
+                <div className="report-quick-metric">
+                    <i className="bi bi-receipt-cutoff" aria-hidden="true" />
+                    <span>Average order value</span>
+                    <strong>₱{Number(analytics.averageOrderValue || 0).toLocaleString("en-PH", { minimumFractionDigits: 2 })}</strong>
+                </div>
+                <div className="report-quick-metric">
+                    <i className="bi bi-droplet-half" aria-hidden="true" />
+                    <span>Average gallons per order</span>
+                    <strong>{Number(analytics.averageGallonsPerOrder || 0).toFixed(1)}</strong>
+                </div>
+                <div className="report-quick-metric attention">
+                    <i className="bi bi-person-exclamation" aria-hidden="true" />
+                    <span>Unassigned deliveries</span>
+                    <strong>{analytics.delivery?.unassigned || 0}</strong>
+                </div>
             </div>
-            <div className="report-type-summary">
-                {deliveryTypes.map((type) => <span key={type.type}>{type.type}: <strong>{type.count}</strong></span>)}
-            </div>
+            {deliveryTypes.length > 0 && (
+                <div className="report-type-summary" aria-label="Delivery type summary">
+                    <span className="report-type-summary-label">Delivery types</span>
+                    {deliveryTypes.map((type) => <span key={type.type}>{type.type}: <strong>{type.count}</strong></span>)}
+                </div>
+            )}
         </section>
     );
 }

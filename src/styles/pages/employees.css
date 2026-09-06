@@ -128,6 +128,21 @@
   justify-content: center;
 }
 
+.employee-stat-card {
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.employee-stat-card .stat-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  box-shadow: 0 8px 16px rgba(15, 23, 42, 0.1);
+}
+
 /* ==========================================================
    Employee Table
 ========================================================== */
@@ -724,6 +739,58 @@
 
 @media (max-width: 768px) {
 
+  .employee-stat-grid {
+    --bs-gutter-x: 0.75rem;
+    --bs-gutter-y: 0.75rem;
+  }
+
+  .employee-stat-col {
+    display: flex;
+  }
+
+  .employees-page .employee-stat-card {
+    width: 100%;
+    height: auto !important;
+    min-height: 0;
+    padding: 0;
+    border-radius: 16px;
+  }
+
+  .employee-stat-card > .d-flex {
+    display: block !important;
+    position: relative;
+    padding: 20px 12px 12px;
+  }
+
+  .employee-stat-card > .d-flex > div:first-child {
+    min-width: 0;
+    width: 100%;
+    padding-right: 36px;
+  }
+
+  .employee-stat-card small {
+    display: block;
+    min-height: 2.5em;
+    font-size: 0.7rem;
+    line-height: 1.25;
+  }
+
+  .employee-stat-card h2 {
+    margin: 7px 0 0;
+    font-size: 1.7rem;
+    line-height: 1;
+  }
+
+  .employee-stat-card .stat-icon {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    font-size: 0.9rem;
+  }
+
   .employees-page {
     padding: 18px;
   }
@@ -760,7 +827,11 @@
   }
 
   .employees-page {
-    padding: 14px;
+    padding: 16px 14px 24px;
+  }
+
+  .employees-header {
+    margin-bottom: 22px;
   }
 
   .employees-header > div:first-child {
@@ -772,21 +843,40 @@
   }
 
   .employees-header h4 {
-    font-size: 24px;
-    line-height: 1.15;
+    margin-top: 8px !important;
+    margin-bottom: 8px !important;
+    color: #0f172a;
+    font-size: 28px;
+    font-weight: 750;
+    letter-spacing: -0.02em;
+    line-height: 1.08;
   }
 
   .employees-header p {
+    max-width: 330px;
+    margin-bottom: 0 !important;
+    color: #64748b;
     font-size: 13px;
     line-height: 1.4;
   }
 
+  .employees-header .text-uppercase {
+    display: inline-block;
+    color: #1769e8 !important;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+  }
+
   .employees-header .employee-add-btn {
-    flex: 0 0 auto;
-    width: auto;
-    padding: 8px 12px;
+    width: 100%;
+    min-height: 46px;
+    justify-content: center;
+    padding: 10px 14px;
+    border-radius: 12px;
     font-size: 13px;
+    font-weight: 700;
     white-space: nowrap;
+    box-shadow: 0 8px 18px rgba(13, 110, 253, 0.2);
   }
 
   .employees-footer .footer {

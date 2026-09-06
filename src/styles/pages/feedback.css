@@ -1264,22 +1264,49 @@
     }
 
     .feedback-stat-card {
-        min-height: 105px;
-
-        padding: 16px;
+        min-height: 0;
+        height: auto;
+        padding: 20px 12px 12px;
+        display: block;
+        position: relative;
+        border-radius: 16px;
     }
 
     .feedback-stat-icon {
-        flex-basis: 44px;
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        width: 34px;
+        height: 34px;
+        flex-basis: auto;
+        border-radius: 50%;
+        font-size: 0.9rem;
+        box-shadow: 0 8px 16px rgba(15, 23, 42, 0.12);
+    }
 
-        width: 44px;
-        height: 44px;
+    .feedback-stat-content {
+        min-width: 0;
+        padding-right: 34px;
+    }
 
-        font-size: 18px;
+    .feedback-stat-label {
+        display: block;
+        min-height: 2.5em;
+        font-size: 0.7rem;
+        line-height: 1.25;
     }
 
     .feedback-stat-content h3 {
-        font-size: 23px;
+        margin: 7px 0 4px;
+        font-size: 1.55rem;
+        line-height: 1;
+    }
+
+    .feedback-stat-content small {
+        display: block;
+        min-height: 1.35em;
+        font-size: 0.64rem;
+        line-height: 1.35;
     }
 
     .feedback-panel .card-header,

@@ -16,6 +16,7 @@ import {
     getSettings,
     saveSettings,
     updatePassword,
+    updateAdminCredentials,
     logout
 } from "../services/settings.service";
 
@@ -38,6 +39,8 @@ export default function Settings() {
         maxActiveOrdersPerCustomer: 3,
 
         // Account
+        adminName: "",
+        adminEmail: "",
         adminPassword: ""
 
     });
@@ -70,6 +73,12 @@ export default function Settings() {
                             data.max_active_orders_per_customer ?? 3,
 
                         // Account
+                        adminName:
+                            data.admin_name || "Administrator",
+
+                        adminEmail:
+                            data.admin_email || "admin@gmail.com",
+
                         adminPassword: ""
 
                     });
@@ -99,19 +108,41 @@ export default function Settings() {
 
             await saveSettings(settings);
 
-            if (settings.adminPassword.trim()) {
+            // Update admin credentials if any have changed
+            const hasAdminChanges = 
+                settings.adminName || 
+                settings.adminEmail || 
+                settings.adminPassword;
 
-                await updatePassword(settings.adminPassword);
+            if (hasAdminChanges) {
 
+                const result = await updateAdminCredentials(
+                    settings.id,
+                    settings.adminName,
+                    settings.adminEmail,
+                    settings.adminPassword
+                );
+
+                // If a new settings record was created, update the state with the new id
+                if (result && result.id && !settings.id) {
+                    setSettings(prev => ({
+                        ...prev,
+                        id: result.id,
+                        adminPassword: ""
+                    }));
+                } else {
+                    setSettings(prev => ({
+                        ...prev,
+                        adminPassword: ""
+                    }));
+                }
+
+            } else {
+                setSettings(prev => ({
+                    ...prev,
+                    adminPassword: ""
+                }));
             }
-
-            setSettings(prev => ({
-
-                ...prev,
-
-                adminPassword: ""
-
-            }));
 
             alert("Settings saved successfully!");
 
@@ -282,34 +313,50 @@ return (
 
                         {activeTab === "payment" && (
 
-                            <>
-                                <PaymentSettings
-                                    settings={settings}
-                                    setSettings={setSettings}
-                                />
-
-                                <div className="settings-actions mt-4 text-end">
-
-                                    <button
-                                        className="btn btn-primary px-4"
-                                        onClick={handleSave}
-                                    >
-                                        Save Changes
-                                    </button>
-
-                                </div>
-
-                            </>
+                            <PaymentSettings
+                                settings={settings}
+                                setSettings={setSettings}
+                            />
 
                         )}
 
                         {activeTab === "account" && (
 
-                            <AccountSettings
-                                settings={settings}
-                                setSettings={setSettings}
-                                logout={handleLogout}
-                            />
+                            <>
+                                <AccountSettings
+                                    settings={settings}
+                                    setSettings={setSettings}
+                                    logout={handleLogout}
+                                />
+
+                                <div className="card border-0 shadow-sm mt-4">
+
+                                    <div className="card-body d-flex justify-content-between align-items-center">
+
+                                        <div>
+
+                                            <h6 className="mb-1">
+                                                Save Account Changes
+                                            </h6>
+
+                                            <small className="text-muted">
+                                                Update your administrator credentials securely.
+                                            </small>
+
+                                        </div>
+
+                                        <button
+                                            className="btn btn-primary btn-lg px-5"
+                                            onClick={handleSave}
+                                        >
+                                            Save Changes
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+                            </>
 
                         )}
 

@@ -33,27 +33,27 @@ export default function AccountSettings({
 
     return (
         <>
-            <div className="card shadow-sm border-0 mb-4">
+            <div className="card shadow-sm border-0 mb-4 account-settings-card">
 
-                <div className="card-header bg-white">
+                <div className="card-header bg-white account-settings-header">
 
                     <h5 className="mb-1">
                         Administrator Account
                     </h5>
 
-                    <small className="text-muted">
+                    <small className="text-muted account-settings-intro">
                         Manage your administrator account information.
                     </small>
 
                 </div>
 
-                <div className="card-body">
+                <div className="card-body account-settings-body">
 
                     <div className="row g-3">
 
                         <div className="col-md-6">
 
-                            <label className="form-label fw-semibold">
+                            <label className="form-label fw-semibold account-settings-label">
                                 Administrator Name
                             </label>
 
@@ -70,7 +70,7 @@ export default function AccountSettings({
 
                         <div className="col-md-6">
 
-                            <label className="form-label fw-semibold">
+                            <label className="form-label fw-semibold account-settings-label">
                                 Email Address
                             </label>
 
@@ -78,30 +78,35 @@ export default function AccountSettings({
                                 type="email"
                                 className="form-control"
                                 name="adminEmail"
-                                value={settings.adminEmail}
+                                value={settings.adminEmail || ""}
                                 onChange={handleChange}
-                                placeholder="Email Address"
+                                placeholder="admin@example.com"
+                                required
                             />
+
+                            <small className="text-muted account-settings-help">
+                                Used for admin login
+                            </small>
 
                         </div>
 
                         <div className="col-12">
 
-                            <label className="form-label fw-semibold">
+                            <label className="form-label fw-semibold account-settings-label">
                                 New Password
                             </label>
 
                             <input
                                 type="password"
-                                className="form-control"
+                                className="form-control account-password-input"
                                 name="adminPassword"
                                 value={settings.adminPassword || ""}
                                 onChange={handleChange}
                                 placeholder="Leave blank to keep your current password"
                             />
 
-                            <small className="text-muted">
-                                Leave this field blank if you do not want to change your password.
+                            <small className="text-muted d-block mt-1 account-settings-help">
+                                Leave blank if you don't want to change the password. Enter a new password to update it.
                             </small>
 
                         </div>
@@ -124,9 +129,9 @@ export default function AccountSettings({
 
                 <div className="card-body">
 
-                    <div className="d-flex justify-content-between mb-3">
+                    <div className="d-flex justify-content-between mb-3 pb-3 border-bottom">
 
-                        <span>Administrator</span>
+                        <span className="text-muted">Administrator Name</span>
 
                         <strong>
                             {settings.adminName || "Not Set"}
@@ -134,15 +139,19 @@ export default function AccountSettings({
 
                     </div>
 
-                    <div className="d-flex justify-content-between">
+                    <div className="d-flex justify-content-between pb-3">
 
-                        <span>Email Address</span>
+                        <span className="text-muted">Login Email Address</span>
 
                         <strong>
                             {settings.adminEmail || "Not Set"}
                         </strong>
 
                     </div>
+
+                    <small className="text-muted d-block mt-2">
+                        💡 Remember to save changes to update your login credentials
+                    </small>
 
                 </div>
 

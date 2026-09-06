@@ -264,11 +264,11 @@ function ContainerIssueRecords({
 
         {/* SUMMARY */}
 
-        <div className="row g-3 mb-4">
+        <div className="row g-3 mb-4 inventory-issue-summary">
           {/* TOTAL RECORDS */}
 
-          <div className="col-md-3">
-            <div className="border rounded-3 p-3 h-100">
+          <div className="col-6 col-md-3 inventory-issue-col">
+            <div className="border rounded-3 p-3 h-100 inventory-issue-card">
               <div className="small text-muted">
                 Total Issue Records
               </div>
@@ -281,8 +281,8 @@ function ContainerIssueRecords({
 
           {/* TOTAL ISSUES */}
 
-          <div className="col-md-3">
-            <div className="border rounded-3 p-3 h-100">
+          <div className="col-6 col-md-3 inventory-issue-col">
+            <div className="border rounded-3 p-3 h-100 inventory-issue-card">
               <div className="small text-muted">
                 Total Issues
               </div>
@@ -295,8 +295,8 @@ function ContainerIssueRecords({
 
           {/* MISSING */}
 
-          <div className="col-md-3">
-            <div className="border rounded-3 p-3 h-100">
+          <div className="col-6 col-md-3 inventory-issue-col">
+            <div className="border rounded-3 p-3 h-100 inventory-issue-card">
               <div className="small text-muted">
                 Missing Containers
               </div>
@@ -309,8 +309,8 @@ function ContainerIssueRecords({
 
           {/* DAMAGED */}
 
-          <div className="col-md-3">
-            <div className="border rounded-3 p-3 h-100">
+          <div className="col-6 col-md-3 inventory-issue-col">
+            <div className="border rounded-3 p-3 h-100 inventory-issue-card">
               <div className="small text-muted">
                 Damaged Containers
               </div>

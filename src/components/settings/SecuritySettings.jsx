@@ -16,15 +16,15 @@ export default function SecuritySettings({ settings, setSettings }) {
     ) || 3;
 
     return (
-        <div className="card shadow-sm border-0">
-            <div className="card-header bg-white">
+        <div className="card shadow-sm border-0 security-settings-card">
+            <div className="card-header bg-white security-settings-header">
                 <h5 className="mb-1">Order Security</h5>
-                <small className="text-muted">
+                <small className="text-muted security-settings-intro">
                     Protect the station from too many outstanding orders from one customer.
                 </small>
             </div>
 
-            <div className="card-body">
+            <div className="card-body security-settings-body">
                 <div className="security-setting-field">
                     <label
                         htmlFor="maxActiveOrdersPerCustomer"
@@ -43,7 +43,7 @@ export default function SecuritySettings({ settings, setSettings }) {
                         onChange={handleLimitChange}
                     />
 
-                    <small className="text-muted">
+                    <small className="text-muted security-settings-help">
                         The limit applies to orders waiting for station acceptance.
                         Accepted, assigned, delivered, cancelled, and rejected orders do not count.
                     </small>
@@ -51,7 +51,7 @@ export default function SecuritySettings({ settings, setSettings }) {
 
                 <div className="security-rule-summary">
                     <i className="bi bi-shield-lock-fill" />
-                    <div>
+                    <div className="security-rule-content">
                         <strong>How this protection works</strong>
                         <p>
                             A customer can have up to {limit} pending orders. A new order above this
