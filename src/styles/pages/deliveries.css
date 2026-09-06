@@ -640,6 +640,29 @@
 
 @media(max-width:576px){
 
+    .deliveries-table th:nth-child(1),
+    .deliveries-table td:nth-child(1){
+        width:125px !important;
+        min-width:125px;
+        padding-left:12px;
+        padding-right:14px;
+    }
+
+    .deliveries-table th:nth-child(2),
+    .deliveries-table td:nth-child(2){
+        width:180px !important;
+        min-width:180px;
+        padding-left:14px;
+    }
+
+    .deliveries-table td:nth-child(1) .badge{
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        max-width:100%;
+        white-space:nowrap;
+    }
+
     .deliveries-footer .footer {
 
         justify-content:center !important;
