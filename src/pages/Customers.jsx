@@ -53,14 +53,6 @@ function Customers() {
 
             </div>
 
-            <button className="customer-export-button btn btn-dark">
-
-              <i className="bi bi-download me-2"></i>
-
-              Export List
-
-            </button>
-
           </div>
 
           {/* Statistics */}

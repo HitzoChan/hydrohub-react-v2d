@@ -21,11 +21,6 @@
   line-height: 1.2;
 }
 
-.customer-page-header > .customer-export-button {
-  flex: 0 0 auto;
-  white-space: nowrap;
-}
-
 .customers-footer {
   width: 100%;
 }
