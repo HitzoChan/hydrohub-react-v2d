@@ -43,7 +43,8 @@ export async function archiveExpiredConversations() {
 */
 
 export async function getConversations(
-  status = "active"
+  status = "active",
+  requestedConversationId = null
 ) {
   try {
     const [
@@ -190,8 +191,12 @@ export async function getConversations(
           return true;
         }
 
-        return customerMessageConversationIds.has(
-          String(conversation.id)
+        return (
+          String(conversation.id) ===
+            String(requestedConversationId) ||
+          customerMessageConversationIds.has(
+            String(conversation.id)
+          )
         );
       });
 

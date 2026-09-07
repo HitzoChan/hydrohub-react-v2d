@@ -1,9 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getCustomers } from "../../services/customers.service";
+import { createSupportConversation } from "../../services/messaging.service";
 
 function CustomersTable({ search, status }) {
+  const navigate = useNavigate();
+
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [messagingCustomerId, setMessagingCustomerId] = useState(null);
 
   useEffect(() => {
     let ignore = false;
@@ -51,6 +56,31 @@ function CustomersTable({ search, status }) {
       return matchesSearch && matchesStatus;
     });
   }, [customers, search, status]);
+
+  async function handleMessageCustomer(customer) {
+    if (!customer?.id || messagingCustomerId) {
+      return;
+    }
+
+    try {
+      setMessagingCustomerId(customer.id);
+
+      const conversation = await createSupportConversation(
+        customer.id
+      );
+
+      navigate("/messaging", {
+        state: {
+          conversationId: conversation.id,
+        },
+      });
+    } catch (error) {
+      console.error("Failed to open customer conversation:", error);
+      window.alert("Unable to open customer messaging.");
+    } finally {
+      setMessagingCustomerId(null);
+    }
+  }
 
   return (
     <div className="card shadow-sm border-0">
@@ -148,17 +178,20 @@ function CustomersTable({ search, status }) {
                     <td className="text-end">
 
                       <button
-                        className="btn btn-sm btn-outline-primary me-2"
-                        title="View Customer"
-                      >
-                        <i className="bi bi-eye"></i>
-                      </button>
-
-                      <button
                         className="btn btn-sm btn-outline-success"
                         title="Message Customer"
+                        onClick={() =>
+                          handleMessageCustomer(customer)
+                        }
+                        disabled={messagingCustomerId === customer.id}
                       >
-                        <i className="bi bi-chat"></i>
+                        <i
+                          className={`bi ${
+                            messagingCustomerId === customer.id
+                              ? "bi-hourglass-split"
+                              : "bi-chat"
+                          }`}
+                        ></i>
                       </button>
 
                     </td>

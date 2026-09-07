@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import Sidebar from "../components/layout/Sidebar";
 import Header from "../components/layout/Header";
@@ -15,6 +15,7 @@ import "../styles/pages/messaging.css";
 
 export default function Messaging() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [loading, setLoading] = useState(true);
   const [conversations, setConversations] = useState([]);
@@ -25,16 +26,41 @@ const [showDetails, setShowDetails] = useState(false);
 const [activeTab, setActiveTab] = useState("active");
 const [activeCount, setActiveCount] = useState(0);
 const [archivedCount, setArchivedCount] = useState(0);
+const refreshInFlight = useRef(false);
+
+const CONVERSATION_REFRESH_INTERVAL = 5000;
 
 useEffect(() => {
-  async function fetchConversations() {
+  let mounted = true;
+
+  async function fetchConversations(showLoading = false) {
+    if (refreshInFlight.current) {
+      return;
+    }
+
+    refreshInFlight.current = true;
+
     try {
+      if (showLoading) {
+        setLoading(true);
+      }
+
+      const requestedConversationId =
+        location.state?.conversationId;
+
       // Load selected tab
-      const data = await getConversations(activeTab);
+      const data = await getConversations(
+        activeTab,
+        requestedConversationId
+      );
 
       // Load counts
       const active = await getConversations("active");
       const archived = await getConversations("archived");
+
+      if (!mounted) {
+        return;
+      }
 
       setActiveCount(active.length);
       setArchivedCount(archived.length);
@@ -42,6 +68,16 @@ useEffect(() => {
       setConversations(data);
 
       setSelectedConversation((current) => {
+        if (requestedConversationId) {
+          return (
+            data.find(
+              (conversation) =>
+                String(conversation.id) ===
+                String(requestedConversationId)
+            ) || data[0] || null
+          );
+        }
+
         if (!current) {
           return data[0] || null;
         }
@@ -53,24 +89,32 @@ useEffect(() => {
         return updated || data[0] || null;
       });
     } catch (error) {
-      console.error("Failed to load conversations:", error);
+      console.error("Failed to refresh conversations:", error);
     } finally {
-      setLoading(false);
+      if (mounted) {
+        setLoading(false);
+      }
+
+      refreshInFlight.current = false;
     }
   }
 
-  // ✅ Archive only once when this effect runs
+  // Archive expired conversations before the first load.
   archiveExpiredConversations();
 
-  // ✅ Load conversations immediately
-  fetchConversations();
+  fetchConversations(true);
 
-  // ✅ Refresh every 5 seconds
-  const interval = setInterval(fetchConversations, 5000);
+  const interval = setInterval(
+    () => fetchConversations(),
+    CONVERSATION_REFRESH_INTERVAL
+  );
 
-  return () => clearInterval(interval);
+  return () => {
+    mounted = false;
+    clearInterval(interval);
+  };
 
-}, [activeTab]);
+}, [activeTab, location.state?.conversationId]);
 
   /* =====================================
       QUICK ACTION HANDLERS
