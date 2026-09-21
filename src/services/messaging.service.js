@@ -2,38 +2,42 @@ import { supabase } from "../lib/supabase";
 
 /*
 |--------------------------------------------------------------------------
-| Auto Archive Expired Conversations
+| Archive Conversation
 |--------------------------------------------------------------------------
 |
-| Active conversations are automatically archived after 24 hours
-| without a new message.
+| Archiving is now manual. After a delivery is complete, the admin can
+| select a conversation and archive it intentionally.
 |
 */
 
-export async function archiveExpiredConversations() {
-  try {
-    const cutoff = new Date(
-      Date.now() - 24 * 60 * 60 * 1000
-    ).toISOString();
-
-    const { error } = await supabase
-      .from("conversations")
-      .update({
-        status: "archived",
-        archived_at: new Date().toISOString(),
-      })
-      .eq("status", "active")
-      .lte("last_message_at", cutoff);
-
-    if (error) {
-      throw error;
-    }
-  } catch (error) {
-    console.error(
-      "archiveExpiredConversations()",
-      error
+export async function archiveConversation(
+  conversationId
+) {
+  if (!conversationId) {
+    throw new Error(
+      "conversationId is required."
     );
   }
+
+  const { data, error } = await supabase
+    .from("conversations")
+    .update({
+      status: "archived",
+      archived_at: new Date().toISOString(),
+    })
+    .eq("id", conversationId)
+    .select()
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
+export async function archiveExpiredConversations() {
+  return null;
 }
 
 /*
@@ -110,7 +114,7 @@ export async function getConversations(
 
       supabase
         .from("messages")
-        .select("conversation_id, sender_type"),
+        .select("conversation_id, sender_type, created_at"),
     ]);
 
     /*
@@ -163,22 +167,44 @@ export async function getConversations(
     const messages =
       messagesResult.data ?? [];
 
-    const customerMessageConversationIds =
+    const latestSenderByConversation = {};
+
+    messages.forEach((message) => {
+      const conversationId = String(
+        message?.conversation_id ?? ""
+      );
+
+      if (!conversationId) {
+        return;
+      }
+
+      const current = latestSenderByConversation[conversationId];
+      const currentTime = current?.created_at
+        ? new Date(current.created_at).getTime()
+        : -Infinity;
+      const incomingTime = message?.created_at
+        ? new Date(message.created_at).getTime()
+        : -Infinity;
+
+      if (!current || incomingTime > currentTime) {
+        latestSenderByConversation[conversationId] = message;
+      }
+    });
+
+    const supportMessageConversationIds =
       new Set(
         messages
-          .filter(
-            (message) =>
-              String(
-                message?.sender_type || ""
-              )
-                .toLowerCase()
-                .trim() === "customer"
-          )
-          .map(
-            (message) =>
-              String(
-                message.conversation_id
-              )
+          .filter((message) => {
+            const senderType = String(
+              message?.sender_type || ""
+            )
+              .toLowerCase()
+              .trim();
+
+            return ["customer", "driver", "admin"].includes(senderType);
+          })
+          .map((message) =>
+            String(message.conversation_id)
           )
       );
 
@@ -194,7 +220,7 @@ export async function getConversations(
         return (
           String(conversation.id) ===
             String(requestedConversationId) ||
-          customerMessageConversationIds.has(
+          supportMessageConversationIds.has(
             String(conversation.id)
           )
         );
@@ -457,6 +483,17 @@ export async function getConversations(
         |--------------------------------------------------------------------------
         */
 
+        const latestSender =
+          latestSenderByConversation[
+            String(conversation.id)
+          ] || null;
+
+        const latestSenderType = String(
+          latestSender?.sender_type || ""
+        )
+          .toLowerCase()
+          .trim();
+
         return {
           ...conversation,
 
@@ -481,6 +518,8 @@ export async function getConversations(
           customerId,
 
           customerName,
+
+          latestSenderType,
 
           customerPhone:
             customer.phone ||
@@ -655,6 +694,13 @@ export async function sendMessage({
   |--------------------------------------------------------------------------
   */
 
+  const localDisplayTime =
+    new Date().toLocaleTimeString([], {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+
   const { data, error } =
     await supabase
       .from("messages")
@@ -670,6 +716,9 @@ export async function sendMessage({
 
         message:
           message.trim(),
+
+        sent_local_time:
+          localDisplayTime,
       })
       .select()
       .single();
@@ -803,6 +852,19 @@ export async function createConversation(
     );
   }
 
+  const customerIds = [
+    order.customer_id,
+    order.user_id,
+    order.customer_user_id,
+    order.customer_profile_id,
+    order.customerProfileId,
+  ].filter((value) =>
+    value !== null && value !== undefined && value !== ""
+  );
+
+  const normalizedCustomerId =
+    customerIds[0] ?? null;
+
   /*
   |--------------------------------------------------------------------------
   | Look for Existing Delivery Conversation
@@ -888,13 +950,18 @@ export async function createConversation(
       .from("conversations")
       .select("*")
       .eq(
-        "customer_id",
-        order.customer_id
-      )
-      .eq(
         "conversation_type",
         "delivery"
       )
+      .or(
+        normalizedCustomerId
+          ? `customer_id.eq.${normalizedCustomerId},order_id.eq.${order.id}`
+          : `order_id.eq.${order.id}`
+      )
+      .order("created_at", {
+        ascending: false,
+      })
+      .limit(1)
       .maybeSingle();
 
   if (existingCustomerError) {
@@ -963,7 +1030,7 @@ export async function createConversation(
     .from("conversations")
     .insert({
       customer_id:
-        order.customer_id,
+        normalizedCustomerId,
 
       driver_id:
         order.driver_id ||

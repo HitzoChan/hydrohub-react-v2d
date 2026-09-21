@@ -32,9 +32,13 @@ export default function ConversationList({
   const formatTime = (date) => {
     if (!date) return "";
 
-    const d = new Date(date);
+    const parsedDate = new Date(date);
 
-    return d.toLocaleDateString([], {
+    if (Number.isNaN(parsedDate.getTime())) {
+      return "";
+    }
+
+    return parsedDate.toLocaleDateString([], {
       month: "short",
       day: "numeric",
     });
@@ -103,117 +107,161 @@ export default function ConversationList({
             </div>
 
           ) : (
+            filteredConversations.map((conversation) => {
+              const isSupportThread =
+                conversation?.conversationType === "support" ||
+                conversation?.conversation_type === "support";
 
-            filteredConversations.map((conversation) => (
+              const latestSenderType = String(
+                conversation?.latestSenderType || ""
+              )
+                .toLowerCase()
+                .trim();
 
-              <div
-                key={conversation.id}
-                className={`conversation-card ${
-                  selectedConversation?.id === conversation.id
-                    ? "active"
-                    : ""
-                }`}
-                onClick={() =>
-                  setSelectedConversation(conversation)
-                }
-              >
+              const customerIdentity =
+                conversation?.customerName ||
+                conversation?.customer?.full_name ||
+                conversation?.customer?.name;
 
-                {/* Avatar */}
+              const driverIdentity =
+                conversation?.driverName ||
+                conversation?.driver?.name ||
+                conversation?.driver?.full_name;
 
-                <div className="conversation-avatar">
+              const isDriverThread =
+                latestSenderType === "driver" ||
+                (!isSupportThread && Boolean(driverIdentity) && !customerIdentity);
 
-                  {conversation.customerName
-                    ?.charAt(0)
-                    ?.toUpperCase()}
+              const threadName = isDriverThread
+                ? driverIdentity || "Driver"
+                : isSupportThread
+                ? customerIdentity || driverIdentity || "Station Support"
+                : customerIdentity || "Customer";
 
-                  <span
-                    className={
-                      conversation.driverStatus ===
-                      "available"
-                        ? "online-indicator"
-                        : "offline-indicator"
-                    }
-                  />
+              const threadRoleLabel = isDriverThread
+                ? "Driver"
+                : isSupportThread
+                ? "Support"
+                : "Driver";
 
-                </div>
+              return (
+                <div
+                  key={conversation.id}
+                  className={`conversation-card ${
+                    selectedConversation?.id === conversation.id
+                      ? "active"
+                      : ""
+                  }`}
+                  onClick={() =>
+                    setSelectedConversation(conversation)
+                  }
+                >
 
-                {/* Content */}
+                  {/* Avatar */}
 
-                <div className="conversation-content">
+                  <div className="conversation-avatar">
 
-                  {/* Top Row */}
+                    {conversation.customerName
+                      ?.charAt(0)
+                      ?.toUpperCase()}
 
-                  <div className="conversation-top">
-
-                    <h6 className="conversation-name">
-
-                      {conversation.customerName}
-
-                    </h6>
-
-                    <span className="conversation-date">
-
-                      {formatTime(
-                        conversation.last_message_at
-                      )}
-
-                    </span>
-
-                  </div>
-
-                  {/* Driver */}
-
-                  <div className="conversation-driver">
-
-                    🚚 {conversation.driverName}
-
-                  </div>
-
-                  {/* Last Message */}
-
-                  <div className="conversation-last-message">
-
-                    {conversation.last_message ||
-                      "No messages yet"}
+                    <span
+                      className={
+                        conversation.driverStatus ===
+                        "available"
+                          ? "online-indicator"
+                          : "offline-indicator"
+                      }
+                    />
 
                   </div>
 
-                  {/* Bottom */}
+                  {/* Content */}
 
-                  <div className="conversation-footer">
+                  <div className="conversation-content">
 
-                    <div className="conversation-right">
+                    {/* Top Row */}
 
-                      <span className="conversation-price">
+                    <div className="conversation-top">
 
-                        ₱
-                        {Number(
-                          conversation.totalPrice ?? 0
-                        ).toLocaleString()}
+                      <div className="conversation-name-wrap">
+                        <h6 className="conversation-name">
+                          {threadName}
+                        </h6>
 
+                        {threadRoleLabel === "Support" && (
+                          <span className="conversation-role-tag support">Support</span>
+                        )}
+
+                        {threadRoleLabel === "Driver" && (
+                          <span className="conversation-role-tag driver">Driver</span>
+                        )}
+                      </div>
+
+                      <span className="conversation-date">
+                        {formatTime(
+                          conversation.last_message_at
+                        )}
                       </span>
 
-                      {(conversation.unreadCount ?? 0) >
-                        0 && (
+                    </div>
 
-                        <span className="conversation-unread">
+                    {/* Driver */}
 
-                          {conversation.unreadCount}
+                    {!isSupportThread && (
+                      <div className="conversation-driver">
 
-                        </span>
+                        🚚 {conversation.driverName || "Unassigned"}
 
-                      )}
+                      </div>
+                    )}
+
+                    {/* Last Message */}
+
+                    <div className="conversation-last-message">
+
+                      {conversation.last_message ||
+                        "No messages yet"}
+
+                    </div>
+
+                    {/* Bottom */}
+
+                    <div className="conversation-footer">
+
+                      <div className="conversation-right">
+
+                        {!isSupportThread && (
+                          <span className="conversation-price">
+
+                            ₱
+                            {Number(
+                              conversation.totalPrice ?? 0
+                            ).toLocaleString()}
+
+                          </span>
+                        )}
+
+                        {(conversation.unreadCount ?? 0) >
+                          0 && (
+
+                          <span className="conversation-unread">
+
+                            {conversation.unreadCount}
+
+                          </span>
+
+                        )}
+
+                      </div>
 
                     </div>
 
                   </div>
 
                 </div>
-
-              </div>
-
-            ))
-
+              );
+            })
           )}
 
         </div>

@@ -118,15 +118,6 @@ export default function OperationsOverview({
 
             <div className="report-operations-grid">
                 <div className="report-operation-chart">
-                    <h3>Order Status</h3>
-                    <div className="report-operation-canvas">
-                        {Object.keys(operations.statusCounts || {}).length > 0
-                            ? <canvas ref={orderCanvasRef} />
-                            : <span>No order data for this period.</span>}
-                    </div>
-                </div>
-
-                <div className="report-operation-chart">
                     <h3>Deliveries by Driver</h3>
                     <div className="report-operation-canvas">
                         {(operations.drivers || []).length > 0

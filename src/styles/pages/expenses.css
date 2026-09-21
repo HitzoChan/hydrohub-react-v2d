@@ -1417,6 +1417,21 @@
     appearance: auto;
 }
 
+.expense-driver-toggle {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 7px !important;
+    cursor: pointer;
+}
+
+.expense-driver-toggle input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    accent-color: #2563eb;
+}
+
 .expense-form-field textarea {
     min-height: 95px;
 

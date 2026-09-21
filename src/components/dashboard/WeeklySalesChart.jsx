@@ -2,25 +2,26 @@ import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  BarElement,
+  LineElement,
+  PointElement,
+  Filler,
   Tooltip,
   Legend,
 } from "chart.js";
 
-import ChartDataLabels from "chartjs-plugin-datalabels";
-
-import { Bar } from "react-chartjs-2";
+import { Line } from "react-chartjs-2";
 
 ChartJS.register(
   CategoryScale,
   LinearScale,
-  BarElement,
+  LineElement,
+  PointElement,
+  Filler,
   Tooltip,
   Legend,
-  ChartDataLabels
 );
 
-function WeeklySalesChart({ sales = [] }) {
+function WeeklySalesChart({ sales = [], monthlySales = [], period = "weekly" }) {
 
   /*
   |--------------------------------------------------------------------------
@@ -48,10 +49,21 @@ function WeeklySalesChart({ sales = [] }) {
     (_, index) => Number(sales?.[index] || 0)
   );
 
-  const totalWeeklySales = weeklySales.reduce(
-    (sum, value) => sum + value,
-    0
+  const monthlyValues = Array.from(
+    { length: 12 },
+    (_, index) => Number(monthlySales?.[index] || 0)
   );
+  const now = new Date();
+  const currentMonthIndex = now.getMonth();
+  const monthlyLabels = Array.from({ length: 12 }, (_, index) => {
+    const date = new Date(now.getFullYear(), currentMonthIndex + index, 1);
+    return date.toLocaleDateString("en-US", { month: "short" });
+  });
+  const values = period === "weekly" ? weeklySales : monthlyValues;
+  const labels = period === "weekly"
+    ? ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+    : monthlyLabels;
+  const totalSales = values.reduce((sum, value) => sum + value, 0);
 
   /*
   |--------------------------------------------------------------------------
@@ -60,37 +72,40 @@ function WeeklySalesChart({ sales = [] }) {
   */
 
   const data = {
-    labels: [
-      "Mon",
-      "Tue",
-      "Wed",
-      "Thu",
-      "Fri",
-      "Sat",
-      "Sun",
-    ],
+    labels,
 
     datasets: [
       {
         label: "Revenue",
+        data: values,
+        borderColor: "#0f766e",
+        borderWidth: 3,
+        pointBackgroundColor: "#0f766e",
+        pointBorderColor: "#ffffff",
+        pointBorderWidth: 2,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        tension: 0.42,
+        fill: true,
+        backgroundColor: (context) => {
+          const chart = context.chart;
+          const { chartArea } = chart;
 
-        data: weeklySales,
+          if (!chartArea) {
+            return "rgba(15, 118, 110, 0.18)";
+          }
 
-        backgroundColor: [
-          "#2563eb",
-          "#3b82f6",
-          "#60a5fa",
-          "#2563eb",
-          "#3b82f6",
-          "#60a5fa",
-          "#2563eb",
-        ],
-
-        borderRadius: 12,
-
-        borderSkipped: false,
-
-        maxBarThickness: 42,
+          const gradient = chart.ctx.createLinearGradient(
+            0,
+            chartArea.top,
+            0,
+            chartArea.bottom
+          );
+          gradient.addColorStop(0, "rgba(20, 184, 166, 0.72)");
+          gradient.addColorStop(0.55, "rgba(15, 118, 110, 0.34)");
+          gradient.addColorStop(1, "rgba(15, 118, 110, 0.04)");
+          return gradient;
+        },
       },
     ],
   };
@@ -157,39 +172,6 @@ function WeeklySalesChart({ sales = [] }) {
 
       },
 
-      datalabels: {
-
-        anchor: "end",
-
-        align: "top",
-
-        color: "#2563eb",
-
-        font: {
-          weight: "bold",
-          size: 11,
-        },
-
-        formatter(value) {
-
-          if (!value || value <= 0) {
-            return "";
-          }
-
-          return (
-            "₱" +
-            Number(value).toLocaleString(
-              "en-PH",
-              {
-                maximumFractionDigits: 0,
-              }
-            )
-          );
-
-        },
-
-      },
-
     },
 
     scales: {
@@ -203,6 +185,14 @@ function WeeklySalesChart({ sales = [] }) {
         ticks: {
 
           color: "#64748b",
+
+          autoSkip: false,
+          maxRotation: 0,
+          minRotation: 0,
+
+          callback(value, index) {
+            return labels[index];
+          },
 
           font: {
             weight: "600",
@@ -273,7 +263,7 @@ function WeeklySalesChart({ sales = [] }) {
               fontSize: "12px",
             }}
           >
-            Total Revenue This Week
+            Total Revenue This {period === "weekly" ? "Week" : "Year"}
           </small>
 
           <div
@@ -284,7 +274,7 @@ function WeeklySalesChart({ sales = [] }) {
             }}
           >
             ₱
-            {totalWeeklySales.toLocaleString(
+            {totalSales.toLocaleString(
               "en-PH",
               {
                 minimumFractionDigits: 2,
@@ -306,7 +296,7 @@ function WeeklySalesChart({ sales = [] }) {
         }}
       >
 
-        <Bar
+        <Line
           data={data}
           options={options}
         />

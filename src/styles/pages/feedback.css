@@ -989,6 +989,120 @@
 }
 
 
+.feedback-admin-reply-box {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    margin-top: 10px;
+    margin-bottom: 14px;
+    padding: 12px;
+
+    border: 1px solid #dbeafe;
+    border-radius: 10px;
+
+    background: #f8fbff;
+}
+
+.feedback-admin-reply-header {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    color: #1d4ed8;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.feedback-admin-reply-box textarea {
+    width: 100%;
+    min-height: 96px;
+    resize: vertical;
+
+    padding: 10px 12px;
+
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+
+    background: #ffffff;
+    color: #0f172a;
+
+    font: inherit;
+}
+
+.feedback-admin-reply-box textarea:focus {
+    outline: 2px solid rgba(37, 99, 235, 0.15);
+    border-color: #60a5fa;
+}
+
+.feedback-reply-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.feedback-reply-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 38px;
+    padding: 0 16px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: #2563eb;
+    color: #ffffff;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: filter 0.2s ease;
+}
+
+.feedback-reply-button:hover:not(:disabled) {
+    filter: brightness(0.96);
+}
+
+.feedback-reply-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.feedback-reply-error {
+    color: #dc2626;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.feedback-saved-reply {
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: #edf7ff;
+    border: 1px solid #bfdbfe;
+}
+
+.feedback-saved-reply strong {
+    display: block;
+    margin-bottom: 4px;
+    color: #1d4ed8;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.feedback-saved-reply p {
+    margin: 0;
+    color: #1f2937;
+    font-size: 13px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+}
+
+
 /* =========================================================
    FEEDBACK META
    ========================================================= */

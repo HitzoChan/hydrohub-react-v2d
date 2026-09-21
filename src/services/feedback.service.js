@@ -153,6 +153,13 @@ function normalizeFeedback(
         comment:
             feedback.comment || "",
 
+        admin_reply:
+            feedback.admin_reply || "",
+
+        admin_replied_at:
+            feedback.admin_replied_at ||
+            feedback.replied_at ||
+            null,
 
         created_at:
             feedback.created_at ||
@@ -578,6 +585,73 @@ export async function getFeedback() {
 |
 |--------------------------------------------------------------------------
 */
+
+export async function saveFeedbackReply(
+    feedbackId,
+    replyText
+) {
+    const normalizedReply =
+        String(replyText || "")
+            .trim();
+
+    if (!feedbackId) {
+        throw new Error(
+            "Feedback ID is required."
+        );
+    }
+
+    if (!normalizedReply) {
+        return null;
+    }
+
+    const {
+        data: current,
+        error: fetchError,
+    } = await supabase
+        .from("feedback")
+        .select("admin_reply")
+        .eq("id", feedbackId)
+        .maybeSingle();
+
+    if (fetchError) {
+        throw fetchError;
+    }
+
+    const existingReply =
+        typeof current?.admin_reply === "string"
+            ? current.admin_reply.trim()
+            : "";
+
+    const combinedReply =
+        existingReply
+            ? `${existingReply}\n\n---\n\n${normalizedReply}`
+            : normalizedReply;
+
+    const {
+        data,
+        error,
+    } = await supabase
+        .from("feedback")
+        .update({
+            admin_reply: combinedReply,
+            admin_replied_at: new Date().toISOString(),
+        })
+        .eq("id", feedbackId)
+        .select()
+        .single();
+
+    if (error) {
+        console.error(
+            "[Feedback] Failed to save admin reply:",
+            error
+        );
+
+        throw error;
+    }
+
+    return data;
+}
+
 
 export async function getFeedbackByOrder(
     orderId

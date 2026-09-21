@@ -7,12 +7,15 @@ import Footer from "../components/layout/Footer";
 import DashboardCards from "../components/dashboard/DashboardCards";
 import WeeklySalesChart from "../components/dashboard/WeeklySalesChart";
 import TodayDeliveriesChart from "../components/dashboard/TodayDeliveriesChart";
+import ContainerFlowChart from "../components/dashboard/ContainerFlowChart";
 import RecentTransactions from "../components/dashboard/RecentTransactions";
 
 import {
   getDashboardStats,
   getWeeklySales,
+  getMonthlySales,
   getTodayDeliveries,
+  getContainerFlowStats,
 } from "../services/dashboard.service";
 
 import "../styles/pages/dashboard.css";
@@ -26,6 +29,7 @@ function Dashboard() {
   });
 
   const [weeklySales, setWeeklySales] = useState([]);
+  const [monthlySales, setMonthlySales] = useState([]);
 
   const [deliveryStats, setDeliveryStats] = useState({
     delivered: 0,
@@ -33,6 +37,7 @@ function Dashboard() {
     scheduled: 0,
     cancelled: 0,
   });
+  const [containerFlowStats, setContainerFlowStats] = useState({ weekly: {}, monthly: {} });
 
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState(new Date());
@@ -44,10 +49,13 @@ function Dashboard() {
       try {
         setLoading(true);
 
-const [dashboardStats, sales, deliveries] = await Promise.all([
+const [dashboardStats, sales, monthly, deliveries, weeklyFlow, monthlyFlow] = await Promise.all([
   getDashboardStats(),
   getWeeklySales(),
+  getMonthlySales(),
   getTodayDeliveries(),
+  getContainerFlowStats("weekly"),
+  getContainerFlowStats("monthly"),
 ]);
 
 console.log("Dashboard Stats:", dashboardStats);
@@ -56,11 +64,15 @@ console.log("Today's Deliveries:", deliveries);
 
 setStats(dashboardStats);
 setWeeklySales(sales);
+setMonthlySales(monthly);
 setDeliveryStats(deliveries);
+setContainerFlowStats({ weekly: weeklyFlow, monthly: monthlyFlow });
 
         setStats(dashboardStats);
         setWeeklySales(sales);
+        setMonthlySales(monthly);
         setDeliveryStats(deliveries);
+        setContainerFlowStats({ weekly: weeklyFlow, monthly: monthlyFlow });
         setLastUpdated(new Date());
       } catch (error) {
         console.error("Failed to load dashboard:", error);
@@ -140,12 +152,12 @@ setDeliveryStats(deliveries);
           <div className="row g-4 mb-4">
 
             {/* Weekly Sales */}
-            <div className="col-lg-7 d-flex">
+            <div className="col-lg-6 d-flex">
               <div className="card chart-box p-3 shadow-sm w-100">
 
                 <div className="d-flex justify-content-between align-items-center mb-3">
                   <div>
-                    <h6 className="mb-0">Weekly Sales</h6>
+                        <h6 className="mb-0">Weekly Sales</h6>
 
                     <small className="text-muted">
                       Revenue this week
@@ -153,13 +165,26 @@ setDeliveryStats(deliveries);
                   </div>
                 </div>
 
-                <WeeklySalesChart sales={weeklySales} />
+                <WeeklySalesChart sales={weeklySales} monthlySales={monthlySales} period="weekly" />
 
               </div>
             </div>
 
+            {/* Monthly Sales */}
+            <div className="col-lg-6 d-flex">
+              <div className="card chart-box p-3 shadow-sm w-100">
+                <div className="d-flex justify-content-between align-items-center mb-3">
+                  <div>
+                    <h6 className="mb-0">Monthly Sales</h6>
+                    <small className="text-muted">Revenue over the last 12 months</small>
+                  </div>
+                </div>
+                <WeeklySalesChart sales={weeklySales} monthlySales={monthlySales} period="monthly" />
+              </div>
+            </div>
+
             {/* Today's Deliveries */}
-            <div className="col-lg-5 d-flex">
+            <div className="col-lg-6 d-flex">
               <div className="card chart-box p-3 shadow-sm w-100">
 
                 <div className="d-flex justify-content-between align-items-center mb-3">
@@ -179,6 +204,13 @@ setDeliveryStats(deliveries);
                   cancelled={deliveryStats.cancelled}
                 />
 
+              </div>
+            </div>
+
+            <div className="col-lg-6 d-flex">
+              <div className="card chart-box p-3 shadow-sm w-100">
+                <div className="mb-3"><h6 className="mb-0">Container Movement</h6><small className="text-muted">Gallons by activity</small></div>
+                <ContainerFlowChart stats={containerFlowStats} period="weekly" />
               </div>
             </div>
 

@@ -289,51 +289,13 @@ function AssignDeliveryModal({
 
                       <div className="mb-3">
 
-                        <label className="form-label fw-semibold">
-
-                          Select Driver
-
-                        </label>
-
-                        <select
-                          className="form-select"
-                          value={currentDriver}
-                          onChange={(e) =>
-                            setSelectedDriver(e.target.value)
-                          }
-                        >
-
-                          <option value="">
-                            -- Select Driver --
-                          </option>
-
-                          {drivers
-                            .filter(
-                            (driver) =>
-                                driver.driver_status === "online"
-                            )   
-                          .map((driver) => (
-
-                            <option
-                              key={driver.id}
-                              value={driver.id}
-                            >
-
-                              {driver.name}
-
-                              {driver.driver_status
-                                ? ` (${driver.driver_status})`
-                                : ""}
-
-                            </option>
-
-                          ))}
-
-                        </select>
+                        <div className="text-muted small mb-2">
+                          Click a driver name below to assign this delivery.
+                        </div>
 
                       </div>
 
-                      {drivers.length > 0 && (
+                      {drivers.filter((driver) => driver.driver_status === "online").length > 0 && (
 
                         <div
                           className="border rounded p-3"
@@ -343,60 +305,70 @@ function AssignDeliveryModal({
                           }}
                         >
 
-                          {drivers.map((driver) => (
+                          {drivers
+                            .filter((driver) => driver.driver_status === "online")
+                            .map((driver) => {
 
-                            <div
-                              key={driver.id}
-                              className="d-flex justify-content-between align-items-center border-bottom py-3"
-                            >
+                              const isSelected =
+                                String(currentDriver) === String(driver.id);
 
-                              <div>
-
-                                <div className="fw-semibold">
-
-                                  {driver.name}
-
-                                </div>
-
-                                <small className="text-muted">
-
-                                  {driver.phone || "No Contact Number"}
-
-                                </small>
-
-                              </div>
-
-                              <div className="text-end">
-
-                                <span
-                                  className={`badge ${
-                                    driver.driver_status === "online"
-                                      ? "bg-success"
-                                      : driver.driver_status === "busy"
-                                      ? "bg-warning text-dark"
-                                      : "bg-secondary"
+                              return (
+                                <button
+                                  type="button"
+                                  key={driver.id}
+                                  className={`w-100 d-flex justify-content-between align-items-center border-bottom py-3 px-2 text-start bg-transparent ${
+                                    isSelected ? "border-primary bg-primary-subtle" : "border-0"
                                   }`}
+                                  onClick={() => {
+                                    setSelectedDriver(driver.id);
+                                    onAssign(driver.id);
+                                  }}
+                                  style={{
+                                    borderRadius: "0",
+                                    cursor: "pointer",
+                                  }}
                                 >
 
-                                  {driver.driver_status || "Offline"}
+                                  <div>
 
-                                </span>
+                                    <div className="fw-semibold">
 
-                              </div>
+                                      {driver.name}
 
-                            </div>
+                                    </div>
 
-                          ))}
+                                    <small className="text-muted">
+
+                                      {driver.phone || "No Contact Number"}
+
+                                    </small>
+
+                                  </div>
+
+                                  <div className="text-end">
+
+                                    <span className="badge bg-success">
+
+                                      Online
+
+                                    </span>
+
+                                  </div>
+
+                                </button>
+                              );
+
+                            })}
 
                         </div>
 
                       )}
 
-                      {drivers.length === 0 && (
+                      {drivers.filter((driver) => driver.driver_status === "online").length === 0 && (
 
                         <div className="alert alert-warning">
 
-                          No delivery personnel available.
+                          No online delivery personnel available. Please wait until a driver is online.
 
                         </div>
 
@@ -420,17 +392,6 @@ function AssignDeliveryModal({
               >
 
                 Cancel
-
-              </button>
-
-              <button
-                className="btn btn-primary"
-                onClick={handleSubmit}
-              >
-
-                <i className="bi bi-check-circle me-2"></i>
-
-                Assign Driver
 
               </button>
 

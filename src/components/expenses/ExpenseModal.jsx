@@ -7,6 +7,7 @@ import {
     EXPENSE_CATEGORIES,
     getToday,
 } from "../../services/expenses.service";
+import { getEmployees } from "../../services/employees.service";
 
 
 function ExpenseModal({
@@ -36,9 +37,22 @@ function ExpenseModal({
         notes: "",
     });
 
+    const [employees, setEmployees] = useState([]);
+
 
     const [formError, setFormError] =
         useState("");
+
+    useEffect(() => {
+        if (!isOpen) return;
+
+        getEmployees()
+            .then((data) => setEmployees(data || []))
+            .catch((error) => {
+                console.error("Failed to load employees for expense:", error);
+                setEmployees([]);
+            });
+    }, [isOpen]);
 
 
     /*
@@ -83,6 +97,9 @@ function ExpenseModal({
                     expense.driver ||
                     "",
 
+                driver_enabled:
+                    Boolean(expense.driver_id || expense.driver_name || expense.driver),
+
                 notes:
                     expense.notes ||
                     "",
@@ -108,6 +125,9 @@ function ExpenseModal({
 
                 driver_name:
                     "",
+
+                driver_enabled:
+                    false,
 
                 notes:
                     "",
@@ -142,13 +162,27 @@ function ExpenseModal({
         const {
             name,
             value,
+            type,
+            checked,
         } = event.target;
+
+        if (name === "driver_enabled") {
+            setForm((current) => ({
+                ...current,
+                driver_enabled: checked,
+                driver_id: checked ? current.driver_id : "",
+                driver_name: checked ? current.driver_name : "",
+            }));
+
+            if (formError) setFormError("");
+            return;
+        }
 
 
         setForm(
             (current) => ({
                 ...current,
-                [name]: value,
+                [name]: type === "checkbox" ? checked : value,
             })
         );
 
@@ -572,32 +606,44 @@ function ExpenseModal({
                         ================================================== */}
 
                         <div
-                            className=
-                                "expense-form-field"
+                            className="expense-form-field expense-form-full"
                         >
 
-                            <label
-                                htmlFor=
-                                    "expense-driver"
-                            >
-                                Driver
+                            <label className="expense-driver-toggle">
+                                <input
+                                    type="checkbox"
+                                    name="driver_enabled"
+                                    checked={Boolean(form.driver_enabled)}
+                                    onChange={handleChange}
+                                />
+                                Assign employee to this expense
                             </label>
 
-                            <input
-                                id=
-                                    "expense-driver"
-                                type="text"
-                                name=
-                                    "driver_name"
-                                placeholder=
-                                    "Optional"
-                                value={
-                                    form.driver_name
-                                }
-                                onChange={
-                                    handleChange
-                                }
-                            />
+                            {form.driver_enabled && (
+                                <select
+                                    id="expense-driver"
+                                    name="driver_id"
+                                    value={form.driver_id}
+                                    onChange={(event) => {
+                                        const employee = employees.find(
+                                            (item) => String(item.id) === String(event.target.value)
+                                        );
+                                        setForm((current) => ({
+                                            ...current,
+                                            driver_id: event.target.value,
+                                            driver_name: employee?.name || "",
+                                        }));
+                                    }}
+                                    required
+                                >
+                                    <option value="">Select employee</option>
+                                    {employees.map((employee) => (
+                                        <option key={employee.id} value={employee.id}>
+                                            {employee.name || "Unnamed employee"} - {employee.role || "Employee"}
+                                        </option>
+                                    ))}
+                                </select>
+                            )}
 
                         </div>
 

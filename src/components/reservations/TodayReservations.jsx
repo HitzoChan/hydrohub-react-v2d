@@ -5,9 +5,40 @@ import {
 function TodayReservations({
     reservations = [],
 }) {
-    if (
-        reservations.length === 0
-    ) {
+    const groups = [
+        {
+            key: "pending",
+            label: "Pending",
+            icon: "bi-clock",
+            className: "pending",
+            statuses: ["pending", "scheduled"],
+        },
+        {
+            key: "assigned",
+            label: "Assigned / In Transit",
+            icon: "bi-truck",
+            className: "assigned",
+            statuses: ["assigned", "on_the_way", "on the way", "in_transit"],
+        },
+        {
+            key: "completed",
+            label: "Completed",
+            icon: "bi-check-circle",
+            className: "completed",
+            statuses: ["completed", "delivered"],
+        },
+    ].map((group) => ({
+        ...group,
+        reservations: reservations.filter((reservation) =>
+            group.statuses.includes(
+                String(reservation.status || reservation.reservation_status || "")
+                    .trim()
+                    .toLowerCase()
+            )
+        ),
+    }));
+
+    if (reservations.length === 0) {
         return (
             <div className="reservation-empty-small">
 
@@ -24,12 +55,21 @@ function TodayReservations({
 
 
     return (
-        <div className="today-reservations-list">
+        <div className="reservation-status-groups">
+            {groups.map((group) => (
+                <section key={group.key} className="reservation-status-group">
+                    <div className="reservation-status-group-header">
+                        <strong>
+                            <i className={`bi ${group.icon}`} />
+                            {group.label}
+                        </strong>
+                        <span>{group.reservations.length}</span>
+                    </div>
 
-            {reservations
-                .slice(0, 5)
-                .map(
-                    (reservation) => (
+                    {group.reservations.length === 0 ? (
+                        <p className="reservation-status-group-empty">No reservations</p>
+                    ) : (
+                        group.reservations.map((reservation) => (
                         <div
                             key={
                                 reservation.id
@@ -71,19 +111,10 @@ function TodayReservations({
                             </span>
 
                         </div>
-                    )
-                )}
-
-            {reservations.length >
-                5 && (
-                <div className="today-reservation-more">
-                    +
-                    {reservations.length -
-                        5}{" "}
-                    more reservations
-                </div>
-            )}
-
+                        ))
+                    )}
+                </section>
+            ))}
         </div>
     );
 }

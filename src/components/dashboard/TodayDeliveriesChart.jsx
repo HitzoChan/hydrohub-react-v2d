@@ -20,10 +20,10 @@ function TodayDeliveriesChart({
   cancelled = 0,
   rejected = 0,
 }) {
+  const pendingTotal = pending + scheduled;
   const total =
     delivered +
-    pending +
-    scheduled +
+    pendingTotal +
     cancelled +
     rejected;
 
@@ -31,7 +31,6 @@ function TodayDeliveriesChart({
     labels: [
       "Delivered",
       "Pending",
-      "Scheduled",
       "Cancelled",
       "Rejected",
     ],
@@ -43,8 +42,7 @@ function TodayDeliveriesChart({
             ? [1]
             : [
                 delivered,
-                pending,
-                scheduled,
+                pendingTotal,
                 cancelled,
                 rejected,
               ],
@@ -55,7 +53,6 @@ function TodayDeliveriesChart({
             : [
                 "#22c55e", // Delivered
                 "#f59e0b", // Pending
-                "#3b82f6", // Scheduled
                 "#ef4444", // Cancelled
                 "#8b5cf6", // Rejected
               ],
@@ -162,21 +159,7 @@ function TodayDeliveriesChart({
             ● Pending
           </span>
 
-          <strong>{pending}</strong>
-        </div>
-
-        <div className="d-flex justify-content-between align-items-center mb-2">
-          <span
-            style={{
-              color: "#3b82f6",
-              fontSize: "14px",
-              fontWeight: 500,
-            }}
-          >
-            ● Scheduled
-          </span>
-
-          <strong>{scheduled}</strong>
+          <strong>{pendingTotal}</strong>
         </div>
 
         <div className="d-flex justify-content-between align-items-center mb-2">

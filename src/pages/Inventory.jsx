@@ -14,6 +14,7 @@ import Footer from "../components/layout/Footer";
 
 import InventoryStats from "../components/inventory/InventoryStats";
 import InventoryManagement from "../components/inventory/InventoryManagement";
+import InventoryAdjustmentForm from "../components/inventory/InventoryAdjustmentForm";
 import CustomerContainerTracking from "../components/inventory/CustomerContainerTracking";
 import TransactionHistory from "../components/inventory/TransactionHistory";
 
@@ -1010,6 +1011,11 @@ function Inventory() {
 
             <InventoryStats
               inventory={inventory}
+            />
+
+            <InventoryAdjustmentForm
+              inventory={inventory}
+              onSaved={() => loadInventory(appliedFilters, true)}
             />
 
             {/* =================================================

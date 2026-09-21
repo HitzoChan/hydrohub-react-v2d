@@ -455,7 +455,7 @@ export async function getTodayDeliveries() {
     } = await supabase
       .from("orders")
       .select(
-        "status,created_at,payment_status"
+        "status,created_at,payment_status,delivery_type,reservation_status,scheduled_date"
       );
 
     if (error) {
@@ -486,11 +486,13 @@ export async function getTodayDeliveries() {
         | Only today's orders.
         */
 
-        if (
-          !isToday(
-            order.created_at
-          )
-        ) {
+        const isScheduledReservation =
+          String(order.delivery_type || "").trim().toLowerCase() === "scheduled";
+
+        const isTodayOrder = isToday(order.created_at);
+        const isTodayReservation = isToday(order.scheduled_date);
+
+        if (!isTodayOrder && !isTodayReservation) {
           return;
         }
 
@@ -498,6 +500,21 @@ export async function getTodayDeliveries() {
           normalizeStatus(
             order.status
           );
+
+        const reservationStatus = String(
+          order.reservation_status || ""
+        ).trim().toLowerCase();
+
+        if (
+          isScheduledReservation &&
+          isTodayReservation &&
+          ["pending", "scheduled", "confirmed"].includes(reservationStatus) &&
+          status !== "delivered" &&
+          status !== "cancelled"
+        ) {
+          result.scheduled++;
+          return;
+        }
 
         switch (status) {
           case "delivered":
@@ -536,5 +553,99 @@ export async function getTodayDeliveries() {
       scheduled: 0,
       cancelled: 0,
     };
+  }
+}
+
+export async function getMonthlySales() {
+  try {
+    const { data, error } = await supabase
+      .from("orders")
+      .select("created_at,total_price,status,payment_status")
+      .order("created_at", { ascending: true });
+
+    if (error) throw error;
+
+    const now = new Date();
+    const startYear = now.getFullYear();
+    const startMonthIndex = now.getMonth();
+    const monthly = Array.from({ length: 12 }, () => 0);
+
+    filterValidOrders(data || []).forEach((order) => {
+      if (normalizeStatus(order.status) !== "delivered") return;
+
+      const dateKey = String(order.created_at || "").slice(0, 10);
+      const dateParts = dateKey.split("-").map(Number);
+      const orderYear = dateParts[0];
+      const orderMonthIndex = dateParts[1] - 1;
+
+      if (
+        !Number.isInteger(orderYear) ||
+        !Number.isInteger(orderMonthIndex) ||
+        orderMonthIndex < 0 ||
+        orderMonthIndex > 11
+      ) {
+        return;
+      }
+
+      const index =
+        (orderYear - startYear) * 12 +
+        orderMonthIndex - startMonthIndex;
+
+      if (index >= 0 && index < 12) {
+        monthly[index] += Number(order.total_price || 0);
+      }
+    });
+
+    return monthly;
+  } catch (error) {
+    console.error("Failed to load monthly sales:", error);
+    return Array.from({ length: 12 }, () => 0);
+  }
+}
+
+export async function getContainerFlowStats(period = "weekly") {
+  try {
+    const [{ data: orders, error: ordersError }, { data: returns, error: returnsError }, { data: borrowings, error: borrowingsError }] = await Promise.all([
+      supabase.from("orders").select("created_at,status,new_containers,exchange_containers"),
+      supabase.from("container_returns").select("created_at,returned_quantity,damaged_quantity,missing_quantity"),
+      supabase.from("container_borrowings").select("created_at,borrowed_at,quantity,status"),
+    ]);
+
+    if (ordersError) throw ordersError;
+    if (returnsError) throw returnsError;
+    if (borrowingsError) throw borrowingsError;
+
+    const now = new Date();
+    const start = period === "monthly"
+      ? new Date(now.getFullYear(), now.getMonth(), 1)
+      : new Date(now.getFullYear(), now.getMonth(), now.getDate() - ((now.getDay() + 6) % 7));
+    start.setHours(0, 0, 0, 0);
+    const end = new Date(now);
+    end.setHours(23, 59, 59, 999);
+
+    const inRange = (value) => {
+      const date = new Date(value);
+      return !Number.isNaN(date.getTime()) && date >= start && date <= end;
+    };
+
+    const stats = { newContainers: 0, exchange: 0, borrowed: 0, returned: 0, damaged: 0, missing: 0 };
+
+    (orders || []).filter((order) => normalizeStatus(order.status) === "delivered" && inRange(order.created_at)).forEach((order) => {
+      stats.newContainers += Number(order.new_containers || 0);
+      stats.exchange += Number(order.exchange_containers || 0);
+    });
+    (returns || []).filter((row) => inRange(row.created_at)).forEach((row) => {
+      stats.returned += Number(row.returned_quantity || 0);
+      stats.damaged += Number(row.damaged_quantity || 0);
+      stats.missing += Number(row.missing_quantity || 0);
+    });
+    (borrowings || []).filter((row) => !["cancelled", "requested"].includes(String(row.status || "").toLowerCase()) && inRange(row.borrowed_at || row.created_at)).forEach((row) => {
+      stats.borrowed += Number(row.quantity || 0);
+    });
+
+    return stats;
+  } catch (error) {
+    console.error("Failed to load container flow stats:", error);
+    return { newContainers: 0, exchange: 0, borrowed: 0, returned: 0, damaged: 0, missing: 0 };
   }
 }

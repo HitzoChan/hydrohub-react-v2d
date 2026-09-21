@@ -554,11 +554,20 @@ export function getReservationState(
 */
 
 export function normalizeReservation(order) {
-    const reservationStatus =
+    const orderStatus = normalizeStatus(order?.status);
+    const storedReservationStatus =
         normalizeReservationStatus(
             order?.reservation_status ||
             "scheduled"
         );
+    const reservationStatus =
+        orderStatus === "delivered"
+            ? "completed"
+            : orderStatus === "cancelled"
+                ? "cancelled"
+                : orderStatus === "assigned" || orderStatus === "on_the_way"
+                    ? "confirmed"
+                : storedReservationStatus;
 
     const schedulePeriod =
         getSchedulePeriod(order);
@@ -569,7 +578,7 @@ export function normalizeReservation(order) {
         id: order?.id || "",
 
         customer_id:
-            order?.customer_id || "",
+            order?.customer_id || null,
 
         customer_name:
             order?.customer_name ||
@@ -600,7 +609,7 @@ export function normalizeReservation(order) {
             reservationStatus,
 
         status:
-            normalizeStatus(order?.status),
+            orderStatus,
 
         driver_id:
             order?.driver_id || null,
@@ -1518,9 +1527,24 @@ export function formatLongDate(date) {
 
 export async function createReservation({
     customerId = null,
+    customerType = "existing",
     customerName,
+    exchange_containers = 0,
+    new_containers = 0,
+    borrow_containers = 0,
+    locationAddress = "",
+    latitude = null,
+    longitude = null,
     address = "",
+    province = "",
+    city = "",
+    barangay = "",
+    street = "",
     gallons,
+    productId = null,
+    productName = "",
+    capacity = "",
+    basePrice = 0,
     totalPrice = 0,
     scheduledDate,
     scheduledTime,
@@ -1539,6 +1563,48 @@ export async function createReservation({
         throw new Error("Gallons must be greater than zero.");
     }
 
+    const composedAddress = locationAddress || [
+        address,
+        street,
+        barangay,
+        city,
+        province,
+    ]
+        .filter(Boolean)
+        .join(", ")
+        .replace(/,\s*,/g, ",")
+        .replace(/\s{2,}/g, " ")
+        .trim();
+
+    const resolvedBasePrice = Number(basePrice || 0);
+    const computedTotal = Number(totalPrice) ||
+        (Number.isFinite(resolvedBasePrice) && resolvedBasePrice > 0
+            ? quantity * resolvedBasePrice
+            : 0);
+
+    let resolvedCustomerId = customerId;
+
+    if (!resolvedCustomerId && customerType !== "walkin") {
+        const { data: profile, error: profileError } = await supabase
+            .from("customer_profiles")
+            .select("id, user_id, name")
+            .ilike("name", customerName.trim())
+            .limit(1)
+            .maybeSingle();
+
+        if (profileError) {
+            throw profileError;
+        }
+
+        resolvedCustomerId = profile?.user_id || profile?.id || null;
+    }
+
+    if (!resolvedCustomerId && customerType !== "walkin") {
+        throw new Error(
+            "Select an existing customer account or choose Walk-in customer."
+        );
+    }
+
     const { data: settings, error: settingsError } = await supabase
         .from("system_settings")
         .select("max_active_orders_per_customer")
@@ -1554,16 +1620,18 @@ export async function createReservation({
         Number(settings?.max_active_orders_per_customer) || 3
     );
 
-    let activeOrdersQuery = supabase
-        .from("orders")
-        .select("status, reservation_status");
+    let existingOrders = [];
+    let ordersError = null;
 
-    activeOrdersQuery = customerId
-        ? activeOrdersQuery.eq("customer_id", customerId)
-        : activeOrdersQuery.eq("customer_name", customerName.trim());
+    if (resolvedCustomerId) {
+        const result = await supabase
+            .from("orders")
+            .select("status, reservation_status")
+            .eq("customer_id", resolvedCustomerId);
 
-    const { data: existingOrders, error: ordersError } =
-        await activeOrdersQuery;
+        existingOrders = result.data || [];
+        ordersError = result.error;
+    }
 
     if (ordersError) {
         throw ordersError;
@@ -1593,11 +1661,25 @@ export async function createReservation({
     const { data, error } = await supabase
         .from("orders")
         .insert({
-            customer_id: customerId,
+            customer_id: resolvedCustomerId,
             customer_name: customerName.trim(),
-            address: address.trim(),
+            exchange_containers: Number(exchange_containers) || 0,
+            new_containers: Number(new_containers) || 0,
+            borrow_containers: Number(borrow_containers) || 0,
+            with_exchange: Number(exchange_containers) > 0,
+            borrow_status: Number(borrow_containers) > 0 ? "requested" : "none",
+            borrow_notes: null,
+            exchange_required: Number(exchange_containers) > 0,
+            latitude: Number.isFinite(Number(latitude)) ? Number(latitude) : null,
+            longitude: Number.isFinite(Number(longitude)) ? Number(longitude) : null,
+            payment_method: "COD",
+            address: composedAddress || address.trim(),
             gallons: quantity,
-            total_price: Number(totalPrice) || 0,
+            product_id: productId || null,
+            product_name: productName?.trim() || "",
+            capacity: capacity || "",
+            base_price: resolvedBasePrice,
+            total_price: Number(computedTotal.toFixed(2)),
             delivery_type: "scheduled",
             reservation_status: "pending",
             status: "pending",

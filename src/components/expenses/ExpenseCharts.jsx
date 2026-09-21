@@ -373,6 +373,12 @@ function RevenueExpenseChart({
                                     <stop
                                         offset="0%"
                                         stopColor="#ef4444"
+                                        stopOpacity={0.34}
+                                    />
+
+                                    <stop
+                                        offset="45%"
+                                        stopColor="#f97316"
                                         stopOpacity={0.16}
                                     />
 
@@ -409,6 +415,7 @@ function RevenueExpenseChart({
                             <YAxis
                                 axisLine={false}
                                 tickLine={false}
+                                domain={[0, "auto"]}
                                 tick={{
                                     fill: "#64748b",
                                     fontSize: 10,
@@ -436,11 +443,13 @@ function RevenueExpenseChart({
                             {/* Revenue */}
 
                             <Area
-                                type="monotone"
+                                type="basis"
                                 dataKey="revenue"
                                 name="Revenue"
                                 stroke="#2563eb"
                                 strokeWidth={3}
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
                                 fill="url(#revenueGradient)"
                                 fillOpacity={1}
                                 activeDot={{
@@ -456,11 +465,13 @@ function RevenueExpenseChart({
                             {/* Expenses */}
 
                             <Area
-                                type="monotone"
+                                type="basis"
                                 dataKey="expenses"
                                 name="Expenses"
                                 stroke="#ef4444"
-                                strokeWidth={2.5}
+                                strokeWidth={3}
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
                                 fill="url(#expenseGradient)"
                                 fillOpacity={1}
                                 activeDot={{
@@ -468,7 +479,12 @@ function RevenueExpenseChart({
                                     strokeWidth: 3,
                                     stroke: "#ffffff",
                                 }}
-                                dot={false}
+                                dot={{
+                                    r: 2.5,
+                                    fill: "#ef4444",
+                                    stroke: "#ffffff",
+                                    strokeWidth: 1.5,
+                                }}
                                 connectNulls
                             />
 

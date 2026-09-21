@@ -1,3 +1,27 @@
+.dashboard-chart-period-toggle {
+  display: inline-flex;
+  gap: 4px;
+  margin: 0 10px 8px;
+  padding: 3px;
+  border-radius: 8px;
+  background: #f1f5f9;
+}
+
+.dashboard-chart-period-toggle button {
+  border: 0;
+  border-radius: 6px;
+  padding: 5px 10px;
+  background: transparent;
+  color: #64748b;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.dashboard-chart-period-toggle button.active {
+  background: #ffffff;
+  color: #0f766e;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
+}
 /* =======================
    DASHBOARD PAGE
 ======================= */
@@ -691,4 +715,65 @@
 
     opacity:.85;
 
+}
+
+.container-flow-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #64748b;
+  font-size: 12px;
+  margin-bottom: 12px;
+}
+.container-flow-period-toggle {
+  display: inline-flex;
+  gap: 6px;
+  background: #f1f5f9;
+  border-radius: 8px;
+  padding: 4px;
+}
+.container-flow-toolbar button {
+  border: 0;
+  padding: 5px 10px;
+  border-radius: 6px;
+  background: transparent;
+  color: #64748b;
+  font-size: 11px;
+  cursor: pointer;
+}
+.container-flow-toolbar button.active { background: #ecfeff; color: #0f766e; font-weight: 700; }
+.container-flow-groups {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.container-flow-group {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #f8fafc;
+  padding: 10px;
+}
+.container-flow-group-header {
+  font-size: 12px;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 8px;
+}
+.container-flow-content { display: flex; align-items: center; gap: 8px; min-height: 170px; }
+.container-flow-doughnut { width: 110px; height: 110px; flex: 0 0 110px; }
+.container-flow-legend { flex: 1; font-size: 11px; }
+.container-flow-legend > div { display: flex; justify-content: space-between; align-items: center; margin: 4px 0; }
+.container-flow-legend span { display: inline-flex; align-items: center; gap: 6px; color: #475569; }
+.container-flow-legend strong {
+  min-width: 22px;
+  text-align: right;
+  color: #0f172a;
+  font-weight: 600;
+}
+.container-flow-legend i { width: 8px; height: 8px; border-radius: 50%; }
+
+@media (max-width: 992px) {
+  .container-flow-groups {
+    grid-template-columns: 1fr;
+  }
 }

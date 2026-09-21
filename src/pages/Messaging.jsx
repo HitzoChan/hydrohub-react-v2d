@@ -9,7 +9,7 @@ import ConversationList from "../components/messaging/ConversationList";
 import ChatWindow from "../components/messaging/ChatWindow";
 import ConversationDetails from "../components/messaging/ConversationDetails";
 
-import { getConversations, archiveExpiredConversations, } from "../services/messaging.service";
+import { getConversations } from "../services/messaging.service";
 
 import "../styles/pages/messaging.css";
 
@@ -98,9 +98,6 @@ useEffect(() => {
       refreshInFlight.current = false;
     }
   }
-
-  // Archive expired conversations before the first load.
-  archiveExpiredConversations();
 
   fetchConversations(true);
 

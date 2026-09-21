@@ -1,4 +1,5 @@
 import { supabase } from "../../lib/supabase";
+import { deleteEmployee } from "../../services/employees.service";
 
 export default function EmployeeDetailsDrawer({
   open,
@@ -90,6 +91,28 @@ async function handleDeactivateEmployee() {
     alert(`Employee ${newStatus}.`);
 
     onClose();
+
+}
+
+async function handleDeleteEmployee() {
+
+    if (!employee) return;
+
+    const confirmed = window.confirm(
+        `Delete ${employee.name}? This action cannot be undone.`
+    );
+
+    if (!confirmed) return;
+
+    try {
+        await deleteEmployee(employee.id);
+        await onRefresh?.();
+        alert("Employee deleted successfully.");
+        onClose();
+    } catch (error) {
+        console.error("Failed to delete employee:", error);
+        alert("Unable to delete employee.");
+    }
 
 }
 
@@ -622,6 +645,14 @@ async function handleDeactivateEmployee() {
                   {employee.status?.toLowerCase() === "active"
                     ? "Deactivate Employee"
                     : "Activate Employee"}
+                </button>
+
+                <button
+                  className="btn btn-outline-danger"
+                  onClick={handleDeleteEmployee}
+                >
+                  <i className="bi bi-trash-fill me-2"></i>
+                  Delete Employee
                 </button>
 
               </div>

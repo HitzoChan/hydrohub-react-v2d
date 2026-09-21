@@ -118,11 +118,22 @@ function filterValidOrders(orders = []) {
 */
 
 function normalizePaymentMethod(order) {
-  return String(
+  const paymentMethod = String(
     order?.payment_method || ""
   )
     .trim()
     .toLowerCase();
+
+  // Reservations are station-created COD orders. Older reservations may
+  // have been saved before payment_method was populated.
+  if (
+    !paymentMethod &&
+    String(order?.delivery_type || "").trim().toLowerCase() === "scheduled"
+  ) {
+    return "cod";
+  }
+
+  return paymentMethod;
 }
 
 function normalizePaymentStatus(order) {
@@ -1208,7 +1219,7 @@ export async function assignDriver(
           selected.order_id,
 
         customer_id:
-          selected.customer_id,
+          selected.customer_id || null,
 
         customer_name:
           selected.customerName,
@@ -1251,6 +1262,9 @@ export async function assignDriver(
 
       status:
         "assigned",
+
+      reservation_status:
+        "confirmed",
     })
     .eq(
       "id",
@@ -1574,6 +1588,18 @@ export async function updateDeliveryStatus(
       normalizedStatus,
   };
 
+  if (normalizedStatus === "assigned" || normalizedStatus === "on_the_way") {
+    orderUpdate.reservation_status = "confirmed";
+  }
+
+  if (normalizedStatus === "delivered") {
+    orderUpdate.reservation_status = "completed";
+  }
+
+  if (normalizedStatus === "cancelled") {
+    orderUpdate.reservation_status = "cancelled";
+  }
+
   /*
   |--------------------------------------------------------------------------
   | Remove Driver When Cancelled
@@ -1640,6 +1666,21 @@ export async function updateDeliveryStatus(
       console.error(
         "Failed to update conversation after delivery:",
         conversationError
+      );
+    }
+  }
+
+  if (
+    normalizedStatus === "assigned" ||
+    normalizedStatus === "on_the_way" ||
+    normalizedStatus === "delivered"
+  ) {
+    try {
+      await createConversation(selected.order_id);
+    } catch (error) {
+      console.error(
+        "Failed to ensure delivery conversation exists:",
+        error
       );
     }
   }
@@ -2110,6 +2151,9 @@ export async function cancelDelivery(
 
         driver_id:
           null,
+
+        reservation_status:
+          "cancelled",
       })
       .eq(
         "id",
@@ -2229,6 +2273,9 @@ export async function unassignDriver(
           null,
 
         status:
+          "pending",
+
+        reservation_status:
           "pending",
       })
       .eq(

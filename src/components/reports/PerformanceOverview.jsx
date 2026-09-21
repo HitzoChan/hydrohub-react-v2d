@@ -161,13 +161,15 @@ export default function PerformanceOverview({
 
                                 borderWidth: 3,
 
-                                tension: 0.35,
+                                tension: 0.45,
+
+                                cubicInterpolationMode: "monotone",
 
                                 fill: true,
 
-                                pointRadius: 4,
+                                pointRadius: 0,
 
-                                pointHoverRadius: 5,
+                                pointHoverRadius: 0,
 
                                 pointBackgroundColor: "#2563eb",
 
@@ -193,13 +195,15 @@ export default function PerformanceOverview({
 
                                 borderWidth: 3,
 
-                                tension: 0.35,
+                                tension: 0.45,
+
+                                cubicInterpolationMode: "monotone",
 
                                 fill: true,
 
-                                pointRadius: 4,
+                                pointRadius: 0,
 
-                                pointHoverRadius: 5,
+                                pointHoverRadius: 0,
 
                                 pointBackgroundColor: "#ef4444",
 
@@ -225,13 +229,15 @@ export default function PerformanceOverview({
 
                                 borderWidth: 3,
 
-                                tension: 0.35,
+                                tension: 0.45,
+
+                                cubicInterpolationMode: "monotone",
 
                                 fill: true,
 
-                                pointRadius: 4,
+                                pointRadius: 0,
 
-                                pointHoverRadius: 5,
+                                pointHoverRadius: 0,
 
                                 pointBackgroundColor: "#f59e0b",
 

@@ -1204,8 +1204,9 @@ export async function getOrderStats() {
       (
         order
       ) =>
-        order.delivery_state ===
-        "pending"
+        order.status === "pending" ||
+        order.delivery_state === "pending" ||
+        order.delivery_state === "future"
     ).length;
 
   const due =

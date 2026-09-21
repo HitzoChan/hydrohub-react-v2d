@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     ChevronDown,
     ChevronUp,
@@ -6,6 +6,8 @@ import {
     UserRound,
     Droplets,
 } from "lucide-react";
+
+import { saveFeedbackReply } from "../../services/feedback.service";
 
 /*
 |--------------------------------------------------------------------------
@@ -65,6 +67,29 @@ function FeedbackCard({
         isExpanded,
         setIsExpanded,
     ] = useState(false);
+
+    const [
+        replyDraft,
+        setReplyDraft,
+    ] = useState(
+        feedback?.admin_reply || ""
+    );
+
+    const [
+        savingReply,
+        setSavingReply,
+    ] = useState(false);
+
+    const [
+        replyError,
+        setReplyError,
+    ] = useState("");
+
+    useEffect(() => {
+        setReplyDraft(
+            feedback?.admin_reply || ""
+        );
+    }, [feedback?.admin_reply]);
 
 
     /*
@@ -160,6 +185,12 @@ function FeedbackCard({
               )
             : "No date";
 
+    const replyHistory =
+        (feedback.admin_reply || "")
+            .split(/\n\s*---\s*\n/)
+            .map((entry) => entry.trim())
+            .filter(Boolean);
+
 
     /*
      * Toggle review
@@ -170,6 +201,57 @@ function FeedbackCard({
             (previous) =>
                 !previous
         );
+    }
+
+    async function handleSaveReply(
+        event
+    ) {
+        event.preventDefault();
+
+        const trimmedReply =
+            replyDraft.trim();
+
+        if (!trimmedReply) {
+            setReplyError(
+                "Please enter a reply before saving."
+            );
+            return;
+        }
+
+        try {
+            setSavingReply(true);
+            setReplyError("");
+
+            const updatedFeedback =
+                await saveFeedbackReply(
+                    feedback.id,
+                    trimmedReply
+                );
+
+            if (updatedFeedback?.admin_reply) {
+                feedback.admin_reply =
+                    updatedFeedback.admin_reply;
+                feedback.admin_replied_at =
+                    updatedFeedback.admin_replied_at ||
+                    new Date().toISOString();
+
+                setReplyDraft(
+                    ""
+                );
+            }
+        } catch (error) {
+            console.error(
+                "Failed to save admin reply:",
+                error
+            );
+
+            setReplyError(
+                error?.message ||
+                    "Unable to save the reply right now."
+            );
+        } finally {
+            setSavingReply(false);
+        }
     }
 
 
@@ -322,6 +404,69 @@ function FeedbackCard({
                         </div>
                     )}
 
+
+                    {/* ==================================================
+                        ADMIN REPLY
+                    ================================================== */}
+
+                    <div className="feedback-admin-reply-box">
+                        <div className="feedback-admin-reply-header">
+                            <MessageCircle
+                                size={15}
+                            />
+                            <span>Admin Response</span>
+                        </div>
+
+                        {replyHistory.length > 0 && (
+                            <div className="feedback-replies-history">
+                                {replyHistory.map((reply, index) => (
+                                    <div
+                                        key={`${feedback.id}-reply-${index}`}
+                                        className="feedback-saved-reply"
+                                    >
+                                        <strong>
+                                            {index === 0 ? "Last reply:" : `Reply ${index + 1}:`}
+                                        </strong>
+                                        <p>{reply}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        <textarea
+                            value={replyDraft}
+                            onChange={(event) => {
+                                setReplyDraft(
+                                    event.target.value
+                                );
+                                setReplyError("");
+                            }}
+                            placeholder="Write a reply to this customer..."
+                            rows={4}
+                        />
+
+                        {replyError && (
+                            <small className="feedback-reply-error">
+                                {replyError}
+                            </small>
+                        )}
+
+                        <div className="feedback-reply-actions">
+                            <button
+                                type="button"
+                                className="feedback-reply-button"
+                                onClick={handleSaveReply}
+                                disabled={
+                                    savingReply ||
+                                    !replyDraft.trim()
+                                }
+                            >
+                                {savingReply
+                                    ? "Saving..."
+                                    : "Save Reply"}
+                            </button>
+                        </div>
+                    </div>
 
                     {/* ==================================================
                         ORDER INFORMATION

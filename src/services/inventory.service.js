@@ -1264,6 +1264,52 @@ function getBorrowingReturnTotals(
 |--------------------------------------------------------------------------
 */
 
+export async function getInventoryAdjustments({ toDate = "" } = {}) {
+  const { data, error } = await supabase
+    .from("inventory_adjustments")
+    .select("*")
+    .order("created_at", { ascending: true });
+
+  if (error) throw error;
+
+  const cutoff = getEndOfDay(toDate);
+  return (data || []).filter((adjustment) => {
+    if (cutoff === null) return true;
+    const time = new Date(adjustment.created_at).getTime();
+    return Number.isFinite(time) && time <= cutoff;
+  });
+}
+
+export async function createInventoryAdjustment({
+  productId,
+  capacity,
+  adjustmentType,
+  quantity,
+  notes = "",
+} = {}) {
+  const normalizedQuantity = Math.floor(Number(quantity) || 0);
+  const allowedTypes = ["new_purchase", "repaired", "recovered"];
+
+  if (!productId || !capacity) throw new Error("Product is required.");
+  if (!allowedTypes.includes(adjustmentType)) throw new Error("Invalid adjustment type.");
+  if (normalizedQuantity <= 0) throw new Error("Quantity must be greater than zero.");
+
+  const { data, error } = await supabase
+    .from("inventory_adjustments")
+    .insert({
+      product_id: productId,
+      capacity,
+      adjustment_type: adjustmentType,
+      quantity: normalizedQuantity,
+      notes: notes.trim() || null,
+    })
+    .select("*")
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
 export async function getInventory(
   filters = {}
 ) {
@@ -1277,12 +1323,14 @@ export async function getInventory(
     allReturns,
     allDeliveries,
     allBorrowings,
+    allAdjustments,
   ] = await Promise.all([
     getInventoryConfiguration(),
     getOrders(),
     getContainerReturns(),
     getDeliveries(),
     getContainerBorrowings(),
+    getInventoryAdjustments({ toDate }),
   ]);
 
   const cutoffTimestamp =
@@ -1969,6 +2017,27 @@ export async function getInventory(
       */
     }
   );
+
+  allAdjustments.forEach((adjustment) => {
+    const item = findInventory(adjustment.capacity);
+    const quantity = Math.max(0, Math.floor(Number(adjustment.quantity) || 0));
+    const type = String(adjustment.adjustment_type || "").toLowerCase();
+
+    if (!item || quantity <= 0) return;
+
+    if (type === "new_purchase") {
+      item.total += quantity;
+      item.full += quantity;
+    } else if (type === "repaired") {
+      const restored = Math.min(quantity, item.damaged);
+      item.damaged -= restored;
+      item.full += restored;
+    } else if (type === "recovered") {
+      const restored = Math.min(quantity, item.missing);
+      item.missing -= restored;
+      item.full += restored;
+    }
+  });
 
   /*
   |--------------------------------------------------------------------------
@@ -2746,12 +2815,14 @@ export async function getContainerIssueRecords(
     deliveryRows,
     borrowingRows,
     employees,
+    adjustments,
   ] = await Promise.all([
     getContainerReturns(),
     getOrders(),
     getDeliveries(),
     getContainerBorrowings(),
     getEmployees(),
+    getInventoryAdjustments({ toDate }),
   ]);
 
   const driverMap =
@@ -3177,6 +3248,39 @@ export async function getContainerIssueRecords(
       }
     }
   );
+
+  const resolvedIssues = new Map();
+
+  adjustments.forEach((adjustment) => {
+    const type = String(adjustment.adjustment_type || "").toLowerCase();
+    const issueType = type === "repaired" ? "DAMAGED" : type === "recovered" ? "MISSING" : "";
+
+    if (!issueType) return;
+
+    const key = `${normalizeCapacity(adjustment.capacity)}::${issueType}`;
+    resolvedIssues.set(
+      key,
+      (resolvedIssues.get(key) || 0) + Math.max(0, Number(adjustment.quantity) || 0)
+    );
+  });
+
+  records.forEach((record) => {
+    const key = `${normalizeCapacity(record.capacity)}::${record.issue_type}`;
+    const availableResolution = resolvedIssues.get(key) || 0;
+    const resolvedQuantity = Math.min(availableResolution, Number(record.quantity) || 0);
+
+    if (resolvedQuantity > 0) {
+      record.quantity = Math.max(0, Number(record.quantity) - resolvedQuantity);
+      resolvedIssues.set(key, availableResolution - resolvedQuantity);
+      record.status = record.quantity > 0 ? record.issue_type : "RESOLVED";
+    }
+  });
+
+  for (let index = records.length - 1; index >= 0; index -= 1) {
+    if (Number(records[index].quantity) <= 0) {
+      records.splice(index, 1);
+    }
+  }
 
   records.sort(
     (a, b) =>

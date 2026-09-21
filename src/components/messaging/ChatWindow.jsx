@@ -2,6 +2,7 @@ import EmojiPicker from "emoji-picker-react";
 import { useEffect, useRef, useState } from "react";
 
 import {
+  archiveConversation,
   getMessages,
   sendMessage,
   subscribeMessages,
@@ -47,20 +48,36 @@ export default function ChatWindow({
   // CUSTOMER / DRIVER INFORMATION
   // =========================================================
 
-  const customerName =
+  const customerIdentity =
     conversation?.customerName ||
     conversation?.customer?.full_name ||
-    conversation?.customer?.name ||
-    "Customer";
+    conversation?.customer?.name;
 
-  const driverName =
+  const customerName =
+    customerIdentity || "Customer";
+
+  const driverIdentity =
     conversation?.driverName ||
     conversation?.driver?.name ||
-    conversation?.driver?.full_name ||
-    "Driver";
+    conversation?.driver?.full_name;
 
-  const displayName = isSupport
-    ? supportName
+  const driverName =
+    driverIdentity || "Driver";
+
+  const latestSenderType = String(
+    conversation?.latestSenderType || ""
+  )
+    .toLowerCase()
+    .trim();
+
+  const hasDriverIdentity =
+    latestSenderType === "driver" ||
+    (!isSupport && Boolean(driverIdentity) && !customerIdentity);
+
+  const displayName = hasDriverIdentity
+    ? driverName
+    : isSupport
+    ? customerIdentity || driverIdentity || supportName
     : customerName;
 
   // =========================================================
@@ -75,17 +92,25 @@ export default function ChatWindow({
   // TIME FORMAT
   // =========================================================
 
-  function formatMessageTime(date) {
-    if (!date) return "";
+  function formatMessageTime(messageItem) {
+    if (!messageItem) return "";
 
-    try {
-      return new Intl.DateTimeFormat("en-US", {
-        hour: "numeric",
-        minute: "2-digit",
-      }).format(new Date(date));
-    } catch {
+    if (messageItem.sent_local_time) {
+      return messageItem.sent_local_time;
+    }
+
+    const rawDate =
+      messageItem.created_at || messageItem;
+
+    if (!rawDate) return "";
+
+    const parsedDate = new Date(rawDate);
+
+    if (Number.isNaN(parsedDate.getTime())) {
       return "";
     }
+
+    return parsedDate.toLocaleTimeString();
   }
 
   // =========================================================
@@ -232,6 +257,21 @@ export default function ChatWindow({
     }
   }
 
+  async function handleArchive() {
+    if (!conversationId || isArchived) {
+      return;
+    }
+
+    try {
+      await archiveConversation(conversationId);
+    } catch (error) {
+      console.error(
+        "Failed to archive conversation:",
+        error
+      );
+    }
+  }
+
   // =========================================================
   // EMPTY CONVERSATION
   // =========================================================
@@ -371,6 +411,17 @@ export default function ChatWindow({
           </div>
 
         </div>
+
+        {!isArchived && (
+          <button
+            type="button"
+            className="btn btn-sm btn-outline-secondary"
+            onClick={handleArchive}
+          >
+            <i className="bi bi-archive me-1"></i>
+            Archive
+          </button>
+        )}
 
       </div>
 
@@ -522,10 +573,26 @@ export default function ChatWindow({
                         <i className="bi bi-headset me-1"></i>
                         You
                       </>
-                    ) : isDriver ? (
-                      driverName
                     ) : (
-                      customerName
+                      <>
+                        <span
+                          className={`message-sender-tag ${
+                            isDriver ? "driver" : "customer"
+                          }`}
+                        >
+                          <i
+                            className={`bi ${
+                              isDriver
+                                ? "bi-truck"
+                                : "bi-person"
+                            } me-1`}
+                          ></i>
+                          {isDriver ? "Driver" : "Customer"}
+                        </span>
+                        <span className="message-sender-name">
+                          {isDriver ? driverName : customerName}
+                        </span>
+                      </>
                     )}
 
                   </div>
@@ -549,9 +616,7 @@ export default function ChatWindow({
                     <div className="message-footer">
 
                       <span className="message-time">
-                        {formatMessageTime(
-                          msg.created_at
-                        )}
+                        {formatMessageTime(msg)}
                       </span>
 
                       {isDriver && (

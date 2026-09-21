@@ -10,7 +10,6 @@ import Footer from "../components/layout/Footer";
 
 import ReservationStats from "../components/reservations/ReservationStats";
 import ReservationCalendar from "../components/reservations/ReservationCalendar";
-import ReservationTimeSlots from "../components/reservations/ReservationTimeSlots";
 import TodayReservations from "../components/reservations/TodayReservations";
 import ReservationsTable from "../components/reservations/ReservationsTable";
 import NewReservationModal from "../components/reservations/NewReservationModal";
@@ -75,17 +74,18 @@ function Reservations() {
         setStatusFilter,
     ] = useState("all");
 
+    const [
+        reservationPage,
+        setReservationPage,
+    ] = useState(1);
+
+    const reservationsPerPage = 10;
+
 
     const [
         selectedReservation,
         setSelectedReservation,
     ] = useState(null);
-
-
-    const [
-        selectedTime,
-        setSelectedTime,
-    ] = useState("");
 
 
     const [
@@ -196,23 +196,6 @@ function Reservations() {
         );
 
 
-    const visibleDateReservations =
-        useMemo(
-            () =>
-                selectedTime
-                    ? selectedDateReservations.filter(
-                        (reservation) =>
-                            reservation.scheduled_time ===
-                            selectedTime
-                    )
-                    : selectedDateReservations,
-            [
-                selectedDateReservations,
-                selectedTime,
-            ]
-        );
-
-
     /*
      |--------------------------------------------------------------------------
      | Search / Status Filter
@@ -273,6 +256,17 @@ function Reservations() {
                 search,
                 statusFilter,
             ]
+        );
+
+    const reservationPageCount = Math.max(
+        1,
+        Math.ceil(filteredReservations.length / reservationsPerPage)
+    );
+
+    const paginatedReservations =
+        filteredReservations.slice(
+            (reservationPage - 1) * reservationsPerPage,
+            reservationPage * reservationsPerPage
         );
 
 
@@ -537,9 +531,10 @@ function Reservations() {
                                 placeholder="Search customer, driver, or address..."
                                 value={search}
                                 onChange={(event) =>
-                                    setSearch(
-                                        event.target.value
-                                    )
+                                    (() => {
+                                        setSearch(event.target.value);
+                                        setReservationPage(1);
+                                    })()
                                 }
                             />
 
@@ -551,9 +546,10 @@ function Reservations() {
                                 statusFilter
                             }
                             onChange={(event) =>
-                                setStatusFilter(
-                                    event.target.value
-                                )
+                                (() => {
+                                    setStatusFilter(event.target.value);
+                                    setReservationPage(1);
+                                })()
                             }
                             className="reservation-status-filter"
                         >
@@ -661,51 +657,7 @@ function Reservations() {
                         </section>
 
 
-                        {/* TIME SLOTS */}
-
-                        <section className="reservation-panel">
-
-                            <div className="reservation-panel-header">
-
-                                <div>
-
-                                    <h2>
-                                        Time Slots
-                                    </h2>
-
-                                    <p>
-                                        {
-                                            selectedDate.toLocaleDateString(
-                                                "en-US",
-                                                {
-                                                    month: "short",
-                                                    day: "numeric",
-                                                }
-                                            )
-                                        }
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-
-                            <ReservationTimeSlots
-                                reservations={
-                                    selectedDateReservations
-                                }
-                                selectedTime={
-                                    selectedTime
-                                }
-                                onSelectTime={
-                                    setSelectedTime
-                                }
-                            />
-
-                        </section>
-
-
-                        {/* TODAY / SELECTED DATE */}
+                        {/* SELECTED DATE DELIVERY STATUS */}
 
                         <section className="reservation-panel">
 
@@ -738,7 +690,7 @@ function Reservations() {
 
                             <TodayReservations
                                 reservations={
-                                    visibleDateReservations
+                                    selectedDateReservations
                                 }
                             />
 
@@ -788,18 +740,37 @@ function Reservations() {
                             </div>
 
                         ) : (
+                            <>
+                                <ReservationsTable
+                                    reservations={paginatedReservations}
+                                    onAssignDriver={handleOpenAssignDriver}
+                                    onCancel={handleCancel}
+                                />
 
-                            <ReservationsTable
-                                reservations={
-                                    filteredReservations
-                                }
-                                onAssignDriver={
-                                    handleOpenAssignDriver
-                                }
-                                onCancel={
-                                    handleCancel
-                                }
-                            />
+                                {filteredReservations.length > reservationsPerPage && (
+                                    <div className="reservation-pagination">
+                                        <button
+                                            type="button"
+                                            onClick={() => setReservationPage((page) => Math.max(1, page - 1))}
+                                            disabled={reservationPage === 1}
+                                        >
+                                            <i className="bi bi-chevron-left" />
+                                            Previous
+                                        </button>
+                                        <span>
+                                            Page {Math.min(reservationPage, reservationPageCount)} of {reservationPageCount}
+                                        </span>
+                                        <button
+                                            type="button"
+                                            onClick={() => setReservationPage((page) => Math.min(reservationPageCount, page + 1))}
+                                            disabled={reservationPage >= reservationPageCount}
+                                        >
+                                            Next
+                                            <i className="bi bi-chevron-right" />
+                                        </button>
+                                    </div>
+                                )}
+                            </>
 
                         )}
 

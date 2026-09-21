@@ -425,6 +425,13 @@ function Deliveries() {
   ] = useState("all");
 
   const [
+    deliveryPage,
+    setDeliveryPage,
+  ] = useState(1);
+
+  const deliveriesPerPage = 10;
+
+  const [
     loading,
     setLoading,
   ] = useState(true);
@@ -764,6 +771,16 @@ function Deliveries() {
       status,
     ]);
 
+  const deliveryPageCount = Math.max(
+    1,
+    Math.ceil(filteredDeliveries.length / deliveriesPerPage)
+  );
+
+  const paginatedDeliveries = filteredDeliveries.slice(
+    (deliveryPage - 1) * deliveriesPerPage,
+    deliveryPage * deliveriesPerPage
+  );
+
   /* =======================================================
      ASSIGN DRIVER
   ======================================================= */
@@ -836,6 +853,7 @@ function Deliveries() {
   const resetFilters = () => {
     setSearch("");
     setStatus("all");
+    setDeliveryPage(1);
   };
 
   /* =======================================================
@@ -927,8 +945,14 @@ function Deliveries() {
           <DeliveryFilters
             search={search}
             status={status}
-            onSearch={setSearch}
-            onStatusChange={setStatus}
+            onSearch={(value) => {
+              setSearch(value);
+              setDeliveryPage(1);
+            }}
+            onStatusChange={(value) => {
+              setStatus(value);
+              setDeliveryPage(1);
+            }}
             onReset={resetFilters}
           />
 
@@ -1043,14 +1067,36 @@ function Deliveries() {
                    TABLE
                 ================================================= */
 
-                <DeliveriesTable
-                  deliveries={
-                    filteredDeliveries
-                  }
-                  onAssign={
-                    handleAssign
-                  }
-                />
+                <>
+                  <DeliveriesTable
+                    deliveries={paginatedDeliveries}
+                    onAssign={handleAssign}
+                  />
+
+                  {filteredDeliveries.length > deliveriesPerPage && (
+                    <div className="delivery-pagination">
+                      <button
+                        type="button"
+                        onClick={() => setDeliveryPage((page) => Math.max(1, page - 1))}
+                        disabled={deliveryPage === 1}
+                      >
+                        <i className="bi bi-chevron-left me-1" />
+                        Previous
+                      </button>
+                      <span>
+                        Page {Math.min(deliveryPage, deliveryPageCount)} of {deliveryPageCount}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setDeliveryPage((page) => Math.min(deliveryPageCount, page + 1))}
+                        disabled={deliveryPage >= deliveryPageCount}
+                      >
+                        Next
+                        <i className="bi bi-chevron-right ms-1" />
+                      </button>
+                    </div>
+                  )}
+                </>
 
               )}
 
