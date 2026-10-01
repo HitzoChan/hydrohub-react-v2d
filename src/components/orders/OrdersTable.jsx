@@ -88,57 +88,34 @@ function OrdersTable({
 
   const getStatusBadge = (order) => {
     const status = getDisplayStatus(order);
+    const badgeStyle = {
+      minWidth: "90px",
+      padding: "6px 12px",
+      fontWeight: 600,
+    };
 
-    switch (status) {
-      case "pending":
-        return (
-          <span className="badge rounded-pill bg-warning text-dark">
-            Pending
-          </span>
-        );
+    const statusBadges = {
+      pending: ["bg-warning text-dark", "bi-hourglass-split", "Pending"],
+      assigned: ["bg-info", "bi-person-check-fill", "Assigned"],
+      on_the_way: ["bg-primary", "bi-truck", "On the Way"],
+      delivered: ["bg-success", "bi-check-circle-fill", "Delivered"],
+      cancelled: ["bg-danger", "bi-x-circle-fill", "Cancelled"],
+      rejected: ["bg-danger", "bi-slash-circle-fill", "Rejected"],
+      unknown: ["bg-secondary", "bi-question-circle", "Unknown"],
+    };
 
-      case "assigned":
-        return (
-          <span className="badge rounded-pill bg-info">
-            Assigned
-          </span>
-        );
+    const [colorClass, icon, label] =
+      statusBadges[status] || statusBadges.unknown;
 
-      case "on_the_way":
-        return (
-          <span className="badge rounded-pill bg-primary">
-            On the Way
-          </span>
-        );
-
-      case "delivered":
-        return (
-          <span className="badge rounded-pill bg-success">
-            Delivered
-          </span>
-        );
-
-      case "cancelled":
-        return (
-          <span className="badge rounded-pill bg-danger">
-            Cancelled
-          </span>
-        );
-
-      case "rejected":
-        return (
-          <span className="badge rounded-pill bg-danger">
-            Rejected
-          </span>
-        );
-
-      default:
-        return (
-          <span className="badge rounded-pill bg-secondary">
-            Unknown
-          </span>
-        );
-    }
+    return (
+      <span
+        className={`badge rounded-pill ${colorClass}`}
+        style={badgeStyle}
+      >
+        <i className={`bi ${icon} me-1`} aria-hidden="true" />
+        {label}
+      </span>
+    );
   };
 
   /*
@@ -226,9 +203,9 @@ function OrdersTable({
         <thead className="table-light">
           <tr>
 
-            <th>Order ID</th>
-
             <th>Customer</th>
+
+            <th>Order ID</th>
 
             <th>Gallons</th>
 
@@ -273,25 +250,39 @@ function OrdersTable({
               return (
                 <tr key={order.id}>
 
+                  {/* CUSTOMER */}
+                  <td>
+                    <div className="table-customer-cell">
+                      <span className="table-customer-avatar">
+                        {order.customer_name?.charAt(0)?.toUpperCase() || "C"}
+                        {order.customer_avatar_url && (
+                          <img
+                            src={order.customer_avatar_url}
+                            alt=""
+                            onError={(event) => {
+                              event.currentTarget.style.display = "none";
+                            }}
+                          />
+                        )}
+                      </span>
+                      <span className="table-customer-info">
+                        <strong className="table-customer-name">
+                          {order.customer_name || "Unknown Customer"}
+                        </strong>
+                        {order.phone && (
+                          <small className="text-muted">
+                            {order.phone}
+                          </small>
+                        )}
+                      </span>
+                    </div>
+                  </td>
+
                   {/* ORDER ID */}
                   <td>
                     <span className="badge bg-light text-primary border">
                       {shortOrderId(order.id)}
                     </span>
-                  </td>
-
-                  {/* CUSTOMER */}
-                  <td>
-                    <div className="fw-semibold">
-                      {order.customer_name ||
-                        "Unknown Customer"}
-                    </div>
-
-                    {order.phone && (
-                      <small className="text-muted">
-                        {order.phone}
-                      </small>
-                    )}
                   </td>
 
                   {/* GALLONS */}

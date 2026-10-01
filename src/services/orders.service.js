@@ -741,6 +741,32 @@ export async function getOrders() {
     throw error;
   }
 
+  const {
+    data: customerProfiles,
+    error: customerProfilesError,
+  } = await supabase
+    .from("customer_profiles")
+    .select("id, user_id, avatar_url");
+
+  if (customerProfilesError) {
+    console.warn(
+      "[Orders] Customer profile photos could not be loaded:",
+      customerProfilesError
+    );
+  }
+
+  const customerAvatarById = new Map();
+
+  (customerProfiles || []).forEach((profile) => {
+    if (profile.id) {
+      customerAvatarById.set(String(profile.id), profile.avatar_url || "");
+    }
+
+    if (profile.user_id) {
+      customerAvatarById.set(String(profile.user_id), profile.avatar_url || "");
+    }
+  });
+
   console.log(
     `[Orders] ${
       data?.length || 0
@@ -792,6 +818,9 @@ export async function getOrders() {
       return {
 
         ...order,
+
+        customer_avatar_url:
+          customerAvatarById.get(String(order.customer_id)) || "",
 
         /*
          * Normal order status.

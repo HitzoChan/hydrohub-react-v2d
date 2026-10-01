@@ -11,6 +11,7 @@ import {
 export default function ChatWindow({
   conversation,
   onOpenDetails,
+  onBackToConversations,
 }) {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
@@ -73,6 +74,10 @@ export default function ChatWindow({
   const hasDriverIdentity =
     latestSenderType === "driver" ||
     (!isSupport && Boolean(driverIdentity) && !customerIdentity);
+
+  const profileImageUrl = hasDriverIdentity
+    ? conversation?.driver?.profile_image_url
+    : conversation?.customer?.avatar_url;
 
   const displayName = hasDriverIdentity
     ? driverName
@@ -328,6 +333,16 @@ export default function ChatWindow({
 
       <div className="chat-header">
 
+        <button
+          type="button"
+          className="chat-back-button"
+          onClick={onBackToConversations}
+          aria-label="Back to conversations"
+          title="Back to conversations"
+        >
+          <i className="bi bi-arrow-left" />
+        </button>
+
         <div className="chat-header-left">
 
           <button
@@ -350,9 +365,20 @@ export default function ChatWindow({
               {isSupport ? (
                 <i className="bi bi-headset"></i>
               ) : (
-                customerName
+                displayName
                   ?.charAt(0)
                   ?.toUpperCase()
+              )}
+
+              {!isSupport && profileImageUrl && (
+                <img
+                  className="messaging-profile-image"
+                  src={profileImageUrl}
+                  alt=""
+                  onError={(event) => {
+                    event.currentTarget.style.display = "none";
+                  }}
+                />
               )}
 
               {!isSupport && (
@@ -515,6 +541,9 @@ export default function ChatWindow({
 
             const isCustomer =
               msg.sender_type === "customer";
+            const senderImageUrl = isDriver
+              ? conversation?.driver?.profile_image_url
+              : conversation?.customer?.avatar_url;
 
             return (
               <div
@@ -547,6 +576,17 @@ export default function ChatWindow({
                       customerName
                         ?.charAt(0)
                         ?.toUpperCase()
+                    )}
+
+                    {senderImageUrl && (
+                      <img
+                        className="messaging-profile-image"
+                        src={senderImageUrl}
+                        alt=""
+                        onError={(event) => {
+                          event.currentTarget.style.display = "none";
+                        }}
+                      />
                     )}
 
                   </div>

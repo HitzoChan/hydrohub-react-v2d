@@ -97,7 +97,7 @@ function CustomerStats() {
           key={card.title}
         >
 
-          <div className="card customer-stat-card border-0 shadow-sm h-100">
+          <div className={`card customer-stat-card customer-stat-card-${card.color} h-100`}>
 
             <div className="card-body d-flex justify-content-between align-items-center">
 

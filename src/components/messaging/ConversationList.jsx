@@ -137,6 +137,9 @@ export default function ConversationList({
                 : isSupportThread
                 ? customerIdentity || driverIdentity || "Station Support"
                 : customerIdentity || "Customer";
+              const profileImageUrl = isDriverThread
+                ? conversation?.driver?.profile_image_url
+                : conversation?.customer?.avatar_url;
 
               const threadRoleLabel = isDriverThread
                 ? "Driver"
@@ -161,9 +164,20 @@ export default function ConversationList({
 
                   <div className="conversation-avatar">
 
-                    {conversation.customerName
+                    {threadName
                       ?.charAt(0)
                       ?.toUpperCase()}
+
+                    {profileImageUrl && (
+                      <img
+                        className="messaging-profile-image"
+                        src={profileImageUrl}
+                        alt=""
+                        onError={(event) => {
+                          event.currentTarget.style.display = "none";
+                        }}
+                      />
+                    )}
 
                     <span
                       className={

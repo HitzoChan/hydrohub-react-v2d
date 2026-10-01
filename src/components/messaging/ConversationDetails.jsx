@@ -8,6 +8,21 @@ export default function ConversationDetails({
 
   if (!conversation) return null;
 
+  const customer = conversation.customer || {};
+  const driver = conversation.driver || {};
+  const customerName =
+    customer.full_name || customer.name || conversation.customerName || "Customer";
+  const driverName =
+    driver.name || driver.full_name || conversation.driverName || "Not Assigned";
+  const driverAddress = [
+    driver.street,
+    driver.barangay,
+    driver.city,
+    driver.province,
+  ]
+    .filter(Boolean)
+    .join(", ");
+
   /* ======================================
       QUICK ACTION HELPERS
   ====================================== */
@@ -54,18 +69,29 @@ export default function ConversationDetails({
 
           <div className="drawer-avatar">
 
-            {conversation.customerName
+            {customerName
               ?.charAt(0)
               ?.toUpperCase()}
+
+            {customer.avatar_url && (
+              <img
+                className="messaging-profile-image"
+                src={customer.avatar_url}
+                alt={`${customerName} profile`}
+                onError={(event) => {
+                  event.currentTarget.style.display = "none";
+                }}
+              />
+            )}
 
           </div>
 
           <div>
 
-            <h5>{conversation.customerName}</h5>
+              <h5>{customerName}</h5>
 
             <small>
-              Customer Information
+                Customer and driver profiles
             </small>
 
           </div>
@@ -100,6 +126,17 @@ export default function ConversationDetails({
 
               <i className="bi bi-person-fill"></i>
 
+              {customer.avatar_url && (
+                <img
+                  className="messaging-profile-image"
+                  src={customer.avatar_url}
+                  alt={`${customerName} profile`}
+                  onError={(event) => {
+                    event.currentTarget.style.display = "none";
+                  }}
+                />
+              )}
+
             </div>
 
             <div>
@@ -120,9 +157,9 @@ export default function ConversationDetails({
 
               <span>Name</span>
 
-              <strong>
-                {conversation.customerName || "-"}
-              </strong>
+                <strong>
+                  {customerName}
+                </strong>
 
             </div>
 
@@ -130,9 +167,9 @@ export default function ConversationDetails({
 
               <span>Phone</span>
 
-              <strong>
-                {conversation.customerPhone || "-"}
-              </strong>
+                <strong>
+                  {customer.phone || customer.contact_number || conversation.customerPhone || "-"}
+                </strong>
 
             </div>
 
@@ -140,9 +177,9 @@ export default function ConversationDetails({
 
               <span>Email</span>
 
-              <strong>
-                {conversation.customerEmail || "-"}
-              </strong>
+                <strong>
+                  {customer.email || conversation.customerEmail || "-"}
+                </strong>
 
             </div>
 
@@ -150,9 +187,9 @@ export default function ConversationDetails({
 
               <span>Address</span>
 
-              <strong>
-                {conversation.customerAddress || "-"}
-              </strong>
+                <strong>
+                  {customer.address || customer.complete_address || conversation.customerAddress || "-"}
+                </strong>
 
             </div>
 
@@ -171,6 +208,17 @@ export default function ConversationDetails({
             <div className="details-icon driver">
 
               <i className="bi bi-truck"></i>
+
+              {driver.profile_image_url && (
+                <img
+                  className="messaging-profile-image"
+                  src={driver.profile_image_url}
+                  alt={`${driverName} profile`}
+                  onError={(event) => {
+                    event.currentTarget.style.display = "none";
+                  }}
+                />
+              )}
 
             </div>
 
@@ -192,9 +240,25 @@ export default function ConversationDetails({
 
               <span>Name</span>
 
-              <strong>
-                {conversation.driverName || "Not Assigned"}
-              </strong>
+                <strong>
+                  {driverName}
+                </strong>
+
+            </div>
+
+            <div className="details-row">
+
+              <span>Employee ID</span>
+
+              <strong>{driver.employee_id || "-"}</strong>
+
+            </div>
+
+            <div className="details-row">
+
+              <span>Role</span>
+
+              <strong>{driver.role || "Driver"}</strong>
 
             </div>
 
@@ -202,9 +266,25 @@ export default function ConversationDetails({
 
               <span>Phone</span>
 
-              <strong>
-                {conversation.driverPhone || "-"}
-              </strong>
+                <strong>
+                  {driver.phone || driver.contact_number || conversation.driverPhone || "-"}
+                </strong>
+
+            </div>
+
+            <div className="details-row">
+
+              <span>Email</span>
+
+              <strong>{driver.email || "-"}</strong>
+
+            </div>
+
+            <div className="details-row address">
+
+              <span>Address</span>
+
+              <strong>{driverAddress || "-"}</strong>
 
             </div>
 
@@ -214,14 +294,14 @@ export default function ConversationDetails({
 
               <span
                 className={`status-chip ${
-                  conversation.driverStatus === "available"
+                  (driver.driver_status || driver.status || conversation.driverStatus) === "available"
                     ? "success"
-                    : conversation.driverStatus === "busy"
+                    : (driver.driver_status || driver.status || conversation.driverStatus) === "busy"
                     ? "warning"
                     : "secondary"
                 }`}
               >
-                {conversation.driverStatus || "Unknown"}
+                {driver.driver_status || driver.status || conversation.driverStatus || "Unknown"}
               </span>
 
             </div>

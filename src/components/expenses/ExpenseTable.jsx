@@ -1,3 +1,7 @@
+import { useEffect, useState } from "react";
+
+const ITEMS_PER_PAGE = 10;
+
 function formatCurrency(value) {
     return `₱${Number(
         value || 0
@@ -50,6 +54,8 @@ function ExpenseTable({
     onEdit,
     onDelete,
 }) {
+
+    const [currentPage, setCurrentPage] = useState(1);
 
     const searchValue =
         String(
@@ -146,6 +152,20 @@ function ExpenseTable({
                 );
             }
         );
+
+    const totalPages = Math.max(
+        1,
+        Math.ceil(filteredExpenses.length / ITEMS_PER_PAGE)
+    );
+    const safeCurrentPage = Math.min(currentPage, totalPages);
+    const paginatedExpenses = filteredExpenses.slice(
+        (safeCurrentPage - 1) * ITEMS_PER_PAGE,
+        safeCurrentPage * ITEMS_PER_PAGE
+    );
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [search, category]);
 
 
     /*
@@ -385,7 +405,7 @@ function ExpenseTable({
 
                         ) : (
 
-                            filteredExpenses.map(
+                            paginatedExpenses.map(
                                 (expense) => {
 
                                     const type =
@@ -552,6 +572,34 @@ function ExpenseTable({
                 </table>
 
             </div>
+
+            {filteredExpenses.length > 0 && (
+                <div className="expense-records-pagination">
+                    <button
+                        type="button"
+                        onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+                        disabled={safeCurrentPage === 1}
+                    >
+                        <i className="bi bi-chevron-left me-1" />
+                        Previous
+                    </button>
+
+                    <span>
+                        Page {safeCurrentPage} of {totalPages}
+                    </span>
+
+                    <button
+                        type="button"
+                        onClick={() =>
+                            setCurrentPage((page) => Math.min(totalPages, page + 1))
+                        }
+                        disabled={safeCurrentPage >= totalPages}
+                    >
+                        Next
+                        <i className="bi bi-chevron-right ms-1" />
+                    </button>
+                </div>
+            )}
 
         </section>
     );

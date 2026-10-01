@@ -168,6 +168,7 @@ export async function getConversations(
       messagesResult.data ?? [];
 
     const latestSenderByConversation = {};
+    const latestParticipantByConversation = {};
 
     messages.forEach((message) => {
       const conversationId = String(
@@ -188,6 +189,23 @@ export async function getConversations(
 
       if (!current || incomingTime > currentTime) {
         latestSenderByConversation[conversationId] = message;
+      }
+
+      const senderType = String(message?.sender_type || "")
+        .toLowerCase()
+        .trim();
+
+      if (!["customer", "driver"].includes(senderType)) {
+        return;
+      }
+
+      const currentParticipant = latestParticipantByConversation[conversationId];
+      const currentParticipantTime = currentParticipant?.created_at
+        ? new Date(currentParticipant.created_at).getTime()
+        : -Infinity;
+
+      if (!currentParticipant || incomingTime > currentParticipantTime) {
+        latestParticipantByConversation[conversationId] = message;
       }
     });
 
@@ -483,13 +501,19 @@ export async function getConversations(
         |--------------------------------------------------------------------------
         */
 
+        const conversationId = String(conversation.id);
         const latestSender =
-          latestSenderByConversation[
-            String(conversation.id)
+          latestSenderByConversation[conversationId] || null;
+        const latestParticipant =
+          latestParticipantByConversation[
+            conversationId
           ] || null;
 
         const latestSenderType = String(
-          latestSender?.sender_type || ""
+          (conversation.conversation_type === "support"
+            ? latestParticipant
+            : latestSender
+          )?.sender_type || ""
         )
           .toLowerCase()
           .trim();

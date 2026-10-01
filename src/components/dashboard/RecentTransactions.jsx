@@ -8,16 +8,38 @@ function RecentTransactions() {
   useEffect(() => {
     async function loadTransactions() {
       try {
-        const { data, error } = await supabase
-          .from("orders")
-          .select("*")
-          .order("created_at", {
-            ascending: false,
-          });
+        const [ordersResult, profilesResult] = await Promise.all([
+          supabase
+            .from("orders")
+            .select("*")
+            .order("created_at", { ascending: false }),
+          supabase
+            .from("customer_profiles")
+            .select("id, user_id, avatar_url"),
+        ]);
 
-        if (error) {
-          throw error;
+        if (ordersResult.error) {
+          throw ordersResult.error;
         }
+
+        if (profilesResult.error) {
+          console.warn(
+            "Unable to load customer profile photos for recent transactions:",
+            profilesResult.error
+          );
+        }
+
+        const avatarByCustomerId = new Map();
+
+        (profilesResult.data || []).forEach((profile) => {
+          if (profile.id) {
+            avatarByCustomerId.set(String(profile.id), profile.avatar_url || "");
+          }
+
+          if (profile.user_id) {
+            avatarByCustomerId.set(String(profile.user_id), profile.avatar_url || "");
+          }
+        });
 
         /*
         |--------------------------------------------------------------------------
@@ -28,7 +50,7 @@ function RecentTransactions() {
         |--------------------------------------------------------------------------
         */
 
-        const validTransactions = (data || [])
+        const validTransactions = (ordersResult.data || [])
           .filter((order) => {
             const paymentStatus = String(
               order?.payment_status || ""
@@ -38,7 +60,12 @@ function RecentTransactions() {
 
             return paymentStatus !== "rejected";
           })
-          .slice(0, 10);
+          .slice(0, 10)
+          .map((order) => ({
+            ...order,
+            customer_avatar_url:
+              avatarByCustomerId.get(String(order.customer_id)) || "",
+          }));
 
         setTransactions(
           validTransactions
@@ -215,7 +242,7 @@ function RecentTransactions() {
       <div className="card-body">
 
         {/* Header */}
-        <div className="d-flex justify-content-between align-items-center mb-3">
+        <div className="dashboard-transactions-header d-flex justify-content-between align-items-center mb-3">
 
           <div>
 
@@ -242,7 +269,7 @@ function RecentTransactions() {
           </div>
 
           <small
-            className="text-muted"
+            className="dashboard-transactions-meta text-muted"
             style={{
               fontSize: "12px",
               fontWeight: 500,
@@ -255,58 +282,44 @@ function RecentTransactions() {
 
         {/* Table */}
         <div
-          style={{
-            maxHeight: "300px",
-            overflowY: "auto",
-          }}
+          className="dashboard-transactions-scroll"
+          role="region"
+          aria-label="Recent transactions"
+          tabIndex={0}
         >
 
-          <table className="table table-hover align-middle mb-0">
+          <table className="table table-hover align-middle mb-0 dashboard-transactions-table">
 
             <thead>
 
               <tr>
 
                 <th
-                  style={{
-                    fontSize: "13px",
-                    fontWeight: 500,
-                    color: "#6b7280",
-                    paddingBottom: "12px",
-                  }}
+                  className="dashboard-transaction-heading"
                 >
                   Customer
                 </th>
 
                 <th
-                  style={{
-                    fontSize: "13px",
-                    fontWeight: 500,
-                    color: "#6b7280",
-                    paddingBottom: "12px",
-                  }}
+                  className="dashboard-transaction-heading"
                 >
                   Date
                 </th>
 
                 <th
-                  style={{
-                    fontSize: "13px",
-                    fontWeight: 500,
-                    color: "#6b7280",
-                    paddingBottom: "12px",
-                  }}
+                  className="dashboard-transaction-heading"
+                >
+                  Size
+                </th>
+
+                <th
+                  className="dashboard-transaction-heading"
                 >
                   Amount
                 </th>
 
                 <th
-                  style={{
-                    fontSize: "13px",
-                    fontWeight: 500,
-                    color: "#6b7280",
-                    paddingBottom: "12px",
-                  }}
+                  className="dashboard-transaction-heading"
                 >
                   Status
                 </th>
@@ -322,7 +335,7 @@ function RecentTransactions() {
                 <tr>
 
                   <td
-                    colSpan="4"
+                    colSpan="5"
                     className="text-center text-muted py-4"
                   >
                     No recent transactions.
@@ -340,17 +353,24 @@ function RecentTransactions() {
                     >
 
                       {/* Customer */}
-                      <td
-                        style={{
-                          fontWeight: 500,
-                          fontSize: "14px",
-                          color: "#374151",
-                          padding:
-                            "14px 8px",
-                        }}
-                      >
-                        {order.customer_name ||
-                          "N/A"}
+                      <td className="dashboard-transaction-customer">
+                        <div className="dashboard-transaction-customer-inner">
+                          <span className="dashboard-transaction-avatar">
+                            {order.customer_name?.charAt(0)?.toUpperCase() || "C"}
+                            {order.customer_avatar_url && (
+                              <img
+                                src={order.customer_avatar_url}
+                                alt=""
+                                onError={(event) => {
+                                  event.currentTarget.style.display = "none";
+                                }}
+                              />
+                            )}
+                          </span>
+                          <span className="dashboard-transaction-customer-name">
+                            {order.customer_name || "N/A"}
+                          </span>
+                        </div>
                       </td>
 
                       {/* Date */}
@@ -365,6 +385,11 @@ function RecentTransactions() {
                               order.created_at
                             ).toLocaleDateString()
                           : "N/A"}
+                      </td>
+
+                      {/* Size */}
+                      <td className="dashboard-transaction-size">
+                        {order.capacity || "-"}
                       </td>
 
                       {/* Amount */}

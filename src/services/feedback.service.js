@@ -18,6 +18,16 @@ function toNumber(value, fallback = 0) {
 }
 
 
+function getRoundedOverallRating(item) {
+    return Math.round(
+        (
+            toNumber(item.driver_rating) +
+            toNumber(item.station_rating)
+        ) / 2
+    );
+}
+
+
 /**
  * Safely convert an ID to a string.
  */
@@ -811,20 +821,14 @@ export function calculateFeedbackStatistics(
 
 
     /*
-     * 5-Star Feedback
-     *
-     * Both driver and station must be 5.
+     * 5-Star Feedback uses the same rounded overall score
+     * as the rating distribution.
      */
 
     const fiveStarReviews =
         feedback.filter(
             (item) =>
-                Number(
-                    item.driver_rating
-                ) === 5 &&
-                Number(
-                    item.station_rating
-                ) === 5
+                getRoundedOverallRating(item) === 5
         ).length;
 
 
@@ -879,16 +883,7 @@ export function calculateFeedbackStatistics(
         (item) => {
 
             const overallRating =
-                Math.round(
-                    (
-                        Number(
-                            item.driver_rating
-                        ) +
-                        Number(
-                            item.station_rating
-                        )
-                    ) / 2
-                );
+                getRoundedOverallRating(item);
 
 
             if (

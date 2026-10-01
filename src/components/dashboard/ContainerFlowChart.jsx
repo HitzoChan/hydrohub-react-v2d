@@ -23,7 +23,7 @@ const groups = [
     },
 ];
 
-export default function ContainerFlowChart({ stats = {}, period = "weekly" }) {
+export default function ContainerFlowChart({ stats = {}, period = "weekly", theme = "light" }) {
     const [activePeriod, setActivePeriod] = useState(period);
 
     useEffect(() => {
@@ -60,7 +60,9 @@ export default function ContainerFlowChart({ stats = {}, period = "weekly" }) {
                         labels: group.items.map(([, label]) => label),
                         datasets: [{
                             data: total ? values : [1],
-                            backgroundColor: total ? group.items.map(([, , color]) => color) : ["#e5e7eb"],
+                            backgroundColor: total
+                                ? group.items.map(([, , color]) => color)
+                                : [theme === "dark" ? "#334155" : "#e5e7eb"],
                             borderWidth: 0,
                             hoverOffset: 5,
                         }],

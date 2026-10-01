@@ -21,7 +21,13 @@ ChartJS.register(
   Legend,
 );
 
-function WeeklySalesChart({ sales = [], monthlySales = [], period = "weekly" }) {
+function WeeklySalesChart({ sales = [], monthlySales = [], period = "weekly", theme = "light" }) {
+  const isDark = theme === "dark";
+  const chartTextColor = isDark ? "#cbd5e1" : "#64748b";
+  const chartGridColor = isDark
+    ? "rgba(148, 163, 184, 0.2)"
+    : "#edf2f7";
+  const chartLineColor = isDark ? "#2dd4bf" : "#0f766e";
 
   /*
   |--------------------------------------------------------------------------
@@ -78,9 +84,9 @@ function WeeklySalesChart({ sales = [], monthlySales = [], period = "weekly" }) 
       {
         label: "Revenue",
         data: values,
-        borderColor: "#0f766e",
+        borderColor: chartLineColor,
         borderWidth: 3,
-        pointBackgroundColor: "#0f766e",
+        pointBackgroundColor: chartLineColor,
         pointBorderColor: "#ffffff",
         pointBorderWidth: 2,
         pointRadius: 4,
@@ -92,7 +98,9 @@ function WeeklySalesChart({ sales = [], monthlySales = [], period = "weekly" }) 
           const { chartArea } = chart;
 
           if (!chartArea) {
-            return "rgba(15, 118, 110, 0.18)";
+            return isDark
+              ? "rgba(45, 212, 191, 0.2)"
+              : "rgba(15, 118, 110, 0.18)";
           }
 
           const gradient = chart.ctx.createLinearGradient(
@@ -101,9 +109,9 @@ function WeeklySalesChart({ sales = [], monthlySales = [], period = "weekly" }) 
             0,
             chartArea.bottom
           );
-          gradient.addColorStop(0, "rgba(20, 184, 166, 0.72)");
-          gradient.addColorStop(0.55, "rgba(15, 118, 110, 0.34)");
-          gradient.addColorStop(1, "rgba(15, 118, 110, 0.04)");
+          gradient.addColorStop(0, isDark ? "rgba(45, 212, 191, 0.46)" : "rgba(20, 184, 166, 0.72)");
+          gradient.addColorStop(0.55, isDark ? "rgba(20, 184, 166, 0.24)" : "rgba(15, 118, 110, 0.34)");
+          gradient.addColorStop(1, isDark ? "rgba(15, 118, 110, 0.02)" : "rgba(15, 118, 110, 0.04)");
           return gradient;
         },
       },
@@ -184,7 +192,7 @@ function WeeklySalesChart({ sales = [], monthlySales = [], period = "weekly" }) 
 
         ticks: {
 
-          color: "#64748b",
+          color: chartTextColor,
 
           autoSkip: false,
           maxRotation: 0,
@@ -208,7 +216,7 @@ function WeeklySalesChart({ sales = [], monthlySales = [], period = "weekly" }) 
 
         ticks: {
 
-          color: "#64748b",
+          color: chartTextColor,
 
           callback(value) {
 
@@ -227,7 +235,7 @@ function WeeklySalesChart({ sales = [], monthlySales = [], period = "weekly" }) 
         },
 
         grid: {
-          color: "#edf2f7",
+          color: chartGridColor,
         },
 
       },
@@ -270,7 +278,7 @@ function WeeklySalesChart({ sales = [], monthlySales = [], period = "weekly" }) 
             style={{
               fontSize: "20px",
               fontWeight: 700,
-              color: "#1f2937",
+              color: isDark ? "#f1f5f9" : "#1f2937",
             }}
           >
             ₱

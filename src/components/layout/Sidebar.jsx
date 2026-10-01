@@ -1,11 +1,33 @@
 import { NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getConversations } from "../../services/messaging.service";
+import useAuth from "../../hooks/useAuth";
 import logo from "../../assets/images/logo.png";
 
 function Sidebar() {
+  const navigate = useNavigate();
+  const { logout } = useAuth();
   const [conversationCount, setConversationCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
+  const [theme, setTheme] = useState(() =>
+    localStorage.getItem("hydrohub-theme") === "dark" ? "dark" : "light"
+  );
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    document.documentElement.dataset.bsTheme = theme;
+    localStorage.setItem("hydrohub-theme", theme);
+    document.dispatchEvent(
+      new CustomEvent("hydrohub:theme-change", { detail: { theme } })
+    );
+  }, [theme]);
+
+  function handleLogout() {
+    logout();
+    setIsOpen(false);
+    navigate("/login", { replace: true });
+  }
 
   useEffect(() => {
     const toggleSidebar = () => {
@@ -225,6 +247,47 @@ function Sidebar() {
           <span>Settings</span>
         </NavLink>
       </ul>
+
+      <div className="sidebar-footer">
+        <div className="sidebar-station-profile">
+          <img src={logo} alt="" />
+          <div className="sidebar-station-copy">
+            <strong>Aqua en Lavada</strong>
+            <small>Water Refilling Station</small>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          className="sidebar-logout-button"
+          onClick={handleLogout}
+        >
+          <i className="bi bi-box-arrow-right" aria-hidden="true" />
+          <span>Log out</span>
+        </button>
+
+        <div className="sidebar-theme-control" role="group" aria-label="Website color theme">
+          <button
+            type="button"
+            className={theme === "light" ? "active" : ""}
+            aria-pressed={theme === "light"}
+            onClick={() => setTheme("light")}
+          >
+            <i className="bi bi-sun" aria-hidden="true" />
+            Light
+          </button>
+          <button
+            type="button"
+            className={theme === "dark" ? "active" : ""}
+            aria-pressed={theme === "dark"}
+            onClick={() => setTheme("dark")}
+          >
+            <i className="bi bi-moon-stars" aria-hidden="true" />
+            Dark
+          </button>
+        </div>
+
+      </div>
       </div>
     </>
   );

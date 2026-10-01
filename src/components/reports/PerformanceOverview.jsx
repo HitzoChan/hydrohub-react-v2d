@@ -46,6 +46,13 @@ export default function PerformanceOverview({
 
         return Array.from(grouped.values());
     }, [data, view]);
+
+    const hasActivity = chartData.some((item) =>
+        Number(item.revenue) > 0 ||
+        Number(item.expenses) > 0 ||
+        Number(item.profit) !== 0
+    );
+
     const canvasRef =
         useRef(null);
 
@@ -56,6 +63,10 @@ export default function PerformanceOverview({
         let mounted = true;
 
         async function renderChart() {
+            if (!canvasRef.current || !hasActivity) {
+                return;
+            }
+
             const ChartModule =
                 await import("chart.js/auto");
 
@@ -65,10 +76,6 @@ export default function PerformanceOverview({
 
             const Chart =
                 ChartModule.default;
-
-            if (!canvasRef.current) {
-                return;
-            }
 
             if (chartRef.current) {
                 chartRef.current.destroy();
@@ -89,12 +96,12 @@ export default function PerformanceOverview({
 
             revenueGradient.addColorStop(
                 0,
-                "rgba(37, 99, 235, 0.24)"
+                "rgba(37, 99, 235, 0.34)"
             );
 
             revenueGradient.addColorStop(
                 1,
-                "rgba(37, 99, 235, 0.02)"
+                "rgba(37, 99, 235, 0.05)"
             );
 
             const expenseGradient =
@@ -107,12 +114,12 @@ export default function PerformanceOverview({
 
             expenseGradient.addColorStop(
                 0,
-                "rgba(239, 68, 68, 0.18)"
+                "rgba(239, 68, 68, 0.26)"
             );
 
             expenseGradient.addColorStop(
                 1,
-                "rgba(239, 68, 68, 0.02)"
+                "rgba(239, 68, 68, 0.05)"
             );
 
             const profitGradient =
@@ -125,12 +132,12 @@ export default function PerformanceOverview({
 
             profitGradient.addColorStop(
                 0,
-                "rgba(245, 158, 11, 0.16)"
+                "rgba(245, 158, 11, 0.24)"
             );
 
             profitGradient.addColorStop(
                 1,
-                "rgba(245, 158, 11, 0.02)"
+                "rgba(245, 158, 11, 0.05)"
             );
 
             chartRef.current =
@@ -161,15 +168,15 @@ export default function PerformanceOverview({
 
                                 borderWidth: 3,
 
-                                tension: 0.45,
+                                tension: 0.4,
 
                                 cubicInterpolationMode: "monotone",
 
-                                fill: true,
+                                fill: "origin",
 
-                                pointRadius: 0,
+                                pointRadius: 2,
 
-                                pointHoverRadius: 0,
+                                pointHoverRadius: 5,
 
                                 pointBackgroundColor: "#2563eb",
 
@@ -195,15 +202,15 @@ export default function PerformanceOverview({
 
                                 borderWidth: 3,
 
-                                tension: 0.45,
+                                tension: 0.4,
 
                                 cubicInterpolationMode: "monotone",
 
-                                fill: true,
+                                fill: "origin",
 
-                                pointRadius: 0,
+                                pointRadius: 2,
 
-                                pointHoverRadius: 0,
+                                pointHoverRadius: 5,
 
                                 pointBackgroundColor: "#ef4444",
 
@@ -229,15 +236,15 @@ export default function PerformanceOverview({
 
                                 borderWidth: 3,
 
-                                tension: 0.45,
+                                tension: 0.4,
 
                                 cubicInterpolationMode: "monotone",
 
-                                fill: true,
+                                fill: "origin",
 
-                                pointRadius: 0,
+                                pointRadius: 2,
 
-                                pointHoverRadius: 0,
+                                pointHoverRadius: 5,
 
                                 pointBackgroundColor: "#f59e0b",
 
@@ -370,7 +377,7 @@ export default function PerformanceOverview({
                 chartRef.current = null;
             }
         };
-    }, [chartData]);
+    }, [chartData, hasActivity]);
 
     return (
         <div className="card report-chart-card mb-4">
@@ -405,17 +412,20 @@ export default function PerformanceOverview({
 
             </div>
 
-            <div className="report-chart-container">
+            <div className={`report-chart-container ${hasActivity ? "" : "is-empty"}`}>
 
-                {chartData.length === 0 ? (
-                    <div className="report-empty-state">
-                        No financial data available
-                        for this period.
-                    </div>
-                ) : (
+                {hasActivity ? (
                     <canvas
                         ref={canvasRef}
                     />
+                ) : (
+                    <div className="report-chart-empty">
+                        <i className="bi bi-graph-up" aria-hidden="true" />
+                        <div>
+                            <strong>No financial activity in this period</strong>
+                            <span>Revenue, expenses, and profit will appear here when recorded.</span>
+                        </div>
+                    </div>
                 )}
 
             </div>

@@ -1074,6 +1074,34 @@
     border-bottom: none;
 }
 
+.expense-records-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 14px 0 2px;
+    color: #64748b;
+    font-size: 12px;
+}
+
+.expense-records-pagination button {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    background: #fff;
+    color: #2563eb;
+    font: inherit;
+    cursor: pointer;
+}
+
+.expense-records-pagination button:disabled {
+    background: #f8fafc;
+    color: #94a3b8;
+    cursor: not-allowed;
+}
+
 .expense-type-badge {
     display: inline-flex;
 
@@ -1962,7 +1990,7 @@
 .expense-summary-grid {
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 24px;
+    gap: 16px;
 }
 
 
@@ -1972,6 +2000,7 @@
 
 .expense-summary-card {
     position: relative;
+    container-type: inline-size;
     min-width: 0;
     min-height: 150px;
 
@@ -2103,6 +2132,8 @@
 /* VALUE */
 
 .expense-summary-value {
+    max-width: 100%;
+    min-width: 0;
     margin-top: 8px;
 
     color: #111827;
@@ -2112,6 +2143,7 @@
     line-height: 1.1;
 
     font-weight: 700;
+    overflow-wrap: anywhere;
 
 }
 
@@ -2406,7 +2438,7 @@
 @media (max-width: 1100px) {
 
     .expense-summary-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
     }
 
     .expense-period-controls {
@@ -2508,7 +2540,7 @@
 
 @media (max-width: 700px) {
     .expense-summary-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
         gap: 12px;
     }
 
@@ -2564,5 +2596,17 @@
         margin-top: 5px;
         font-size: 0.64rem;
         line-height: 1.35;
+    }
+}
+
+@container (max-width: 210px) {
+    .expense-summary-value {
+        font-size: 1.35rem;
+    }
+}
+
+@container (max-width: 165px) {
+    .expense-summary-value {
+        font-size: 1.1rem;
     }
 }

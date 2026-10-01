@@ -19,7 +19,9 @@ function TodayDeliveriesChart({
   scheduled = 0,
   cancelled = 0,
   rejected = 0,
+  theme = "light",
 }) {
+  const isDark = theme === "dark";
   const pendingTotal = pending + scheduled;
   const total =
     delivered +
@@ -49,7 +51,7 @@ function TodayDeliveriesChart({
 
         backgroundColor:
           total === 0
-            ? ["#e5e7eb"]
+            ? [isDark ? "#334155" : "#e5e7eb"]
             : [
                 "#22c55e", // Delivered
                 "#f59e0b", // Pending
@@ -116,7 +118,7 @@ function TodayDeliveriesChart({
               left: "50%",
               transform: "translate(-50%, -50%)",
               fontSize: "12px",
-              color: "#6b7280",
+              color: isDark ? "#cbd5e1" : "#6b7280",
               textAlign: "center",
               width: "80px",
               lineHeight: "16px",

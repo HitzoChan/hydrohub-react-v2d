@@ -95,6 +95,25 @@ function isToday(dateValue) {
   );
 }
 
+function isThisMonth(dateValue) {
+  if (!dateValue) {
+    return false;
+  }
+
+  const date = new Date(dateValue);
+
+  if (Number.isNaN(date.getTime())) {
+    return false;
+  }
+
+  const today = new Date();
+
+  return (
+    date.getFullYear() === today.getFullYear() &&
+    date.getMonth() === today.getMonth()
+  );
+}
+
 /*
 |--------------------------------------------------------------------------
 | Customer Count
@@ -447,7 +466,7 @@ export async function getWeeklySales() {
 /**
  * Today's Deliveries
  */
-export async function getTodayDeliveries() {
+export async function getDeliveryStatusOverview() {
   try {
     const {
       data,
@@ -462,56 +481,42 @@ export async function getTodayDeliveries() {
       throw error;
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Remove rejected-payment orders
-    |--------------------------------------------------------------------------
-    */
-
-    const validOrders =
-      filterValidOrders(
-        data || []
-      );
-
     const result = {
       delivered: 0,
       pending: 0,
       scheduled: 0,
       cancelled: 0,
+      rejected: 0,
     };
 
-    validOrders.forEach(
-      (order) => {
-        /*
-        | Only today's orders.
-        */
+    (data || []).forEach((order) => {
+        const isCurrentMonthOrder = isThisMonth(order.created_at);
+        const isCurrentMonthReservation = isThisMonth(order.scheduled_date);
 
-        const isScheduledReservation =
-          String(order.delivery_type || "").trim().toLowerCase() === "scheduled";
-
-        const isTodayOrder = isToday(order.created_at);
-        const isTodayReservation = isToday(order.scheduled_date);
-
-        if (!isTodayOrder && !isTodayReservation) {
+        if (!isCurrentMonthOrder && !isCurrentMonthReservation) {
           return;
         }
 
-        const status =
-          normalizeStatus(
-            order.status
-          );
-
+        const status = normalizeStatus(order.status);
+        const isScheduledReservation =
+          String(order.delivery_type || "").trim().toLowerCase() === "scheduled";
         const reservationStatus = String(
           order.reservation_status || ""
         ).trim().toLowerCase();
-
-        if (
+        const isRejected =
+          isRejectedPayment(order) || status === "rejected";
+        const hasOpenReservation =
           isScheduledReservation &&
-          isTodayReservation &&
           ["pending", "scheduled", "confirmed"].includes(reservationStatus) &&
           status !== "delivered" &&
-          status !== "cancelled"
-        ) {
+          status !== "cancelled";
+
+        if (isRejected) {
+          result.rejected++;
+          return;
+        }
+
+        if (hasOpenReservation) {
           result.scheduled++;
           return;
         }
@@ -527,6 +532,7 @@ export async function getTodayDeliveries() {
 
           case "assigned":
           case "on_the_way":
+          case "scheduled":
             result.scheduled++;
             break;
 
@@ -537,13 +543,12 @@ export async function getTodayDeliveries() {
           default:
             break;
         }
-      }
-    );
+    });
 
     return result;
   } catch (error) {
     console.error(
-      "Failed to load today's deliveries:",
+      "Failed to load delivery status overview:",
       error
     );
 
@@ -552,6 +557,7 @@ export async function getTodayDeliveries() {
       pending: 0,
       scheduled: 0,
       cancelled: 0,
+      rejected: 0,
     };
   }
 }

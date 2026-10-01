@@ -60,6 +60,8 @@ export default function EmployeeTable({
 
             <th>Employee</th>
 
+            <th>Email</th>
+
             <th>Role</th>
 
             <th>Phone</th>
@@ -121,17 +123,19 @@ export default function EmployeeTable({
                       {employee.employee_id}
                     </div>
 
-                    <div
-                      className="employee-email"
-                      title={employee.email}
-                    >
-                      {employee.email || "No email address"}
-                    </div>
-
                   </div>
 
                 </div>
 
+              </td>
+
+              <td>
+                <div
+                  className="employee-email"
+                  title={employee.email}
+                >
+                  {employee.email || "No email address"}
+                </div>
               </td>
 
               {/* ============================

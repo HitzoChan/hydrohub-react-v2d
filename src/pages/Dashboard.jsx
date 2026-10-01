@@ -14,7 +14,7 @@ import {
   getDashboardStats,
   getWeeklySales,
   getMonthlySales,
-  getTodayDeliveries,
+  getDeliveryStatusOverview,
   getContainerFlowStats,
 } from "../services/dashboard.service";
 
@@ -36,11 +36,28 @@ function Dashboard() {
     pending: 0,
     scheduled: 0,
     cancelled: 0,
+    rejected: 0,
   });
   const [containerFlowStats, setContainerFlowStats] = useState({ weekly: {}, monthly: {} });
 
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState(new Date());
+  const [theme, setTheme] = useState(() =>
+    document.documentElement.dataset.theme ||
+    localStorage.getItem("hydrohub-theme") ||
+    "light"
+  );
+
+  useEffect(() => {
+    const handleThemeChange = (event) => {
+      setTheme(event.detail?.theme || "light");
+    };
+
+    document.addEventListener("hydrohub:theme-change", handleThemeChange);
+    return () => {
+      document.removeEventListener("hydrohub:theme-change", handleThemeChange);
+    };
+  }, []);
 
   useEffect(() => {
     let interval;
@@ -53,7 +70,7 @@ const [dashboardStats, sales, monthly, deliveries, weeklyFlow, monthlyFlow] = aw
   getDashboardStats(),
   getWeeklySales(),
   getMonthlySales(),
-  getTodayDeliveries(),
+  getDeliveryStatusOverview(),
   getContainerFlowStats("weekly"),
   getContainerFlowStats("monthly"),
 ]);
@@ -165,7 +182,7 @@ setContainerFlowStats({ weekly: weeklyFlow, monthly: monthlyFlow });
                   </div>
                 </div>
 
-                <WeeklySalesChart sales={weeklySales} monthlySales={monthlySales} period="weekly" />
+                <WeeklySalesChart sales={weeklySales} monthlySales={monthlySales} period="weekly" theme={theme} />
 
               </div>
             </div>
@@ -179,7 +196,7 @@ setContainerFlowStats({ weekly: weeklyFlow, monthly: monthlyFlow });
                     <small className="text-muted">Revenue over the last 12 months</small>
                   </div>
                 </div>
-                <WeeklySalesChart sales={weeklySales} monthlySales={monthlySales} period="monthly" />
+                <WeeklySalesChart sales={weeklySales} monthlySales={monthlySales} period="monthly" theme={theme} />
               </div>
             </div>
 
@@ -189,10 +206,10 @@ setContainerFlowStats({ weekly: weeklyFlow, monthly: monthlyFlow });
 
                 <div className="d-flex justify-content-between align-items-center mb-3">
                   <div>
-                    <h6 className="mb-0">Today's Deliveries</h6>
+                    <h6 className="mb-0">This Month Delivery Status</h6>
 
                     <small className="text-muted">
-                      Delivery status
+                      Orders created or scheduled this month
                     </small>
                   </div>
                 </div>
@@ -202,6 +219,8 @@ setContainerFlowStats({ weekly: weeklyFlow, monthly: monthlyFlow });
                   pending={deliveryStats.pending}
                   scheduled={deliveryStats.scheduled}
                   cancelled={deliveryStats.cancelled}
+                  rejected={deliveryStats.rejected}
+                  theme={theme}
                 />
 
               </div>
@@ -210,7 +229,7 @@ setContainerFlowStats({ weekly: weeklyFlow, monthly: monthlyFlow });
             <div className="col-lg-6 d-flex">
               <div className="card chart-box p-3 shadow-sm w-100">
                 <div className="mb-3"><h6 className="mb-0">Container Movement</h6><small className="text-muted">Gallons by activity</small></div>
-                <ContainerFlowChart stats={containerFlowStats} period="weekly" />
+                <ContainerFlowChart stats={containerFlowStats} period="weekly" theme={theme} />
               </div>
             </div>
 

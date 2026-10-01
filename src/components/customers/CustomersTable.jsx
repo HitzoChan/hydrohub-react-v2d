@@ -3,12 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { getCustomers } from "../../services/customers.service";
 import { createSupportConversation } from "../../services/messaging.service";
 
+const CUSTOMERS_PER_PAGE = 10;
+
 function CustomersTable({ search, status }) {
   const navigate = useNavigate();
 
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [messagingCustomerId, setMessagingCustomerId] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     let ignore = false;
@@ -56,6 +59,24 @@ function CustomersTable({ search, status }) {
       return matchesSearch && matchesStatus;
     });
   }, [customers, search, status]);
+
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredCustomers.length / CUSTOMERS_PER_PAGE)
+  );
+  const safeCurrentPage = Math.min(currentPage, totalPages);
+
+  const paginatedCustomers = useMemo(() => {
+    const startIndex = (safeCurrentPage - 1) * CUSTOMERS_PER_PAGE;
+    return filteredCustomers.slice(
+      startIndex,
+      startIndex + CUSTOMERS_PER_PAGE
+    );
+  }, [filteredCustomers, safeCurrentPage]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, status]);
 
   async function handleMessageCustomer(customer) {
     if (!customer?.id || messagingCustomerId) {
@@ -143,12 +164,26 @@ function CustomersTable({ search, status }) {
 
               ) : (
 
-                filteredCustomers.map((customer) => (
+                paginatedCustomers.map((customer) => (
 
                   <tr key={customer.id}>
 
                     <td>
-                      <strong>{customer.name}</strong>
+                      <div className="customer-name-cell">
+                        <span className="customer-profile-avatar">
+                          {customer.name?.charAt(0)?.toUpperCase()}
+                          {customer.avatar_url && (
+                            <img
+                              src={customer.avatar_url}
+                              alt={`${customer.name} profile`}
+                              onError={(event) => {
+                                event.currentTarget.style.display = "none";
+                              }}
+                            />
+                          )}
+                        </span>
+                        <strong>{customer.name}</strong>
+                      </div>
                     </td>
 
                     <td>{customer.phone}</td>
@@ -207,6 +242,34 @@ function CustomersTable({ search, status }) {
           </table>
 
         </div>
+
+        {!loading && filteredCustomers.length > 0 && (
+          <div className="customer-pagination">
+            <button
+              type="button"
+              onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+              disabled={safeCurrentPage === 1}
+            >
+              <i className="bi bi-chevron-left me-1" />
+              Previous
+            </button>
+
+            <span>
+              Page {safeCurrentPage} of {totalPages}
+            </span>
+
+            <button
+              type="button"
+              onClick={() =>
+                setCurrentPage((page) => Math.min(totalPages, page + 1))
+              }
+              disabled={safeCurrentPage >= totalPages}
+            >
+              Next
+              <i className="bi bi-chevron-right ms-1" />
+            </button>
+          </div>
+        )}
 
       </div>
 

@@ -1165,7 +1165,23 @@ export function calculateOperationalSummary(
     drivers = []
 ) {
     const customerIds = new Set();
-    const driverMap = new Map();
+    const driverMap = new Map(
+        drivers
+            .filter((driver) => driver?.id)
+            .map((driver) => [
+                String(driver.id),
+                {
+                    driverId: String(driver.id),
+                    driverName:
+                        driver.name ||
+                        driver.full_name ||
+                        "Unknown Driver",
+                    deliveries: 0,
+                    gallons: 0,
+                    revenue: 0,
+                },
+            ])
+    );
     const statusCounts = {};
 
     orders.forEach((order) => {
@@ -1183,14 +1199,16 @@ export function calculateOperationalSummary(
         const driverId = String(order.driver_id);
         const current = driverMap.get(driverId) || {
             driverId,
-            driverName: order.driver_name || "Assigned Driver",
+            driverName: order.driver_name || "Unknown Driver",
             deliveries: 0,
             gallons: 0,
             revenue: 0,
         };
 
         current.deliveries += isCompletedOrder(order) ? 1 : 0;
-        current.gallons += toNumber(order.gallons);
+        current.gallons += isCompletedOrder(order)
+            ? toNumber(order.gallons)
+            : 0;
         current.revenue += isRevenueOrder(order)
             ? toNumber(order.total_price)
             : 0;
@@ -1205,7 +1223,9 @@ export function calculateOperationalSummary(
             .reduce((total, order) => total + toNumber(order.gallons), 0),
         statusCounts,
         drivers: Array.from(driverMap.values()).sort(
-            (a, b) => b.deliveries - a.deliveries
+            (a, b) =>
+                b.deliveries - a.deliveries ||
+                a.driverName.localeCompare(b.driverName)
         ),
         registeredDrivers: drivers.length,
     };
@@ -1221,25 +1241,85 @@ export function calculateContainerAccountability(
         damaged: 0,
         missing: 0,
         borrowed: 0,
+        outstanding: 0,
     };
 
-    returns.forEach((record) => {
-        totals.returned += toNumber(record.returned_quantity);
-        totals.damaged += toNumber(record.damaged_quantity);
-        totals.missing += toNumber(record.missing_quantity);
-    });
+    const trackedBorrowings = borrowings.filter((record) =>
+        !["cancelled", "requested"].includes(
+            String(record.status || "").toLowerCase()
+        )
+    );
 
-    borrowings.forEach((record) => {
-        totals.borrowed += Math.max(
-            toNumber(record.quantity || record.borrowed_quantity) -
-                toNumber(record.returned_quantity) -
-                toNumber(record.damaged_quantity) -
-                toNumber(record.missing_quantity),
+    if (trackedBorrowings.length > 0) {
+        trackedBorrowings.forEach((record) => {
+            const borrowed = toNumber(record.quantity || record.borrowed_quantity);
+            const returned = toNumber(record.returned_quantity);
+            const damaged = toNumber(record.damaged_quantity);
+            const missing = toNumber(record.missing_quantity);
+
+            totals.borrowed += borrowed;
+            totals.returned += returned;
+            totals.damaged += damaged;
+            totals.missing += missing;
+            totals.outstanding += Math.max(
+                borrowed - returned - damaged - missing,
+                0
+            );
+        });
+    } else {
+        returns.forEach((record) => {
+            totals.borrowed += toNumber(record.expected_quantity);
+            totals.returned += toNumber(record.returned_quantity);
+            totals.damaged += toNumber(record.damaged_quantity);
+            totals.missing += toNumber(record.missing_quantity);
+        });
+
+        totals.outstanding = Math.max(
+            totals.borrowed - totals.returned - totals.damaged - totals.missing,
             0
         );
-    });
+    }
 
     return totals;
+}
+
+
+export function calculateCustomerMetrics(
+    profiles = [],
+    recentOrders = [],
+    startDate,
+    endDate
+) {
+    const profileIds = new Set(
+        profiles
+            .map((profile) => String(profile.user_id || profile.id || ""))
+            .filter(Boolean)
+    );
+    const activeCustomerIds = new Set(
+        recentOrders
+            .map((order) => String(order.customer_id || ""))
+            .filter((customerId) => profileIds.has(customerId))
+    );
+    const registrationDataAvailable = profiles.every(
+        (profile) => Boolean(profile.created_at)
+    );
+    const newRegistrations = registrationDataAvailable
+        ? profiles.filter((profile) => {
+            const createdDate = String(profile.created_at).slice(0, 10);
+            return createdDate >= startDate && createdDate <= endDate;
+        }).length
+        : null;
+
+    return {
+        registeredCustomers: profiles.length,
+        newRegistrations,
+        registrationDataAvailable,
+        activeLast30Days: activeCustomerIds.size,
+        churnedLast30Days: Math.max(
+            profiles.length - activeCustomerIds.size,
+            0
+        ),
+    };
 }
 
 
@@ -1250,7 +1330,6 @@ export function calculateReportAnalytics(
 ) {
     const completedOrders = orders.filter(isRevenueOrder);
     const customerMap = new Map();
-    const paymentMethods = {};
     const gallonsByDate = {};
     const schedulePeriods = {
         morning: 0,
@@ -1284,11 +1363,6 @@ export function calculateReportAnalytics(
 
         customerMap.set(customerKey, customer);
 
-        const method = String(order.payment_method || "Unknown")
-            .trim()
-            .toLowerCase();
-        paymentMethods[method] = (paymentMethods[method] || 0) + 1;
-
         if (String(order.delivery_type || "").toLowerCase() === "scheduled") {
             const period = String(
                 order.scheduled_period || order.schedule_period || ""
@@ -1307,6 +1381,12 @@ export function calculateReportAnalytics(
         const method = String(order.payment_method || "cash").toLowerCase();
         return method === "cash" || method === "cod" || method.includes("cash");
     });
+    const paymentMethods = {
+        COD: calculateRevenue(codOrders),
+        GCash: gcashOrders
+            .filter(isVerifiedPayment)
+            .reduce((total, order) => total + toNumber(order.total_price), 0),
+    };
 
     const completedDeliveries = completedOrders.length;
     const pendingDeliveries = orders.filter(
@@ -1346,6 +1426,11 @@ export function calculateReportAnalytics(
                 verified: gcashOrders.filter(isVerifiedPayment).reduce(
                     (total, order) => total + toNumber(order.total_price), 0
                 ),
+                unverified: gcashOrders
+                    .filter((order) =>
+                        !isRejectedPayment(order) && !isVerifiedPayment(order)
+                    )
+                    .reduce((total, order) => total + toNumber(order.total_price), 0),
                 pending: gcashOrders.filter((order) =>
                     !isRejectedPayment(order) && !isVerifiedPayment(order)
                 ).length,
@@ -1403,21 +1488,16 @@ export function calculateReportAnalytics(
 }
 
 
-async function getReportOperationalRecords(
-    startDate,
-    endDate
-) {
-    const nextDay = getNextDayDate(endDate);
-    const dateFilter = (query) =>
-        query
-            .gte("created_at", `${startDate}T00:00:00`)
-            .lt("created_at", `${nextDay}T00:00:00`);
-
+async function getReportOperationalRecords() {
     const [driversResult, returnsResult, borrowingsResult] =
         await Promise.all([
             supabase.from("employees").select("id, name, role").ilike("role", "driver"),
-            dateFilter(supabase.from("container_returns").select("*")),
-            dateFilter(supabase.from("container_borrowings").select("*")),
+            supabase.from("container_returns").select(
+                "id, order_id, expected_quantity, returned_quantity, damaged_quantity, missing_quantity"
+            ),
+            supabase.from("container_borrowings").select(
+                "id, order_id, quantity, returned_quantity, damaged_quantity, missing_quantity, status"
+            ),
         ]);
 
     if (driversResult.error) throw driversResult.error;
@@ -1429,6 +1509,32 @@ async function getReportOperationalRecords(
         returns: returnsResult.data || [],
         borrowings: borrowingsResult.data || [],
     };
+}
+
+
+async function getReportCustomerMetrics(startDate, endDate) {
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - 30);
+
+    const [profilesResult, recentOrdersResult] = await Promise.all([
+        supabase
+            .from("customer_profiles")
+            .select("id, user_id, created_at"),
+        supabase
+            .from("orders")
+            .select("customer_id")
+            .gte("created_at", cutoff.toISOString()),
+    ]);
+
+    if (profilesResult.error) throw profilesResult.error;
+    if (recentOrdersResult.error) throw recentOrdersResult.error;
+
+    return calculateCustomerMetrics(
+        profilesResult.data || [],
+        recentOrdersResult.data || [],
+        startDate,
+        endDate
+    );
 }
 
 
@@ -1461,6 +1567,7 @@ export async function getReportData({
         orders,
         expenses,
         operationalRecords,
+        customerMetrics,
     ] = await Promise.all([
         getReportOrders(
             startDate,
@@ -1472,10 +1579,9 @@ export async function getReportData({
             endDate
         ),
 
-        getReportOperationalRecords(
-            startDate,
-            endDate
-        ),
+        getReportOperationalRecords(),
+
+        getReportCustomerMetrics(startDate, endDate),
     ]);
 
     const financial =
@@ -1578,6 +1684,8 @@ export async function getReportData({
         operations,
 
         containerAccountability,
+
+        customerMetrics,
 
         analytics,
     };

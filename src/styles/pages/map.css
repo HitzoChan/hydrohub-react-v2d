@@ -567,6 +567,40 @@
 
 }
 
+.active-deliveries-card .card-footer .map-pagination{
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:16px;
+    padding:14px 0 2px;
+    color:#64748b;
+    font-size:12px;
+
+}
+
+.active-deliveries-card .map-pagination button{
+
+    display:inline-flex;
+    align-items:center;
+    padding:7px 10px;
+    border:1px solid #cbd5e1;
+    border-radius:7px;
+    background:#fff;
+    color:#2563eb;
+    font:inherit;
+    cursor:pointer;
+
+}
+
+.active-deliveries-card .map-pagination button:disabled{
+
+    background:#f8fafc;
+    color:#94a3b8;
+    cursor:not-allowed;
+
+}
+
 .delivery-list{
 
     display:flex;
@@ -1565,6 +1599,14 @@
         align-items:flex-start !important;
 
         flex-direction:column;
+
+    }
+
+    .active-deliveries-card .card-footer .map-pagination{
+
+        align-items:center !important;
+        flex-direction:row !important;
+        justify-content:center !important;
 
     }
 

@@ -102,23 +102,6 @@ function getStatusBadge(status) {
 
 
 /**
- * Short Order Number
- */
-function shortOrder(order) {
-  if (!order) return "-";
-
-  const orderString = String(order);
-
-  return (
-    "#" +
-    orderString
-      .replace("ORD-", "")
-      .slice(-5)
-  );
-}
-
-
-/**
  * Short Address
  */
 function shortAddress(address) {
@@ -208,10 +191,6 @@ function DeliveriesTable({
 
           <tr>
 
-            <th style={{ width: "90px" }}>
-              Order
-            </th>
-
             <th style={{ minWidth: "180px" }}>
               Customer
             </th>
@@ -267,44 +246,39 @@ function DeliveriesTable({
               <tr key={delivery.id}>
 
                 {/* =========================
-                    ORDER
-                ========================== */}
-
-                <td>
-
-                  <span
-                    className="badge bg-light text-primary border fw-semibold"
-                  >
-                    {shortOrder(
-                      delivery.orderNumber ||
-                      delivery.order_id ||
-                      delivery.orderId
-                    )}
-                  </span>
-
-                </td>
-
-
-                {/* =========================
                     CUSTOMER
                 ========================== */}
 
                 <td>
-
-                  <div className="fw-semibold">
-                    {delivery.customerName ||
-                      delivery.customer_name ||
-                      "Unknown Customer"}
+                  <div className="table-customer-cell">
+                    <span className="table-customer-avatar">
+                      {(delivery.customerName || delivery.customer_name || "Customer")
+                        .charAt(0)
+                        .toUpperCase()}
+                      {(delivery.customer?.avatar_url || delivery.customerAvatarUrl) && (
+                        <img
+                          src={delivery.customer?.avatar_url || delivery.customerAvatarUrl}
+                          alt=""
+                          onError={(event) => {
+                            event.currentTarget.style.display = "none";
+                          }}
+                        />
+                      )}
+                    </span>
+                    <span className="table-customer-info">
+                      <strong className="table-customer-name">
+                        {delivery.customerName ||
+                          delivery.customer_name ||
+                          "Unknown Customer"}
+                      </strong>
+                      {delivery.phone && (
+                        <small className="text-muted">
+                          {delivery.phone}
+                        </small>
+                      )}
+                    </span>
                   </div>
-
-                  {delivery.phone && (
-                    <small className="text-muted">
-                      {delivery.phone}
-                    </small>
-                  )}
-
                 </td>
-
 
                 {/* =========================
                     ADDRESS

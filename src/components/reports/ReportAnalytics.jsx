@@ -1,42 +1,98 @@
 import { useEffect, useRef } from "react";
+import { formatCurrency } from "../../services/reports.service";
 
-function ChartCard({ title, children }) {
+function ChartCard({ title, children, hasData, emptyMessage }) {
+    return (
+        <section className={`report-analytics-card ${hasData ? "" : "is-empty"}`}>
+            <h3>{title}</h3>
+            <div className={`report-analytics-canvas ${hasData ? "" : "is-empty"}`}>
+                {hasData ? children : (
+                    <div className="report-analytics-empty">
+                        <i className="bi bi-bar-chart-line" aria-hidden="true" />
+                        <span>{emptyMessage}</span>
+                    </div>
+                )}
+            </div>
+        </section>
+    );
+}
+
+function PaymentMethodCard({ data, hasData, chartRef }) {
     return (
         <section className="report-analytics-card">
-            <h3>{title}</h3>
-            <div className="report-analytics-canvas">{children}</div>
+            <h3>Collected by Payment Method</h3>
+            {hasData ? (
+                <div className="report-payment-method-layout">
+                    <div className="report-payment-method-chart">
+                        <canvas ref={chartRef} />
+                    </div>
+                    <div className="report-payment-method-values">
+                        {data.map(([method, amount]) => (
+                            <div className="report-payment-method-value" key={method}>
+                                <span className={`report-payment-method-dot ${method === "GCash" ? "gcash" : "cod"}`} />
+                                <div>
+                                    <span>{method}</span>
+                                    <strong>{formatCurrency(amount)}</strong>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            ) : (
+                <div className="report-analytics-canvas is-empty">
+                    <div className="report-analytics-empty">
+                        <i className="bi bi-bar-chart-line" aria-hidden="true" />
+                        <span>No collected payments in this period.</span>
+                    </div>
+                </div>
+            )}
         </section>
     );
 }
 
 export default function ReportAnalytics({
     analytics = {},
-    deliveryTypes = [],
 }) {
-    const orderRef = useRef(null);
     const paymentRef = useRef(null);
     const gallonRef = useRef(null);
     const scheduleRef = useRef(null);
     const chartRefs = useRef([]);
+    const payment = analytics.paymentMethods || {};
+    const paymentEntries = Object.entries(payment).sort(
+        ([first], [second]) => {
+            const order = { COD: 0, GCash: 1 };
+            return (order[first] ?? 2) - (order[second] ?? 2);
+        }
+    );
+    const gallonEntries = Object.entries(analytics.gallonsByDate || {});
+    const schedule = analytics.scheduling || {};
+    const scheduleValues = [schedule.morning || 0, schedule.afternoon || 0, schedule.evening || 0];
+    const hasPaymentData = paymentEntries.some(([, count]) => Number(count) > 0);
+    const hasGallonData = gallonEntries.some(([, gallons]) => Number(gallons) > 0);
+    const hasScheduleData = scheduleValues.some((count) => Number(count) > 0);
 
     useEffect(() => {
         let mounted = true;
 
         async function draw() {
+            chartRefs.current.forEach((chart) => chart?.destroy());
+            chartRefs.current = [];
+
+            if (!hasPaymentData && !hasGallonData && !hasScheduleData) {
+                return;
+            }
+
             const module = await import("chart.js/auto");
             if (!mounted) return;
 
-            chartRefs.current.forEach((chart) => chart?.destroy());
-            chartRefs.current = [];
             const Chart = module.default;
-            const status = analytics.statusCounts || {};
-            const statusLabels = Object.keys(status);
-            const payment = analytics.paymentMethods || {};
-            const gallonEntries = Object.entries(analytics.gallonsByDate || {});
-            const schedule = analytics.scheduling || {};
 
             const create = (canvas, config) => {
-                if (!canvas || config.labels.length === 0) return;
+                if (
+                    !canvas ||
+                    config.labels.length === 0 ||
+                    !config.values.some((value) => Number(value) > 0)
+                ) return;
 
                 const context = canvas.getContext("2d");
                 const areaFill = config.type === "line"
@@ -79,17 +135,12 @@ export default function ReportAnalytics({
                 }));
             };
 
-            create(orderRef.current, {
-                type: "doughnut",
-                labels: statusLabels,
-                values: statusLabels.map((label) => status[label]),
-                colors: ["#16a36a", "#f59e0b", "#2563eb", "#7c3aed", "#dc3545"],
-            });
             create(paymentRef.current, {
                 type: "doughnut",
-                labels: Object.keys(payment),
-                values: Object.values(payment),
-                colors: ["#2563eb", "#18b7d8", "#f59e0b", "#94a3b8"],
+                labels: paymentEntries.map(([label]) => label),
+                values: paymentEntries.map(([, count]) => count),
+                colors: paymentEntries.map(([label]) => ({ COD: "#2563eb", GCash: "#18b7d8" })[label] || "#94a3b8"),
+                legend: false,
             });
             create(gallonRef.current, {
                 type: "line",
@@ -110,7 +161,7 @@ export default function ReportAnalytics({
             create(scheduleRef.current, {
                 type: "bar",
                 labels: ["Morning", "Afternoon", "Evening"],
-                values: [schedule.morning || 0, schedule.afternoon || 0, schedule.evening || 0],
+                values: scheduleValues,
                 colors: ["#f59e0b", "#2563eb", "#7c3aed"],
                 legend: false,
             });
@@ -133,9 +184,25 @@ export default function ReportAnalytics({
                 </div>
             </div>
             <div className="report-analytics-grid">
-                <ChartCard title="Payment Methods"><canvas ref={paymentRef} /></ChartCard>
-                <ChartCard title="Gallon Sales by Day"><canvas ref={gallonRef} /></ChartCard>
-                <ChartCard title="Scheduled Delivery Periods"><canvas ref={scheduleRef} /></ChartCard>
+                <PaymentMethodCard
+                    data={paymentEntries}
+                    hasData={hasPaymentData}
+                    chartRef={paymentRef}
+                />
+                <ChartCard
+                    title="Gallon Sales by Day"
+                    hasData={hasGallonData}
+                    emptyMessage="No gallons sold in this period."
+                >
+                    <canvas ref={gallonRef} />
+                </ChartCard>
+                <ChartCard
+                    title="Scheduled Delivery Periods"
+                    hasData={hasScheduleData}
+                    emptyMessage="No scheduled deliveries in this period."
+                >
+                    <canvas ref={scheduleRef} />
+                </ChartCard>
             </div>
         </section>
     );

@@ -10,6 +10,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "./styles/components/table-mobile.css";
+import "./styles/theme.css";
+import "./styles/responsive.css";
 
 const root = ReactDOM.createRoot(
     document.getElementById("root")

@@ -106,6 +106,41 @@
   background: #f8fafc;
 }
 
+.customer-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 180px;
+  white-space: nowrap;
+}
+
+.customer-profile-avatar {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  overflow: hidden;
+  border: 2px solid #0b1f4d;
+  border-radius: 50%;
+  box-sizing: border-box;
+  background: #e7efff;
+  color: #1e3a8a;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.customer-profile-avatar img {
+  position: absolute;
+  inset: 2px;
+  width: calc(100% - 4px);
+  height: calc(100% - 4px);
+  border-radius: inherit;
+  object-fit: cover;
+}
+
 /* ======================================================
    BADGES
 ====================================================== */
@@ -229,25 +264,107 @@
 }
 
 .customer-stat-card {
-  border-radius: 18px;
-  background: linear-gradient(145deg, #ffffff 0%, #f8fbff 100%);
-  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  border-radius: 18px !important;
+  overflow: hidden !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+  transition: all 0.25s ease;
+}
+
+.customer-stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12) !important;
+}
+
+.customer-stat-card .card-body {
+  padding: 24px;
+  background: transparent;
+}
+
+.customer-stat-card-primary {
+  background: linear-gradient(145deg, #f5f9ff 0%, #eaf3ff 100%);
+}
+
+.customer-stat-card-success {
+  background: linear-gradient(145deg, #f1fff9 0%, #e6faf2 100%);
+}
+
+.customer-stat-card-secondary {
+  background: linear-gradient(145deg, #faf8ff 0%, #f0ebff 100%);
+}
+
+.customer-stat-card-warning {
+  background: linear-gradient(145deg, #fffdf3 0%, #fff5d9 100%);
 }
 
 .customer-stat-card .customer-stat-icon {
   width: 60px;
   height: 60px;
   flex: 0 0 auto;
+  border-radius: 16px !important;
   box-shadow: 0 8px 16px rgba(15, 23, 42, 0.1);
 }
 
+.customer-stat-card .customer-stat-icon i {
+  color: #fff !important;
+}
+
+.customer-stat-card-primary .customer-stat-icon {
+  background: #0d6efd !important;
+}
+
+.customer-stat-card-success .customer-stat-icon {
+  background: #20c997 !important;
+}
+
+.customer-stat-card-secondary .customer-stat-icon {
+  background: #6f42c1 !important;
+}
+
+.customer-stat-card-warning .customer-stat-icon {
+  background: #ffc107 !important;
+}
+
 .customer-stat-card .customer-stat-content p {
-  font-size: 13px;
+  margin-bottom: 8px !important;
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .customer-stat-card .customer-stat-content h3 {
+  margin: 8px 0;
   color: #111827;
-  font-size: 30px;
+  font-size: 34px;
+  font-weight: 700;
+}
+
+.customer-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 14px 0 2px;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.customer-pagination button {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+  background: #fff;
+  color: #2563eb;
+  font: inherit;
+  cursor: pointer;
+}
+
+.customer-pagination button:disabled {
+  background: #f8fafc;
+  color: #94a3b8;
+  cursor: not-allowed;
 }
 
 @media (max-width: 768px) {
@@ -265,14 +382,14 @@
     height: auto !important;
     min-height: 0;
     padding: 0;
-    border-radius: 16px;
+    border-radius: 16px !important;
   }
 
   .customer-stat-card .card-body {
     min-width: 0;
     display: block !important;
     position: relative;
-    padding: 20px 12px 12px;
+    padding: 22px 12px 10px;
   }
 
   .customer-stat-content {
@@ -300,6 +417,7 @@
     right: 12px;
     width: 34px;
     height: 34px;
+    border-radius: 50% !important;
     font-size: 0.9rem;
     box-shadow: 0 8px 16px rgba(15, 23, 42, 0.12);
   }

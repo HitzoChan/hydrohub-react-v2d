@@ -12,7 +12,7 @@ import ReportHeader from "../components/reports/ReportHeader";
 import ReportFilters from "../components/reports/ReportFilters";
 import ReportKpiCards from "../components/reports/ReportKpiCards";
 import PerformanceOverview from "../components/reports/PerformanceOverview";
-import OperationsOverview from "../components/reports/OperationsOverview";
+import ReportFocusSections from "../components/reports/ReportFocusSections";
 import ReportAnalytics from "../components/reports/ReportAnalytics";
 
 import {
@@ -238,11 +238,11 @@ export default function Reports() {
     const deliveryTypes =
         report?.deliveryTypes || [];
 
-    const cashCollection =
-        report?.cashCollection || {};
-
     const containerAccountability =
         report?.containerAccountability || {};
+
+    const customerMetrics =
+        report?.customerMetrics || {};
 
     const analytics =
         report?.analytics || {};
@@ -257,7 +257,7 @@ export default function Reports() {
             : 0;
 
     const previousFinancial = comparisonReport?.financial || {};
-    const previousOperations = comparisonReport?.operations || {};
+    const previousCustomerMetrics = comparisonReport?.customerMetrics || {};
     const financialWithComparison = {
         ...financial,
         revenueGrowth: calculatePercentageChange(financial.revenue, previousFinancial.revenue),
@@ -265,11 +265,13 @@ export default function Reports() {
         expenseChange: calculatePercentageChange(financial.expenses, previousFinancial.expenses),
         profitChange: calculatePercentageChange(financial.netProfit, previousFinancial.netProfit),
     };
-    const operationsWithComparison = {
-        ...operations,
-        orderChange: calculatePercentageChange(operations.totalOrders, previousOperations.totalOrders),
-        gallonsChange: calculatePercentageChange(operations.gallonsSold, previousOperations.gallonsSold),
-    };
+    const customerGrowthRate = customerMetrics.registrationDataAvailable &&
+        previousCustomerMetrics.registrationDataAvailable
+        ? calculatePercentageChange(
+            customerMetrics.newRegistrations,
+            previousCustomerMetrics.newRegistrations
+        )
+        : null;
 
 
     /*
@@ -397,12 +399,17 @@ export default function Reports() {
 
                                 <ReportKpiCards
                                     financial={financialWithComparison}
-                                    operations={
-                                        operationsWithComparison
-                                    }
-                                    containerAccountability={
-                                        containerAccountability
-                                    }
+                                    roi={roi}
+                                />
+
+                                <ReportFocusSections
+                                    operations={operations}
+                                    analytics={analytics}
+                                    deliveryTypes={deliveryTypes}
+                                    customerMetrics={customerMetrics}
+                                    customerGrowthRate={customerGrowthRate}
+                                    previousRegistrations={previousCustomerMetrics.newRegistrations}
+                                    containerAccountability={containerAccountability}
                                 />
 
 
@@ -423,82 +430,22 @@ export default function Reports() {
                                     }
                                 />
 
-                                <div className="row g-3 mb-4">
-                                    <div className="col-xl-4 col-md-6">
-                                        <section className="card report-detail-card h-100">
-                                            <div className="report-section-header">
-                                                <h5>Payment Overview</h5>
-                                                <p>Collected and verification status.</p>
-                                            </div>
-
-                                            <div className="report-snapshot-list">
-                                                <div><span>COD Collected</span><strong>{formatCurrency(analytics.payments?.cod?.collected)}</strong></div>
-                                                <div><span>COD Unverified</span><strong>{formatCurrency(analytics.payments?.cod?.unverified)}</strong></div>
-                                                <div><span>GCash Received</span><strong>{formatCurrency(analytics.payments?.gcash?.received)}</strong></div>
-                                                <div><span>GCash Pending</span><strong className="negative">{analytics.payments?.gcash?.pending || 0}</strong></div>
-                                            </div>
-                                        </section>
-                                    </div>
-
-                                    <div className="col-xl-4 col-md-6">
-                                        <section className="card report-detail-card h-100">
-                                            <div className="report-section-header">
-                                                <h5>Top Customers</h5>
-                                                <p>Highest completed sales in this period.</p>
-                                            </div>
-
-                                            <div className="report-sales-list">
-                                                {analytics.customers?.top?.length ? (
-                                                    analytics.customers.top.map((customer) => (
-                                                        <div className="report-sale-item" key={customer.id}>
-                                                            <div>
-                                                                <strong>{customer.name}</strong>
-                                                                <span>{customer.orders} orders · {customer.gallons} gallons</span>
-                                                            </div>
-                                                            <strong>{formatCurrency(customer.spent)}</strong>
-                                                        </div>
-                                                    ))
-                                                ) : (
-                                                    <div className="report-empty-inline">No completed customers.</div>
-                                                )}
-                                            </div>
-                                        </section>
-                                    </div>
-
-                                    <div className="col-xl-4 col-md-12">
-                                        <section className="card report-detail-card report-attention-card h-100">
-                                            <div className="report-section-header">
-                                                <h5>Needs Attention</h5>
-                                                <p>Items requiring administrator review.</p>
-                                            </div>
-
-                                            <div className="report-alert-list">
-                                                {attentionItems.length ? (
-                                                    attentionItems.map((item) => (
-                                                        <div className="report-alert-item" key={item}>
-                                                            <span className="report-alert-dot" />
-                                                            <span>{item}</span>
-                                                        </div>
-                                                    ))
-                                                ) : (
-                                                    <div className="report-alert-item clear">
-                                                        <span className="report-alert-dot" />
-                                                        <span>No urgent items for this period.</span>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </section>
-                                    </div>
-                                </div>
-
-                                <OperationsOverview
-                                    operations={
-                                        operations
-                                    }
-                                    containerAccountability={
-                                        containerAccountability
-                                    }
-                                />
+                                {attentionItems.length > 0 && (
+                                    <section className="report-detail-card report-alert-panel mb-4">
+                                        <div className="report-section-header">
+                                            <h5>Needs Attention</h5>
+                                            <p>Items requiring administrator review.</p>
+                                        </div>
+                                        <div className="report-alert-list">
+                                            {attentionItems.map((item) => (
+                                                <div className="report-alert-item" key={item}>
+                                                    <span className="report-alert-dot" />
+                                                    <span>{item}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </section>
+                                )}
 
 
                                 <div className="row g-3 mb-4">
@@ -541,47 +488,7 @@ export default function Reports() {
                                         </section>
                                     </div>
 
-                                    <div className="col-xl-3 col-md-6">
-                                        <section className="card report-detail-card h-100">
-                                            <div className="report-section-header">
-                                                <h5>Business Snapshot</h5>
-                                                <p>Key operational totals.</p>
-                                            </div>
-
-                                            <div className="report-snapshot-list">
-                                                <div>
-                                                    <span>Profit Margin</span>
-                                                    <strong className={Number(financial.profitMargin) < 0 ? "negative" : "positive"}>
-                                                        {Number(financial.profitMargin || 0).toFixed(1)}%
-                                                    </strong>
-                                                </div>
-                                                <div>
-                                                    <span>ROI</span>
-                                                    <strong className={roi < 0 ? "negative" : "positive"}>
-                                                        {roi.toFixed(1)}%
-                                                    </strong>
-                                                </div>
-                                                <div>
-                                                    <span>Cash Collected</span>
-                                                    <strong>{formatCurrency(cashCollection.collected)}</strong>
-                                                </div>
-                                                <div>
-                                                    <span>Delivery Types</span>
-                                                    <strong>{deliveryTypes.length}</strong>
-                                                </div>
-                                                <div>
-                                                    <span>Active Customers</span>
-                                                    <strong>{operations.activeCustomers || 0}</strong>
-                                                </div>
-                                                <div>
-                                                    <span>Delivered Orders</span>
-                                                    <strong>{operations.statusCounts?.delivered || 0}</strong>
-                                                </div>
-                                            </div>
-                                        </section>
-                                    </div>
-
-                                    <div className="col-xl-4 col-md-6">
+                                    <div className="col-xl-7 col-md-12">
                                         <section className="card report-detail-card h-100">
                                             <div className="report-section-header">
                                                 <h5>Recent Sales</h5>
@@ -604,47 +511,6 @@ export default function Reports() {
                                                         </div>
                                                     ))
                                                 )}
-                                            </div>
-                                        </section>
-                                    </div>
-
-                                    <div className="col-xl-4 col-md-6">
-                                        <section className="card report-detail-card h-100">
-                                            <div className="report-section-header">
-                                                <h5>Driver Performance</h5>
-                                                <p>Completed deliveries in this period.</p>
-                                            </div>
-
-                                            <div className="report-driver-list">
-                                                {operations.drivers?.length ? (
-                                                    operations.drivers.slice(0, 5).map((driver) => (
-                                                        <div className="report-driver-item" key={driver.driverId}>
-                                                            <div>
-                                                                <strong>{driver.driverName}</strong>
-                                                                <span>{driver.gallons} gallons delivered</span>
-                                                            </div>
-                                                            <strong>{driver.deliveries}</strong>
-                                                        </div>
-                                                    ))
-                                                ) : (
-                                                    <div className="report-empty-inline">No driver deliveries recorded.</div>
-                                                )}
-                                            </div>
-                                        </section>
-                                    </div>
-
-                                    <div className="col-xl-4 col-md-6">
-                                        <section className="card report-detail-card h-100">
-                                            <div className="report-section-header">
-                                                <h5>Container Accountability</h5>
-                                                <p>Returns and losses recorded in this period.</p>
-                                            </div>
-
-                                            <div className="report-snapshot-list">
-                                                <div><span>Returned</span><strong>{containerAccountability.returned || 0}</strong></div>
-                                                <div><span>Damaged</span><strong className="negative">{containerAccountability.damaged || 0}</strong></div>
-                                                <div><span>Missing</span><strong className="negative">{containerAccountability.missing || 0}</strong></div>
-                                                <div><span>Borrowed Outstanding</span><strong>{containerAccountability.borrowed || 0}</strong></div>
                                             </div>
                                         </section>
                                     </div>

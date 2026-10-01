@@ -70,6 +70,8 @@ export async function getCustomers() {
 
           email: profile.email || "-",
 
+          avatar_url: profile.avatar_url || "",
+
           phone: profile.phone || "-",
 
           address: profile.address || "No Address",

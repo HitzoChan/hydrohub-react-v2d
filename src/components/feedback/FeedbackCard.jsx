@@ -21,6 +21,8 @@ function StarRating({
 }) {
     const numericRating =
         Number(rating) || 0;
+    const displayedRating =
+        Math.round(numericRating);
 
     return (
         <div className="feedback-star-rating">
@@ -31,8 +33,7 @@ function StarRating({
                         <span
                             key={star}
                             className={
-                                star <=
-                                numericRating
+                                star <= displayedRating
                                     ? "star-filled"
                                     : "star-empty"
                             }

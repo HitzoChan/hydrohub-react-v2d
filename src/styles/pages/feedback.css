@@ -1692,3 +1692,117 @@
     }
 
 }
+
+html[data-theme="dark"] .feedback-main-content .feedback-page-header h2,
+html[data-theme="dark"] .feedback-main-content .feedback-stat-content h3,
+html[data-theme="dark"] .feedback-main-content .feedback-average h2,
+html[data-theme="dark"] .feedback-main-content .feedback-customer-name,
+html[data-theme="dark"] .feedback-main-content .feedback-empty h3 {
+    color: #f1f5f9 !important;
+}
+
+html[data-theme="dark"] .feedback-main-content .feedback-page-header p,
+html[data-theme="dark"] .feedback-main-content .feedback-stat-label,
+html[data-theme="dark"] .feedback-main-content .feedback-stat-content small,
+html[data-theme="dark"] .feedback-main-content .feedback-average span,
+html[data-theme="dark"] .feedback-main-content .rating-label,
+html[data-theme="dark"] .feedback-main-content .rating-count,
+html[data-theme="dark"] .feedback-main-content .feedback-review-date,
+html[data-theme="dark"] .feedback-main-content .feedback-rating-label,
+html[data-theme="dark"] .feedback-main-content .feedback-rating-value,
+html[data-theme="dark"] .feedback-main-content .feedback-comment p,
+html[data-theme="dark"] .feedback-main-content .feedback-meta-item,
+html[data-theme="dark"] .feedback-main-content .feedback-meta-item span,
+html[data-theme="dark"] .feedback-main-content .feedback-meta-item svg,
+html[data-theme="dark"] .feedback-main-content .feedback-empty p,
+html[data-theme="dark"] .feedback-main-content .feedback-loading {
+    color: #aebdd0 !important;
+}
+
+html[data-theme="dark"] .feedback-main-content .feedback-stat-card,
+html[data-theme="dark"] .feedback-main-content .feedback-review-item {
+    border-color: #2b3a50;
+    background: #111b2d;
+    color: #e7edf6;
+    box-shadow: none;
+}
+
+html[data-theme="dark"] .feedback-main-content .feedback-review-item {
+    border-bottom-color: #26364d;
+}
+
+html[data-theme="dark"] .feedback-main-content .rating-progress {
+    background: #26364d;
+}
+
+html[data-theme="dark"] .feedback-main-content .feedback-search input,
+html[data-theme="dark"] .feedback-main-content .feedback-rating-filter,
+html[data-theme="dark"] .feedback-main-content .feedback-reset-button,
+html[data-theme="dark"] .feedback-main-content .feedback-empty-reset,
+html[data-theme="dark"] .feedback-main-content .feedback-admin-reply-box textarea {
+    border-color: #34445c;
+    background: #0b1525;
+    color: #e7edf6;
+}
+
+html[data-theme="dark"] .feedback-main-content .feedback-search input::placeholder,
+html[data-theme="dark"] .feedback-main-content .feedback-admin-reply-box textarea::placeholder {
+    color: #8191a8;
+}
+
+html[data-theme="dark"] .feedback-main-content .feedback-review-header:hover {
+    background: #1a2a42;
+}
+
+html[data-theme="dark"] .feedback-main-content .feedback-expand-icon {
+    color: #aebdd0;
+}
+
+html[data-theme="dark"] .feedback-main-content .feedback-review-header:hover .feedback-expand-icon {
+    background: #263954;
+    color: #bfdbfe;
+}
+
+html[data-theme="dark"] .feedback-main-content .feedback-rating-box,
+html[data-theme="dark"] .feedback-main-content .feedback-comment {
+    border-color: #2b3a50;
+    background: #17243a;
+}
+
+html[data-theme="dark"] .feedback-main-content .feedback-admin-reply-box {
+    border-color: #34445c;
+    background: #101e32;
+}
+
+html[data-theme="dark"] .feedback-main-content .feedback-saved-reply {
+    border-color: #34445c;
+    background: #17243a;
+}
+
+html[data-theme="dark"] .feedback-main-content .feedback-saved-reply p,
+html[data-theme="dark"] .feedback-main-content .feedback-meta-item strong {
+    color: #dce6f3;
+}
+
+html[data-theme="dark"] .feedback-main-content .feedback-spinner {
+    border-color: #34445c;
+    border-top-color: #60a5fa;
+}
+
+html[data-theme="dark"] .feedback-main-content .feedback-empty-icon,
+html[data-theme="dark"] .feedback-main-content .feedback-avatar {
+    background: #1b2b44;
+    color: #bfdbfe;
+}
+
+html[data-theme="dark"] .feedback-main-content .feedback-reset-button:hover,
+html[data-theme="dark"] .feedback-main-content .feedback-empty-reset:hover {
+    border-color: #475569;
+    background: #263954;
+    color: #f1f5f9;
+}
+
+html[data-theme="dark"] .feedback-main-content .bg-white {
+    background-color: #17243a !important;
+    color: #e7edf6 !important;
+}

@@ -59,7 +59,7 @@ function DeliveryStats({ stats }) {
           <div
             className={`stat-box ${card.color}`}
             style={{
-              height: "150px",
+              minHeight: "160px",
               position: "relative",
               display: "flex",
               justifyContent: "space-between",
@@ -71,8 +71,6 @@ function DeliveryStats({ stats }) {
             <div
               className="stat-info"
               style={{
-                height: "100%",
-                display: "flex",
                 flexDirection: "column",
                 justifyContent: "space-between",
                 paddingRight: "10px",
@@ -83,10 +81,8 @@ function DeliveryStats({ stats }) {
                 className="stat-title"
                 style={{
                   margin: 0,
-                  height: "22px",
                   display: "flex",
                   alignItems: "center",
-                  whiteSpace: "nowrap",
                 }}
               >
                 {card.title}
@@ -110,10 +106,8 @@ function DeliveryStats({ stats }) {
                 className="stat-description"
                 style={{
                   margin: 0,
-                  height: "22px",
                   display: "flex",
                   alignItems: "center",
-                  whiteSpace: "nowrap",
                 }}
               >
                 {card.description}

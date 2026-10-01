@@ -295,7 +295,8 @@
 }
 
 .employee-email {
-  margin-top: 2px;
+  max-width: 230px;
+  margin-top: 0;
 
   font-size: 12px;
   color: #64748b;
@@ -313,7 +314,8 @@
 .employee-table td:nth-child(3),
 .employee-table td:nth-child(4),
 .employee-table td:nth-child(5),
-.employee-table td:nth-child(6) {
+.employee-table td:nth-child(6),
+.employee-table td:nth-child(7) {
   white-space: nowrap;
 }
 
@@ -762,7 +764,7 @@
 @media (max-width: 1200px) {
 
   .employee-table {
-    min-width: 980px;
+    min-width: 1120px;
   }
 
 }

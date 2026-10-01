@@ -49,6 +49,7 @@ function KpiCard({
     icon,
     iconClass = "",
     isCurrency = false,
+    valueFormatter,
 }) {
     return (
         <div className="col-6 col-xl-3 col-lg-4 col-md-6 report-kpi-col">
@@ -63,9 +64,11 @@ function KpiCard({
                         </span>
 
                         <h3 className="report-kpi-value">
-                            {isCurrency
-                                ? formatCurrency(value)
-                                : formatNumber(value)}
+                            {valueFormatter
+                                ? valueFormatter(value)
+                                : isCurrency
+                                    ? formatCurrency(value)
+                                    : formatNumber(value)}
                         </h3>
                     </div>
 
@@ -99,134 +102,54 @@ function KpiCard({
     );
 }
 
-export default function ReportKpiCards({
-    financial = {},
-    operations = {},
-    containerAccountability = {},
-}) {
+export default function ReportKpiCards({ financial = {}, roi = 0 }) {
     return (
-        <div className="row g-3 mb-4">
+        <section className="report-focus-section">
+            <div className="report-focus-heading">
+                <span>01</span>
+                <div>
+                    <h2>Financial Performance &amp; Efficiency</h2>
+                    <p>Revenue from completed orders, recorded costs, and returns.</p>
+                </div>
+            </div>
 
-            {/* TOTAL REVENUE */}
-
-            <KpiCard
-                title="Total Revenue"
-                value={
-                    financial.revenue
-                }
-                description="Completed sales"
-                trend={
-                    financial.revenueChange
-                }
-                icon="bi-cash-stack"
-                iconClass="revenue"
-                isCurrency
-            />
-
-
-            {/* REVENUE GROWTH */}
-
-            <KpiCard
-                title="Revenue Growth"
-                value={
-                    financial.revenueGrowth === null ||
-                    financial.revenueGrowth === undefined
-                        ? "New"
-                        : financial.revenueGrowth
-                }
-                description="Compared with previous period"
-                trend={
-                    financial.revenueGrowth
-                }
-                icon="bi-graph-up-arrow"
-                iconClass="growth"
-            />
-
-
-            {/* EXPENSES */}
-
-            <KpiCard
-                title="Total Expenses"
-                value={
-                    financial.expenses
-                }
-                description="Recorded expenses"
-                trend={
-                    financial.expenseChange
-                }
-                icon="bi-wallet2"
-                iconClass="expense"
-                isCurrency
-            />
-
-
-            {/* NET PROFIT */}
-
-            <KpiCard
-                title="Net Profit"
-                value={
-                    financial.netProfit
-                }
-                description="Revenue minus expenses"
-                trend={
-                    financial.profitChange
-                }
-                icon="bi-piggy-bank"
-                iconClass="profit"
-                isCurrency
-            />
-
-
-            {/* TOTAL ORDERS */}
-
-            <KpiCard
-                title="Total Orders"
-                value={
-                    operations.totalOrders
-                }
-                description="Orders in selected period"
-                trend={
-                    operations.orderChange
-                }
-                icon="bi-box-seam"
-                iconClass="orders"
-            />
-
-
-            {/* GALLONS SOLD */}
-
-            <KpiCard
-                title="Gallons Sold"
-                value={
-                    operations.gallonsSold
-                }
-                description="5-gallon containers"
-                trend={
-                    operations.gallonsChange
-                }
-                icon="bi-droplet-half"
-                iconClass="gallons"
-            />
-
-            <KpiCard
-                title="Active Customers"
-                value={operations.activeCustomers}
-                description="Customers with orders"
-                icon="bi-people"
-                iconClass="growth"
-            />
-
-            <KpiCard
-                title="Damaged / Missing"
-                value={
-                    Number(containerAccountability.damaged || 0) +
-                    Number(containerAccountability.missing || 0)
-                }
-                description="Container losses"
-                icon="bi-exclamation-triangle"
-                iconClass="expense"
-            />
-
-        </div>
+            <div className="row g-3 mb-4">
+                <KpiCard
+                    title="Gross Revenue"
+                    value={financial.revenue}
+                    description="Completed, revenue-eligible orders"
+                    trend={financial.revenueChange}
+                    icon="bi-cash-stack"
+                    iconClass="revenue"
+                    isCurrency
+                />
+                <KpiCard
+                    title="Operating Expenses"
+                    value={financial.expenses}
+                    description="Recorded expenses in this period"
+                    trend={financial.expenseChange}
+                    icon="bi-wallet2"
+                    iconClass="expense"
+                    isCurrency
+                />
+                <KpiCard
+                    title="Net Profit"
+                    value={financial.netProfit}
+                    description="Gross revenue minus expenses"
+                    trend={financial.profitChange}
+                    icon="bi-piggy-bank"
+                    iconClass="profit"
+                    isCurrency
+                />
+                <KpiCard
+                    title="Return on Investment"
+                    value={roi}
+                    description="Net profit ÷ operating expenses"
+                    icon="bi-percent"
+                    iconClass="growth"
+                    valueFormatter={(value) => `${(Number(value) || 0).toFixed(1)}%`}
+                />
+            </div>
+        </section>
     );
 }

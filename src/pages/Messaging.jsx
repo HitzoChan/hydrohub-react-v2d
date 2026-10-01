@@ -20,6 +20,7 @@ export default function Messaging() {
   const [loading, setLoading] = useState(true);
   const [conversations, setConversations] = useState([]);
   const [selectedConversation, setSelectedConversation] = useState(null);
+  const [mobileChatOpen, setMobileChatOpen] = useState(false);
 
 const [showDetails, setShowDetails] = useState(false);
 
@@ -66,6 +67,16 @@ useEffect(() => {
       setArchivedCount(archived.length);
 
       setConversations(data);
+
+      if (requestedConversationId) {
+        setMobileChatOpen(
+          data.some(
+            (conversation) =>
+              String(conversation.id) ===
+              String(requestedConversationId)
+          )
+        );
+      }
 
       setSelectedConversation((current) => {
         if (requestedConversationId) {
@@ -181,7 +192,11 @@ useEffect(() => {
               MAIN LAYOUT
           ========================== */}
 
-          <div className="messaging-layout">
+          <div
+            className={`messaging-layout${
+              mobileChatOpen ? " mobile-chat-open" : ""
+            }`}
+          >
 
             {/* =====================================
                 CONVERSATION LIST
@@ -217,7 +232,10 @@ useEffect(() => {
                       ? "tab-btn active"
                       : "tab-btn"
                   }
-                  onClick={() => setActiveTab("active")}
+                  onClick={() => {
+                    setMobileChatOpen(false);
+                    setActiveTab("active");
+                  }}
                 >
                   🟢 Active ({activeCount})
                 </button>
@@ -228,7 +246,10 @@ useEffect(() => {
                       ? "tab-btn active"
                       : "tab-btn"
                   }
-                  onClick={() => setActiveTab("archived")}
+                  onClick={() => {
+                    setMobileChatOpen(false);
+                    setActiveTab("archived");
+                  }}
                 >
                   📦 Archived ({archivedCount})
                 </button>
@@ -239,7 +260,10 @@ useEffect(() => {
                 loading={loading}
                 conversations={conversations}
                 selectedConversation={selectedConversation}
-                setSelectedConversation={setSelectedConversation}
+                setSelectedConversation={(conversation) => {
+                  setSelectedConversation(conversation);
+                  setMobileChatOpen(true);
+                }}
               />
 
             </aside>
@@ -253,6 +277,7 @@ useEffect(() => {
               <ChatWindow
                 conversation={selectedConversation}
                 onOpenDetails={() => setShowDetails(true)}
+                onBackToConversations={() => setMobileChatOpen(false)}
               />
 
             </main>
