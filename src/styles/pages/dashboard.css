@@ -314,7 +314,7 @@
   transition: all 0.25s ease;
 }
 
-.dashboard-metric-card .card-body {
+.dashboard-metric-card > .d-flex {
   padding: 24px;
   border-radius: inherit;
   background: transparent;
@@ -691,6 +691,11 @@
 
 @media (max-width:768px) {
 
+  .dashboard-page .dashboard-metric-card {
+    height: auto !important;
+    min-height: 0 !important;
+  }
+
   .dashboard-metrics {
     --bs-gutter-x: 0.75rem;
     --bs-gutter-y: 0.75rem;
@@ -702,19 +707,20 @@
 
   .dashboard-metric-card {
     width: 100%;
-    min-height: 164px;
+    height: auto !important;
+    min-height: 0;
     padding: 0;
     border-radius: 16px !important;
   }
 
-  .dashboard-metric-card .card-body {
+  .dashboard-page .dashboard-metric-card > .d-flex {
     min-width: 0;
-    padding: 14px 12px;
+    padding: 22px 12px 10px !important;
     display: block !important;
     position: relative;
   }
 
-  .dashboard-metric-card .dashboard-content {
+  .dashboard-metric-card > .d-flex > .dashboard-content {
     min-width: 0;
     width: 100%;
     display: flex;
@@ -723,6 +729,7 @@
   }
 
   .dashboard-metric-card small {
+    display: block;
     max-width: 100%;
     min-height: 2.5em;
     padding-right: 36px;
@@ -747,14 +754,14 @@
     text-align: left;
   }
 
-  .dashboard-metric-card .dashboard-icon {
+  .dashboard-page .dashboard-metric-card .dashboard-icon {
     position: absolute;
     top: 12px;
     right: 12px;
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    font-size: 0.9rem;
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 50% !important;
+    font-size: 0.9rem !important;
   }
 
   .topbar {

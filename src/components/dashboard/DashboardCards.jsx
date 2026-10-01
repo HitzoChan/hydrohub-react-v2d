@@ -25,12 +25,12 @@ function DashboardCards({ stats = {} }) {
 
         <div className="card dashboard-metric-card dashboard-blue h-100">
 
-          <div className="card-body d-flex justify-content-between align-items-center">
+          <div className="d-flex justify-content-between align-items-start">
 
             <div className="dashboard-content">
 
               <small>
-                Total Orders Today
+                Total Orders
               </small>
 
               <h3>
@@ -38,7 +38,7 @@ function DashboardCards({ stats = {} }) {
               </h3>
 
               <p className="dashboard-subtitle mb-0">
-                Valid customer orders received
+                Valid customer orders
               </p>
 
             </div>
@@ -63,7 +63,7 @@ function DashboardCards({ stats = {} }) {
 
         <div className="card dashboard-metric-card dashboard-green h-100">
 
-          <div className="card-body d-flex justify-content-between align-items-center">
+          <div className="d-flex justify-content-between align-items-start">
 
             <div className="dashboard-content">
 
@@ -76,7 +76,7 @@ function DashboardCards({ stats = {} }) {
               </h3>
 
               <p className="dashboard-subtitle mb-0">
-                Assigned or currently in transit
+                Currently active deliveries
               </p>
 
             </div>
@@ -101,7 +101,7 @@ function DashboardCards({ stats = {} }) {
 
         <div className="card dashboard-metric-card dashboard-purple h-100">
 
-          <div className="card-body d-flex justify-content-between align-items-center">
+          <div className="d-flex justify-content-between align-items-start">
 
             <div className="dashboard-content">
 
@@ -139,7 +139,7 @@ function DashboardCards({ stats = {} }) {
 
         <div className="card dashboard-metric-card dashboard-yellow h-100">
 
-          <div className="card-body d-flex justify-content-between align-items-center">
+          <div className="d-flex justify-content-between align-items-start">
 
             <div className="dashboard-content">
 
