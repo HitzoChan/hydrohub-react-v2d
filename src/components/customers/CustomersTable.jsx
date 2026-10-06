@@ -190,7 +190,14 @@ function CustomersTable({ search, status }) {
 
                     <td>{customer.email}</td>
 
-                    <td>{customer.address}</td>
+                    <td>
+                      <span
+                        className="customer-address-cell"
+                        title={customer.address || ""}
+                      >
+                        {customer.address || "-"}
+                      </span>
+                    </td>
 
                     <td>
                       <span className="badge bg-info">

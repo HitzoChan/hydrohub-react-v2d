@@ -1823,3 +1823,21 @@
     background: #f8fafc;
     cursor: not-allowed;
 }
+
+.reservation-product {
+    min-width: 130px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.reservation-product strong {
+    color: #111827;
+    font-size: 13px;
+}
+
+.reservation-product span {
+    color: #94a3b8;
+    font-size: 12px;
+}

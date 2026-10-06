@@ -27,7 +27,7 @@ function ReservationStats({
                 "reservation-stat-orange",
         },
         {
-            label: "Total Gallons",
+            label: "Total Containers",
             value:
                 stats?.totalContainers || 0,
             icon: "bi-droplet",

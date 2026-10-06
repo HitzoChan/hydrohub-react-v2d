@@ -26,12 +26,8 @@ CREATE TABLE IF NOT EXISTS public.system_settings (
   gcash_enabled boolean NULL DEFAULT true,
   gcash_number text NULL,
   gcash_account_name text NULL,
+  gcash_qr_code_url text NULL,
   require_reference boolean NULL DEFAULT true,
-  
-  -- Down payment settings
-  downpayment_enabled boolean NULL DEFAULT true,
-  minimum_gallons integer NULL DEFAULT 10,
-  downpayment_percentage integer NULL DEFAULT 30,
   
   -- Security settings
   max_active_orders_per_customer integer NOT NULL DEFAULT 3,
@@ -100,9 +96,6 @@ INSERT INTO public.system_settings (
   gcash_enabled,
   gcash_number,
   gcash_account_name,
-  downpayment_enabled,
-  minimum_gallons,
-  downpayment_percentage,
   max_active_orders_per_customer
 )
 SELECT 
@@ -114,9 +107,6 @@ SELECT
   true,
   NULL,
   NULL,
-  true,
-  10,
-  30,
   3
 WHERE NOT EXISTS (SELECT 1 FROM public.system_settings);
 

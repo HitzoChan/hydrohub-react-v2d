@@ -46,9 +46,6 @@ INSERT INTO public.system_settings (
   cod_enabled,
   cod_verification,
   gcash_enabled,
-  downpayment_enabled,
-  minimum_gallons,
-  downpayment_percentage,
   max_active_orders_per_customer
 )
 SELECT 
@@ -58,9 +55,6 @@ SELECT
   false,
   false,
   true,
-  true,
-  10,
-  30,
   3
 WHERE NOT EXISTS (SELECT 1 FROM public.system_settings);
 

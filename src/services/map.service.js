@@ -68,21 +68,35 @@ export async function getActiveDeliveries() {
   // LOAD EMPLOYEES
   // ===============================
 
-  const { data: employees, error: employeesError } = await supabase
-    .from("employees")
-    .select("*");
-
-  if (employeesError) throw employeesError;
-
-  // ===============================
-  // LOAD DELIVERIES
-  // ===============================
-
-  const { data: deliveries, error: deliveriesError } = await supabase
-    .from("deliveries")
-    .select("*");
+  const [
+    { data: employees, error: employeesError },
+    { data: deliveries, error: deliveriesError },
+    { data: customerProfiles, error: profilesError },
+  ] = await Promise.all([
+    supabase.from("employees").select("*"),
+    supabase.from("deliveries").select("*"),
+    supabase
+      .from("customer_profiles")
+      .select("id, user_id, avatar_url"),
+  ]);
 
   if (deliveriesError) throw deliveriesError;
+  if (employeesError) throw employeesError;
+  if (profilesError) {
+    console.warn("Customer profile photos could not be loaded:", profilesError);
+  }
+
+  const customerProfilesById = new Map();
+
+  (customerProfiles || []).forEach((profile) => {
+    if (profile.id) {
+      customerProfilesById.set(String(profile.id), profile);
+    }
+
+    if (profile.user_id) {
+      customerProfilesById.set(String(profile.user_id), profile);
+    }
+  });
 
   // ===============================
   // COMBINE DATA
@@ -102,6 +116,9 @@ export async function getActiveDeliveries() {
           String(d.order_id) === String(order.id)
       ) ?? null;
 
+    const customerProfile =
+      customerProfilesById.get(String(order.customer_id)) ?? null;
+
     return {
 
       id: order.id,
@@ -110,11 +127,19 @@ export async function getActiveDeliveries() {
 
       customer_name: order.customer_name,
 
+      customer_avatar_url: customerProfile?.avatar_url || "",
+
       address: order.address,
 
       gallons: order.gallons,
 
+      product_name: order.product_name || order.product || "Water",
+
+      capacity: order.capacity || "",
+
       total_price: order.total_price,
+
+      payment_method: order.payment_method || "Cash",
 
       delivery_type: order.delivery_type,
 

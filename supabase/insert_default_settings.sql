@@ -10,9 +10,6 @@ INSERT INTO public.system_settings (
   gcash_enabled,
   gcash_number,
   gcash_account_name,
-  downpayment_enabled,
-  minimum_gallons,
-  downpayment_percentage,
   max_active_orders_per_customer
 )
 SELECT 
@@ -26,8 +23,5 @@ SELECT
   true,
   NULL,
   NULL,
-  true,
-  10,
-  30,
   3
 WHERE NOT EXISTS (SELECT 1 FROM public.system_settings);

@@ -1,37 +1,40 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
 
+const GCASH_QR_BUCKET = "gcash-qr-codes";
+
 export default function PaymentSettings() {
     const [settingsId, setSettingsId] = useState(null);
 
     const [form, setForm] = useState({
         gcash_account_name: "",
         gcash_number: "",
+        gcash_qr_code_url: "",
         gcash_enabled: true,
-        downpayment_enabled: true,
-        downpayment_percentage: 30,
-        minimum_gallons: 10,
     });
 
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState("");
     const [error, setError] = useState("");
+    const [qrFile, setQrFile] = useState(null);
+    const [qrPreview, setQrPreview] = useState("");
+    const [removeQr, setRemoveQr] = useState(false);
 
     useEffect(() => {
-        loadSystemSettings();
-    }, []);
+        return () => {
+            if (qrPreview.startsWith("blob:")) {
+                URL.revokeObjectURL(qrPreview);
+            }
+        };
+    }, [qrPreview]);
 
     async function loadSystemSettings() {
         try {
-            setLoading(true);
-            setError("");
-            setMessage("");
-
             const { data, error } = await supabase
                 .from("system_settings")
                 .select(
-                    "id, gcash_enabled, gcash_number, gcash_account_name, downpayment_enabled, minimum_gallons, downpayment_percentage"
+                    "id, gcash_enabled, gcash_number, gcash_account_name, gcash_qr_code_url"
                 )
                 .order("created_at", {
                     ascending: true,
@@ -53,17 +56,11 @@ export default function PaymentSettings() {
                     gcash_number:
                         data.gcash_number || "",
 
+                    gcash_qr_code_url:
+                        data.gcash_qr_code_url || "",
+
                     gcash_enabled:
                         data.gcash_enabled ?? true,
-
-                    downpayment_enabled:
-                        data.downpayment_enabled ?? true,
-
-                    downpayment_percentage:
-                        data.downpayment_percentage ?? 30,
-
-                    minimum_gallons:
-                        data.minimum_gallons ?? 10,
                 });
             }
         } catch (err) {
@@ -80,6 +77,10 @@ export default function PaymentSettings() {
             setLoading(false);
         }
     }
+
+    useEffect(() => {
+        Promise.resolve().then(loadSystemSettings);
+    }, []);
 
     function handleChange(e) {
         const {
@@ -98,6 +99,31 @@ export default function PaymentSettings() {
         }));
     }
 
+    function handleQrChange(e) {
+        const file = e.target.files?.[0];
+
+        if (!file) {
+            return;
+        }
+
+        if (!["image/png", "image/jpeg", "image/webp"].includes(file.type)) {
+            setError("Choose a PNG, JPG, or WebP image for the GCash QR code.");
+            e.target.value = "";
+            return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            setError("The GCash QR image must be 5 MB or smaller.");
+            e.target.value = "";
+            return;
+        }
+
+        setError("");
+        setQrFile(file);
+        setQrPreview(URL.createObjectURL(file));
+        setRemoveQr(false);
+    }
+
     async function handleSubmit(e) {
         e.preventDefault();
 
@@ -111,14 +137,6 @@ export default function PaymentSettings() {
 
             const gcashNumber =
                 form.gcash_number.trim();
-
-            const percentage = Number(
-                form.downpayment_percentage
-            );
-
-            const minimumGallons = Number(
-                form.minimum_gallons
-            );
 
             /*
              * GCash validation
@@ -142,28 +160,6 @@ export default function PaymentSettings() {
             }
 
             /*
-             * Down payment validation
-             */
-            if (
-                form.downpayment_enabled &&
-                (percentage <= 0 ||
-                    percentage > 100)
-            ) {
-                throw new Error(
-                    "Down payment percentage must be between 1 and 100."
-                );
-            }
-
-            if (
-                form.downpayment_enabled &&
-                minimumGallons < 1
-            ) {
-                throw new Error(
-                    "Minimum gallons must be at least 1."
-                );
-            }
-
-            /*
              * Data uses the REAL system_settings
              * column names.
              */
@@ -174,16 +170,40 @@ export default function PaymentSettings() {
 
                 gcash_enabled:
                     form.gcash_enabled,
-
-                downpayment_enabled:
-                    form.downpayment_enabled,
-
-                downpayment_percentage:
-                    percentage,
-
-                minimum_gallons:
-                    minimumGallons,
             };
+
+            const previousQrUrl = form.gcash_qr_code_url;
+
+            if (qrFile) {
+                const extension = {
+                    "image/png": "png",
+                    "image/jpeg": "jpg",
+                    "image/webp": "webp",
+                }[qrFile.type];
+                const uploadedQrPath = `gcash-qr/${crypto.randomUUID()}.${extension}`;
+
+                const { error: uploadError } = await supabase.storage
+                    .from(GCASH_QR_BUCKET)
+                    .upload(uploadedQrPath, qrFile, {
+                        cacheControl: "3600",
+                        contentType: qrFile.type,
+                        upsert: false,
+                    });
+
+                if (uploadError) {
+                    throw uploadError;
+                }
+
+                const { data: publicUrlData } = supabase.storage
+                    .from(GCASH_QR_BUCKET)
+                    .getPublicUrl(uploadedQrPath);
+
+                payload.gcash_qr_code_url = publicUrlData.publicUrl;
+            } else if (removeQr) {
+                payload.gcash_qr_code_url = null;
+            } else {
+                payload.gcash_qr_code_url = previousQrUrl || null;
+            }
 
             let savedData;
 
@@ -197,7 +217,7 @@ export default function PaymentSettings() {
                         .update(payload)
                         .eq("id", settingsId)
                         .select(
-                            "id, gcash_enabled, gcash_number, gcash_account_name, downpayment_enabled, minimum_gallons, downpayment_percentage"
+                            "id, gcash_enabled, gcash_number, gcash_account_name, gcash_qr_code_url"
                         )
                         .single();
 
@@ -218,7 +238,7 @@ export default function PaymentSettings() {
                         .from("system_settings")
                         .insert([payload])
                         .select(
-                            "id, gcash_enabled, gcash_number, gcash_account_name, downpayment_enabled, minimum_gallons, downpayment_percentage"
+                            "id, gcash_enabled, gcash_number, gcash_account_name, gcash_qr_code_url"
                         )
                         .single();
 
@@ -250,23 +270,19 @@ export default function PaymentSettings() {
                         savedData.gcash_number ||
                         "",
 
+                    gcash_qr_code_url:
+                        savedData.gcash_qr_code_url ||
+                        "",
+
                     gcash_enabled:
                         savedData.gcash_enabled ??
                         true,
-
-                    downpayment_enabled:
-                        savedData.downpayment_enabled ??
-                        true,
-
-                    downpayment_percentage:
-                        savedData.downpayment_percentage ??
-                        30,
-
-                    minimum_gallons:
-                        savedData.minimum_gallons ??
-                        10,
                 });
             }
+
+            setQrFile(null);
+            setQrPreview("");
+            setRemoveQr(false);
 
             setMessage(
                 "Payment settings saved successfully."
@@ -309,8 +325,7 @@ export default function PaymentSettings() {
                     </h5>
 
                     <p className="text-muted mb-0">
-                        Manage GCash payment information
-                        and down payment requirements.
+                        Manage GCash payment information.
                     </p>
                 </div>
 
@@ -388,6 +403,58 @@ export default function PaymentSettings() {
 
                         </div>
 
+                        {/* GCash QR Code */}
+                        <div className="mb-3">
+                            <label className="form-label" htmlFor="gcash-qr-code">
+                                GCash QR Code
+                            </label>
+
+                            <input
+                                id="gcash-qr-code"
+                                type="file"
+                                className="form-control"
+                                accept="image/png,image/jpeg,image/webp"
+                                onChange={handleQrChange}
+                                disabled={saving}
+                            />
+
+                            <small className="text-muted">
+                                Upload a PNG, JPG, or WebP image up to 5 MB.
+                            </small>
+
+                            {(qrPreview || form.gcash_qr_code_url) && !removeQr && (
+                                <div className="mt-3 d-flex align-items-start gap-3">
+                                    <img
+                                        src={qrPreview || form.gcash_qr_code_url}
+                                        alt="GCash payment QR code"
+                                        style={{
+                                            width: 160,
+                                            height: 160,
+                                            objectFit: "contain",
+                                        }}
+                                    />
+                                    <button
+                                        type="button"
+                                        className="btn btn-outline-danger btn-sm"
+                                        onClick={() => {
+                                            setQrFile(null);
+                                            setQrPreview("");
+                                            setRemoveQr(true);
+                                        }}
+                                        disabled={saving}
+                                    >
+                                        Remove QR code
+                                    </button>
+                                </div>
+                            )}
+
+                            {removeQr && (
+                                <p className="text-muted mt-2 mb-0">
+                                    The QR code will be removed when you save.
+                                </p>
+                            )}
+                        </div>
+
                         {/* Enable GCash */}
                         <div className="form-check">
 
@@ -411,117 +478,6 @@ export default function PaymentSettings() {
                             </label>
 
                         </div>
-
-                    </div>
-
-                    <hr />
-
-                    {/* =========================
-                        DOWN PAYMENT SETTINGS
-                    ========================== */}
-                    <div className="mt-4 mb-4">
-
-                        <h6 className="fw-bold mb-3">
-                            Down Payment Settings
-                        </h6>
-
-                        {/* Enable Down Payment */}
-                        <div className="form-check mb-3">
-
-                            <input
-                                type="checkbox"
-                                className="form-check-input"
-                                id="require-down-payment"
-                                name="downpayment_enabled"
-                                checked={
-                                    form.downpayment_enabled
-                                }
-                                onChange={handleChange}
-                                disabled={saving}
-                            />
-
-                            <label
-                                className="form-check-label"
-                                htmlFor="require-down-payment"
-                            >
-                                Require down payment
-                            </label>
-
-                        </div>
-
-                        {form.downpayment_enabled && (
-                            <div className="row">
-
-                                {/* Percentage */}
-                                <div className="col-md-6 mb-3">
-
-                                    <label className="form-label">
-                                        Down Payment Percentage
-                                    </label>
-
-                                    <div className="input-group">
-
-                                        <input
-                                            type="number"
-                                            className="form-control"
-                                            name="downpayment_percentage"
-                                            value={
-                                                form.downpayment_percentage
-                                            }
-                                            onChange={
-                                                handleChange
-                                            }
-                                            min="1"
-                                            max="100"
-                                            step="1"
-                                            disabled={saving}
-                                        />
-
-                                        <span className="input-group-text">
-                                            %
-                                        </span>
-
-                                    </div>
-
-                                    <small className="text-muted">
-                                        Percentage of the
-                                        total order amount.
-                                    </small>
-
-                                </div>
-
-                                {/* Minimum Quantity */}
-                                <div className="col-md-6 mb-3">
-
-                                    <label className="form-label">
-                                        Minimum Order Quantity
-                                    </label>
-
-                                    <input
-                                        type="number"
-                                        className="form-control"
-                                        name="minimum_gallons"
-                                        value={
-                                            form.minimum_gallons
-                                        }
-                                        onChange={
-                                            handleChange
-                                        }
-                                        min="1"
-                                        step="1"
-                                        disabled={saving}
-                                    />
-
-                                    <small className="text-muted">
-                                        Orders at or above
-                                        this quantity require
-                                        a down payment.
-                                    </small>
-
-                                </div>
-
-                            </div>
-                        )}
 
                     </div>
 

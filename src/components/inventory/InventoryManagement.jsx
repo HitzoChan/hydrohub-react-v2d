@@ -300,7 +300,7 @@ function InventoryManagement({
                                 <div className="d-flex justify-content-between mb-2">
 
                                     <small className="text-muted">
-                                        With Customers
+                                        Sold to Customers
                                     </small>
 
                                     <strong

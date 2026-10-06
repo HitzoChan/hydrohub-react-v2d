@@ -395,15 +395,6 @@ export async function getReportOrders(
                     order.total_price
                 ),
 
-            down_payment:
-                toNumber(
-                    order.down_payment
-                ),
-
-            remaining_balance:
-                toNumber(
-                    order.remaining_balance
-                ),
         })
     );
 }

@@ -208,6 +208,23 @@ function getQuantity(
   order,
   delivery
 ) {
+  const reservationQuantity = [
+    order?.exchange_containers,
+    order?.new_containers,
+    order?.borrow_containers,
+  ].reduce(
+    (total, value) => total + Math.max(0, Number(value) || 0),
+    0
+  );
+
+  const isReservation =
+    normalizeStatus(order?.delivery_type) === "scheduled" ||
+    Boolean(order?.reservation_status);
+
+  if (isReservation && reservationQuantity > 0) {
+    return Math.floor(reservationQuantity);
+  }
+
   const deliveryQuantity =
     Number(delivery?.quantity);
 
@@ -1286,6 +1303,8 @@ export async function createInventoryAdjustment({
   adjustmentType,
   quantity,
   notes = "",
+  currentTotal,
+  maximumTotal,
 } = {}) {
   const normalizedQuantity = Math.floor(Number(quantity) || 0);
   const allowedTypes = ["new_purchase", "repaired", "recovered"];
@@ -1293,6 +1312,19 @@ export async function createInventoryAdjustment({
   if (!productId || !capacity) throw new Error("Product is required.");
   if (!allowedTypes.includes(adjustmentType)) throw new Error("Invalid adjustment type.");
   if (normalizedQuantity <= 0) throw new Error("Quantity must be greater than zero.");
+
+  if (adjustmentType === "new_purchase") {
+    const current = Math.max(0, Number(currentTotal) || 0);
+    const maximum = Math.max(current, Number(maximumTotal) || 0);
+
+    if (current >= maximum) {
+      throw new Error("This product already reached its initial container limit.");
+    }
+
+    if (current + normalizedQuantity > maximum) {
+      throw new Error(`Purchase quantity cannot exceed the remaining ${maximum - current} container${maximum - current === 1 ? "" : "s"}.`);
+    }
+  }
 
   const { data, error } = await supabase
     .from("inventory_adjustments")
@@ -2026,7 +2058,13 @@ export async function getInventory(
     if (!item || quantity <= 0) return;
 
     if (type === "new_purchase") {
-      item.total += quantity;
+      const replacementQuantity = Math.min(
+        quantity,
+        item.missing
+      );
+
+      item.missing -= replacementQuantity;
+      item.total += quantity - replacementQuantity;
       item.full += quantity;
     } else if (type === "repaired") {
       const restored = Math.min(quantity, item.damaged);

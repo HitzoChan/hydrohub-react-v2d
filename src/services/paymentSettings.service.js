@@ -24,10 +24,8 @@ const PAYMENT_SETTINGS_FIELDS = `
   gcash_enabled,
   gcash_number,
   gcash_account_name,
-  require_reference,
-  downpayment_enabled,
-  minimum_gallons,
-  downpayment_percentage
+  gcash_qr_code_url,
+  require_reference
 `;
 
 /**
@@ -68,24 +66,10 @@ export async function createPaymentSettings(settings = {}) {
     settings.gcash_account_name ?? ""
   ).trim();
 
+  const gcashQrCodeUrl = settings.gcash_qr_code_url ?? null;
+
   const requireReference =
     settings.require_reference ?? true;
-
-  const downpaymentEnabled =
-    settings.downpayment_enabled ?? true;
-
-  const minimumGallons = Math.max(
-    1,
-    Number(settings.minimum_gallons ?? 10)
-  );
-
-  const downpaymentPercentage = Math.min(
-    100,
-    Math.max(
-      0,
-      Number(settings.downpayment_percentage ?? 30)
-    )
-  );
 
   const { data, error } = await supabase
     .from("system_settings")
@@ -93,10 +77,8 @@ export async function createPaymentSettings(settings = {}) {
       gcash_enabled: gcashEnabled,
       gcash_number: gcashNumber,
       gcash_account_name: gcashAccountName,
+      gcash_qr_code_url: gcashQrCodeUrl,
       require_reference: requireReference,
-      downpayment_enabled: downpaymentEnabled,
-      minimum_gallons: minimumGallons,
-      downpayment_percentage: downpaymentPercentage,
     })
     .select(PAYMENT_SETTINGS_FIELDS)
     .single();
@@ -147,31 +129,14 @@ export async function updatePaymentSettings(
     ).trim();
   }
 
+  if (updates.gcash_qr_code_url !== undefined) {
+    payload.gcash_qr_code_url =
+      updates.gcash_qr_code_url || null;
+  }
+
   if (updates.require_reference !== undefined) {
     payload.require_reference =
       Boolean(updates.require_reference);
-  }
-
-  if (updates.downpayment_enabled !== undefined) {
-    payload.downpayment_enabled =
-      Boolean(updates.downpayment_enabled);
-  }
-
-  if (updates.minimum_gallons !== undefined) {
-    payload.minimum_gallons = Math.max(
-      1,
-      Number(updates.minimum_gallons)
-    );
-  }
-
-  if (updates.downpayment_percentage !== undefined) {
-    payload.downpayment_percentage = Math.min(
-      100,
-      Math.max(
-        0,
-        Number(updates.downpayment_percentage)
-      )
-    );
   }
 
   if (Object.keys(payload).length === 0) {

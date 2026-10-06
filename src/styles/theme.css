@@ -820,6 +820,14 @@ html[data-theme="dark"] .report-header-title {
   color: #e7edf6 !important;
 }
 
+html[data-theme="dark"] .details-row span {
+  color: #aebdd0 !important;
+}
+
+html[data-theme="dark"] .details-row strong {
+  color: #f1f5f9 !important;
+}
+
 html[data-theme="dark"] p,
 html[data-theme="dark"] small,
 html[data-theme="dark"] label,
@@ -1287,6 +1295,7 @@ html[data-theme="dark"] .reservations-main-content .reservation-table td {
 
 html[data-theme="dark"] .reservations-main-content .reservation-customer strong,
 html[data-theme="dark"] .reservations-main-content .reservation-driver strong,
+html[data-theme="dark"] .reservations-main-content .reservation-product strong,
 html[data-theme="dark"] .reservations-main-content .reservation-schedule strong {
   color: #f1f5f9;
 }
@@ -1311,6 +1320,33 @@ html[data-theme="dark"] .reservations-main-content .reservation-status-group {
 html[data-theme="dark"] .reservations-main-content .today-reservation-info strong,
 html[data-theme="dark"] .reservations-main-content .reservation-status-group-header strong {
   color: #f1f5f9;
+}
+
+html[data-theme="dark"] .reservations-main-content .reservation-status-group.pending .reservation-status-group-header {
+  background: #3a2c1b;
+  color: #f8d58a;
+}
+
+html[data-theme="dark"] .reservations-main-content .reservation-status-group.pending .reservation-status-group-header i {
+  color: #fbbf24;
+}
+
+html[data-theme="dark"] .reservations-main-content .reservation-status-group.assigned .reservation-status-group-header {
+  background: #17304d;
+  color: #93c5fd;
+}
+
+html[data-theme="dark"] .reservations-main-content .reservation-status-group.assigned .reservation-status-group-header i {
+  color: #60a5fa;
+}
+
+html[data-theme="dark"] .reservations-main-content .reservation-status-group.completed .reservation-status-group-header {
+  background: #17352f;
+  color: #86efac;
+}
+
+html[data-theme="dark"] .reservations-main-content .reservation-status-group.completed .reservation-status-group-header i {
+  color: #34d399;
 }
 
 html[data-theme="dark"] .reservations-main-content .today-reservation-info span,

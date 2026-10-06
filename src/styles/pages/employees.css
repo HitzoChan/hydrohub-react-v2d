@@ -252,8 +252,10 @@
 }
 
 .employee-avatar {
+  position: relative;
   width: 46px;
   height: 46px;
+  overflow: hidden;
 
   border-radius: 50%;
 
@@ -268,6 +270,21 @@
   font-weight: 700;
 
   flex-shrink: 0;
+}
+
+.employee-avatar img,
+.employee-profile-avatar img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.employee-profile-avatar {
+  position: relative;
+  overflow: hidden;
 }
 
 .employee-details {

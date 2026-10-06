@@ -493,7 +493,10 @@ export async function getDeliveries() {
           "No Address";
 
         const phone =
-          customer.phone || "";
+          customer.phone ||
+          order.customer_phone ||
+          order.phone ||
+          "";
 
         const gallons =
           Number(

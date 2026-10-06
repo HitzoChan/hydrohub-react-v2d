@@ -548,15 +548,23 @@ export async function getConversations(
           customerPhone:
             customer.phone ||
             customer.contact_number ||
+            customer.phone_number ||
+            customer.mobile_number ||
+            order.customer_phone ||
+            conversation.customer_phone ||
             "",
 
           customerEmail:
             customer.email ||
+            order.customer_email ||
+            conversation.customer_email ||
             "",
 
           customerAddress:
             customer.address ||
             customer.complete_address ||
+            customer.full_address ||
+            customer.delivery_address ||
             order.delivery_address ||
             "No Address",
 
@@ -573,6 +581,8 @@ export async function getConversations(
           driverPhone:
             driver.phone ||
             driver.contact_number ||
+            driver.phone_number ||
+            driver.mobile_number ||
             "",
 
           driverStatus:

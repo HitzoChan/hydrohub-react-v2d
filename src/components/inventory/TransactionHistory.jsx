@@ -130,7 +130,7 @@ function ResultBadge({
   ) {
     return (
       <span className="badge rounded-pill bg-primary-subtle text-primary border border-primary-subtle">
-        With Customer
+        Sold to Customers
       </span>
     );
   }

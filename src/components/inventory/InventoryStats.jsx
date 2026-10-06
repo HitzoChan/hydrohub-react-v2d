@@ -106,7 +106,7 @@ function InventoryStats({
         },
 
         {
-            title: "With Customers",
+            title: "Sold to Customers",
             value: totals.customers,
             icon: "bi-person",
             className: "purple",

@@ -26,8 +26,8 @@ function OrderActions({ order, onView }) {
     .trim()
     .toLowerCase();
 
-  const downPayment = Number(
-    order?.down_payment || 0
+  const totalAmount = Number(
+    order?.total_price || 0
   );
 
   const isGcash = paymentMethod === "gcash";
@@ -115,7 +115,7 @@ function OrderActions({ order, onView }) {
 
     const confirmed = window.confirm(
       "Verify this GCash payment?\n\n" +
-        `Down Payment: ₱${downPayment.toLocaleString(
+        `Total Order Amount: ₱${totalAmount.toLocaleString(
           "en-PH",
           {
             minimumFractionDigits: 2,
@@ -232,7 +232,7 @@ function OrderActions({ order, onView }) {
 
     const confirmed = window.confirm(
       "Reject this GCash payment?\n\n" +
-        `Down Payment: ₱${downPayment.toLocaleString(
+        `Total Order Amount: ₱${totalAmount.toLocaleString(
           "en-PH",
           {
             minimumFractionDigits: 2,

@@ -57,7 +57,10 @@ function TodayReservations({
     return (
         <div className="reservation-status-groups">
             {groups.map((group) => (
-                <section key={group.key} className="reservation-status-group">
+                <section
+                    key={group.key}
+                    className={`reservation-status-group ${group.className}`}
+                >
                     <div className="reservation-status-group-header">
                         <strong>
                             <i className={`bi ${group.icon}`} />
@@ -94,10 +97,14 @@ function TodayReservations({
                                 </strong>
 
                                 <span>
+                                    {reservation.product_name || "Water"} · {reservation.capacity || "Size unavailable"}
+                                </span>
+
+                                <span>
                                     {
                                         reservation.gallons
                                     }{" "}
-                                    Gallons
+                                    Containers
                                 </span>
 
                             </div>

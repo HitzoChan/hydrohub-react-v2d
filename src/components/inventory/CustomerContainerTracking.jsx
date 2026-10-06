@@ -12,7 +12,7 @@ function CustomerContainerTracking({ customers = [] }) {
     }
     return <div className="inventory-table-card">
         <div className="inventory-section-heading">
-            <div><h5>Customer Container Tracking</h5><p>Monitor containers currently held by customers.</p></div>
+            <div><h5>Customer Container Tracking</h5><p>Track containers sold to customers.</p></div>
             <div className="inventory-search"><i className="bi bi-search" /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search customer..." /></div>
         </div>
         <div className="table-responsive"><table className="table align-middle">
@@ -22,7 +22,7 @@ function CustomerContainerTracking({ customers = [] }) {
                 <td>{customer.capacity || "—"}</td>
                 <td><span className="inventory-count-badge">{Number(customer.quantity) || 0}</span></td>
                 <td>{formatDate(customer.last_transaction)}</td>
-                <td><span className="inventory-status active">{customer.status || "WITH CUSTOMER"}</span></td>
+                <td><span className="inventory-status active">{String(customer.status || "WITH CUSTOMER").toLowerCase() === "with customer" ? "Sold to Customers" : customer.status}</span></td>
             </tr>)}</tbody>
         </table></div>
     </div>;

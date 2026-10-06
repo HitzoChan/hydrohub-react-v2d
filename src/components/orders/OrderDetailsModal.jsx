@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
 
 function OrderDetailsModal({ order, onClose }) {
@@ -6,6 +6,8 @@ function OrderDetailsModal({ order, onClose }) {
   const [receiptLoading, setReceiptLoading] = useState(false);
   const [receiptError, setReceiptError] = useState(false);
   const [receiptErrorMessage, setReceiptErrorMessage] = useState("");
+  const [driver, setDriver] = useState(null);
+  const [driverLoading, setDriverLoading] = useState(false);
 
   const RECEIPT_BUCKET = "payment-receipts";
 
@@ -389,6 +391,46 @@ function OrderDetailsModal({ order, onClose }) {
     };
   }, [order?.receipt_url]);
 
+  useEffect(() => {
+    let cancelled = false;
+    const driverId = order?.driver_id;
+
+    async function loadDriver() {
+      if (!driverId) {
+        setDriver(null);
+        setDriverLoading(false);
+        return;
+      }
+
+      setDriverLoading(true);
+
+      const { data, error } = await supabase
+        .from("employees")
+        .select("name, phone")
+        .eq("id", driverId)
+        .maybeSingle();
+
+      if (cancelled) {
+        return;
+      }
+
+      if (error) {
+        console.error("Failed to load assigned driver:", error);
+        setDriver(null);
+      } else {
+        setDriver(data);
+      }
+
+      setDriverLoading(false);
+    }
+
+    Promise.resolve().then(loadDriver);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [order?.driver_id]);
+
   // ============================================================
   // RECEIPT IMAGE ERROR
   // ============================================================
@@ -559,11 +601,11 @@ function OrderDetailsModal({ order, onClose }) {
 
                   <tr>
                     <th>
-                      Customer ID
+                      Phone Number
                     </th>
 
                     <td>
-                      {order.customer_id || "-"}
+                      {order.customer_phone || order.phone || "-"}
                     </td>
                   </tr>
 
@@ -784,6 +826,15 @@ function OrderDetailsModal({ order, onClose }) {
                         "Cash"}
                     </td>
                   </tr>
+
+                  {String(order.payment_method || "")
+                    .toLowerCase()
+                    .includes("gcash") && (
+                    <tr>
+                      <th>Amount to Verify</th>
+                      <td>{formatAmount(order.total_price)}</td>
+                    </tr>
+                  )}
 
                   {/* PAYMENT STATUS */}
 
@@ -1062,12 +1113,28 @@ function OrderDetailsModal({ order, onClose }) {
 
                   <tr>
                     <th width="220">
-                      Driver ID
+                      Driver Name
                     </th>
 
                     <td>
-                      {order.driver_id ||
-                        "Not Assigned"}
+                      {driverLoading
+                        ? "Loading driver..."
+                        : driver?.name ||
+                          (order.driver_id
+                            ? "Driver not found"
+                            : "Not Assigned")}
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <th>
+                      Contact Number
+                    </th>
+
+                    <td>
+                      {driverLoading
+                        ? "Loading..."
+                        : driver?.phone || "-"}
                     </td>
                   </tr>
 

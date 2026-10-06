@@ -38,6 +38,16 @@ const customerIcon = L.divIcon({
     popupAnchor: [0, -40],
 });
 
+function escapePopupValue(value) {
+    return String(value ?? "--").replace(/[&<>"']/g, (character) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+    })[character]);
+}
+
 function DeliveryMap({ deliveries = [] }) {
 
     const mapContainerRef = useRef(null);
@@ -211,33 +221,53 @@ function DeliveryMap({ deliveries = [] }) {
 
             if (hasValidCustomerLocation) {
 
+                const customerName = delivery.customer_name || "Customer";
+                const customerAvatar = delivery.customer_avatar_url
+                    ? `<img class="popup-customer-avatar" src="${escapePopupValue(delivery.customer_avatar_url)}" alt="">`
+                    : `<span class="popup-customer-avatar popup-customer-avatar-fallback">${escapePopupValue(customerName.charAt(0).toUpperCase())}</span>`;
+                const status = String(delivery.status || "--").replaceAll("_", " ");
+
                 const customerPopup = `
                     <div class="popup-card">
 
-                        <h6 class="popup-title">
-                            📍 Customer Information
-                        </h6>
+                        <div class="popup-customer-heading">
+                            ${customerAvatar}
+                            <div class="popup-customer-identity">
+                                <strong>${escapePopupValue(customerName)}</strong>
+                                <span>Customer profile</span>
+                            </div>
+                        </div>
 
                         <table class="popup-table">
 
                             <tr>
-                                <td><strong>Customer</strong></td>
-                                <td>${delivery.customer_name ?? "--"}</td>
+                                <td><strong>Product</strong></td>
+                                <td>${escapePopupValue(delivery.product_name || "Water")}</td>
                             </tr>
 
                             <tr>
-                                <td><strong>Driver</strong></td>
-                                <td>${delivery.driver?.name ?? "Unassigned"}</td>
+                                <td><strong>Size</strong></td>
+                                <td>${escapePopupValue(delivery.capacity || "--")}</td>
                             </tr>
 
                             <tr>
-                                <td><strong>Status</strong></td>
-                                <td>${delivery.status ?? "--"}</td>
+                                <td><strong>Containers</strong></td>
+                                <td>${escapePopupValue(delivery.gallons ?? "--")}</td>
                             </tr>
 
                             <tr>
                                 <td><strong>Address</strong></td>
-                                <td>${delivery.address ?? "--"}</td>
+                                <td class="popup-address">${escapePopupValue(delivery.address || "--")}</td>
+                            </tr>
+
+                            <tr>
+                                <td><strong>Payment</strong></td>
+                                <td>${escapePopupValue(delivery.payment_method || "Cash")}</td>
+                            </tr>
+
+                            <tr>
+                                <td><strong>Status</strong></td>
+                                <td><span class="popup-status">${escapePopupValue(status)}</span></td>
                             </tr>
 
                         </table>

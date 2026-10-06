@@ -106,6 +106,15 @@ export default function EmployeeTable({
 
                   <div className="employee-avatar">
                     {initials}
+                    {employee.profile_image_url && (
+                      <img
+                        src={employee.profile_image_url}
+                        alt={`${employee.name} profile`}
+                        onError={(event) => {
+                          event.currentTarget.style.display = "none";
+                        }}
+                      />
+                    )}
                   </div>
 
                   {/* Details */}

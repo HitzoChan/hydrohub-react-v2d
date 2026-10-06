@@ -48,7 +48,11 @@ function ReservationsTable({
                         </th>
 
                         <th>
-                            Gallons
+                            Product
+                        </th>
+
+                        <th>
+                            Containers
                         </th>
 
                         <th>
@@ -133,6 +137,23 @@ function ReservationsTable({
 
                                     <td>
 
+                                        <div className="reservation-product">
+
+                                            <strong>
+                                                {reservation.product_name || "Water"}
+                                            </strong>
+
+                                            <span>
+                                                {reservation.capacity || "Size unavailable"}
+                                            </span>
+
+                                        </div>
+
+                                    </td>
+
+
+                                    <td>
+
                                         <strong>
                                             {
                                                 reservation.gallons
@@ -140,7 +161,7 @@ function ReservationsTable({
                                         </strong>
 
                                         <span className="table-subtext">
-                                            gallons
+                                            containers
                                         </span>
 
                                     </td>

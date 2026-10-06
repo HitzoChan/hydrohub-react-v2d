@@ -20,12 +20,8 @@ CREATE TABLE IF NOT EXISTS public.system_settings (
   gcash_enabled boolean NULL DEFAULT true,
   gcash_number text NULL,
   gcash_account_name text NULL,
+  gcash_qr_code_url text NULL,
   require_reference boolean NULL DEFAULT true,
-  
-  -- Down payment settings
-  downpayment_enabled boolean NULL DEFAULT true,
-  minimum_gallons integer NULL DEFAULT 10,
-  downpayment_percentage integer NULL DEFAULT 30,
   
   -- Security settings
   max_active_orders_per_customer integer NOT NULL DEFAULT 3,

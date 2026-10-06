@@ -124,9 +124,6 @@ export async function updateAdminCredentials(id, adminName, adminEmail, adminPas
                 cod_enabled: false,
                 cod_verification: false,
                 gcash_enabled: true,
-                downpayment_enabled: true,
-                minimum_gallons: 10,
-                downpayment_percentage: 30,
                 max_active_orders_per_customer: 3,
             }])
             .select("id")

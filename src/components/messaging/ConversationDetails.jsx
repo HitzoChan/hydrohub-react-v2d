@@ -1,4 +1,10 @@
 
+function getProfileValue(...values) {
+  return values
+    .map((value) => String(value ?? "").trim())
+    .find((value) => value && !["-", "No Address", "N/A"].includes(value)) || "Not provided";
+}
+
 export default function ConversationDetails({
   conversation,
   onClose,
@@ -22,6 +28,44 @@ export default function ConversationDetails({
   ]
     .filter(Boolean)
     .join(", ");
+  const customerPhone = getProfileValue(
+    customer.phone,
+    customer.contact_number,
+    customer.phone_number,
+    customer.mobile_number,
+    conversation.customerPhone,
+    conversation.order?.customer_phone
+  );
+  const customerEmail = getProfileValue(
+    customer.email,
+    conversation.customerEmail,
+    conversation.order?.customer_email
+  );
+  const customerAddress = getProfileValue(
+    customer.address,
+    customer.complete_address,
+    customer.full_address,
+    customer.delivery_address,
+    [customer.street, customer.barangay, customer.city, customer.province]
+      .filter(Boolean)
+      .join(", "),
+    conversation.customerAddress,
+    conversation.order?.delivery_address
+  );
+  const driverPhone = getProfileValue(
+    driver.phone,
+    driver.contact_number,
+    driver.phone_number,
+    driver.mobile_number,
+    conversation.driverPhone
+  );
+  const driverEmail = getProfileValue(driver.email);
+  const formattedDriverAddress = getProfileValue(
+    driver.address,
+    driver.complete_address,
+    driver.full_address,
+    driverAddress
+  );
 
   /* ======================================
       QUICK ACTION HELPERS
@@ -122,23 +166,6 @@ export default function ConversationDetails({
 
           <div className="details-card-header">
 
-            <div className="details-icon customer">
-
-              <i className="bi bi-person-fill"></i>
-
-              {customer.avatar_url && (
-                <img
-                  className="messaging-profile-image"
-                  src={customer.avatar_url}
-                  alt={`${customerName} profile`}
-                  onError={(event) => {
-                    event.currentTarget.style.display = "none";
-                  }}
-                />
-              )}
-
-            </div>
-
             <div>
 
               <h6>Customer</h6>
@@ -168,7 +195,7 @@ export default function ConversationDetails({
               <span>Phone</span>
 
                 <strong>
-                  {customer.phone || customer.contact_number || conversation.customerPhone || "-"}
+                  {customerPhone}
                 </strong>
 
             </div>
@@ -178,7 +205,7 @@ export default function ConversationDetails({
               <span>Email</span>
 
                 <strong>
-                  {customer.email || conversation.customerEmail || "-"}
+                  {customerEmail}
                 </strong>
 
             </div>
@@ -188,7 +215,7 @@ export default function ConversationDetails({
               <span>Address</span>
 
                 <strong>
-                  {customer.address || customer.complete_address || conversation.customerAddress || "-"}
+                  {customerAddress}
                 </strong>
 
             </div>
@@ -267,7 +294,7 @@ export default function ConversationDetails({
               <span>Phone</span>
 
                 <strong>
-                  {driver.phone || driver.contact_number || conversation.driverPhone || "-"}
+                  {driverPhone}
                 </strong>
 
             </div>
@@ -276,7 +303,7 @@ export default function ConversationDetails({
 
               <span>Email</span>
 
-              <strong>{driver.email || "-"}</strong>
+              <strong>{driverEmail}</strong>
 
             </div>
 
@@ -284,7 +311,7 @@ export default function ConversationDetails({
 
               <span>Address</span>
 
-              <strong>{driverAddress || "-"}</strong>
+              <strong>{formattedDriverAddress}</strong>
 
             </div>
 

@@ -7,6 +7,8 @@ const initialForm = {
     customerType: "existing",
     customerId: "",
     customerName: "",
+    customerPhone: "",
+    paymentMethod: "COD",
     containerOption: "with_exchange",
     containerQuantity: "1",
     locationAddress: "",
@@ -144,6 +146,7 @@ export default function NewReservationModal({
             if (name === "customerType") {
                 next.customerId = "";
                 next.customerName = "";
+                next.customerPhone = "";
             }
 
             if (name === "customerId") {
@@ -151,6 +154,7 @@ export default function NewReservationModal({
                     (item) => String(item.user_id || item.id) === String(value)
                 );
                 next.customerName = customer?.name || "";
+                next.customerPhone = customer?.phone || "";
             }
 
             if (name === "productId") {
@@ -231,7 +235,7 @@ export default function NewReservationModal({
                 productName: selected.product_name || form.productName || "",
                 capacity: selected.capacity || form.capacity || "",
                 basePrice: Number(selected.base_price ?? form.basePrice ?? 0),
-                gallons: parseCapacity(selected.capacity || form.capacity),
+                gallons: Number(form.containerQuantity || 0),
                 totalPrice: Number(form.totalPrice || recalculateTotal(form) || 0),
                 exchange_containers:
                     form.containerOption === "with_exchange"
@@ -330,6 +334,33 @@ export default function NewReservationModal({
                                 />
                             </label>
                         )}
+
+                        {form.customerType === "walkin" && (
+                            <label>
+                                Walk-in customer phone
+                                <input
+                                    name="customerPhone"
+                                    type="tel"
+                                    value={form.customerPhone}
+                                    onChange={updateField}
+                                    placeholder="e.g. +63 912 345 6789"
+                                    required
+                                />
+                            </label>
+                        )}
+
+                        <label>
+                            Payment method
+                            <select
+                                name="paymentMethod"
+                                value={form.paymentMethod}
+                                onChange={updateField}
+                            >
+                                <option value="Cash">Cash (already paid)</option>
+                                <option value="COD">COD (pay on delivery)</option>
+                                <option value="GCash">GCash (verify payment)</option>
+                            </select>
+                        </label>
 
                         {form.customerType === "existing" && form.customerName && (
                             <p className="new-reservation-full-width">

@@ -210,7 +210,7 @@ async function handleDeleteEmployee() {
           <div className="text-center">
 
             <div
-              className="rounded-circle bg-primary text-white fw-bold mx-auto d-flex align-items-center justify-content-center"
+              className="employee-profile-avatar rounded-circle bg-primary text-white fw-bold mx-auto d-flex align-items-center justify-content-center"
               style={{
                 width: 90,
                 height: 90,
@@ -219,6 +219,15 @@ async function handleDeleteEmployee() {
             >
 
               {initials}
+              {employee.profile_image_url && (
+                <img
+                  src={employee.profile_image_url}
+                  alt={`${employee.name} profile`}
+                  onError={(event) => {
+                    event.currentTarget.style.display = "none";
+                  }}
+                />
+              )}
 
             </div>
 

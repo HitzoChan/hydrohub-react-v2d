@@ -1529,6 +1529,7 @@ export async function createReservation({
     customerId = null,
     customerType = "existing",
     customerName,
+    customerPhone = "",
     exchange_containers = 0,
     new_containers = 0,
     borrow_containers = 0,
@@ -1546,11 +1547,16 @@ export async function createReservation({
     capacity = "",
     basePrice = 0,
     totalPrice = 0,
+    paymentMethod = "COD",
     scheduledDate,
     scheduledTime,
 }) {
     if (!customerName?.trim()) {
         throw new Error("Customer name is required.");
+    }
+
+    if (customerType === "walkin" && !customerPhone?.trim()) {
+        throw new Error("Walk-in customer phone is required.");
     }
 
     if (!scheduledDate || !scheduledTime) {
@@ -1581,6 +1587,20 @@ export async function createReservation({
         (Number.isFinite(resolvedBasePrice) && resolvedBasePrice > 0
             ? quantity * resolvedBasePrice
             : 0);
+
+    const normalizedPaymentMethod = String(paymentMethod || "COD")
+        .trim()
+        .toLowerCase();
+    const paymentMethodMap = {
+        cash: "Cash",
+        cod: "COD",
+        gcash: "GCash",
+    };
+    const resolvedPaymentMethod = paymentMethodMap[normalizedPaymentMethod];
+
+    if (!resolvedPaymentMethod) {
+        throw new Error("Select a valid payment method.");
+    }
 
     let resolvedCustomerId = customerId;
 
@@ -1663,6 +1683,7 @@ export async function createReservation({
         .insert({
             customer_id: resolvedCustomerId,
             customer_name: customerName.trim(),
+            customer_phone: customerPhone.trim() || null,
             exchange_containers: Number(exchange_containers) || 0,
             new_containers: Number(new_containers) || 0,
             borrow_containers: Number(borrow_containers) || 0,
@@ -1672,7 +1693,11 @@ export async function createReservation({
             exchange_required: Number(exchange_containers) > 0,
             latitude: Number.isFinite(Number(latitude)) ? Number(latitude) : null,
             longitude: Number.isFinite(Number(longitude)) ? Number(longitude) : null,
-            payment_method: "COD",
+            payment_method: resolvedPaymentMethod,
+            payment_status:
+                resolvedPaymentMethod === "Cash"
+                    ? "Paid"
+                    : "Pending",
             address: composedAddress || address.trim(),
             gallons: quantity,
             product_id: productId || null,

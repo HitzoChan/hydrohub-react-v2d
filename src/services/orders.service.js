@@ -746,7 +746,7 @@ export async function getOrders() {
     error: customerProfilesError,
   } = await supabase
     .from("customer_profiles")
-    .select("id, user_id, avatar_url");
+    .select("id, user_id, avatar_url, phone");
 
   if (customerProfilesError) {
     console.warn(
@@ -756,14 +756,17 @@ export async function getOrders() {
   }
 
   const customerAvatarById = new Map();
+  const customerPhoneById = new Map();
 
   (customerProfiles || []).forEach((profile) => {
     if (profile.id) {
       customerAvatarById.set(String(profile.id), profile.avatar_url || "");
+      customerPhoneById.set(String(profile.id), profile.phone || "");
     }
 
     if (profile.user_id) {
       customerAvatarById.set(String(profile.user_id), profile.avatar_url || "");
+      customerPhoneById.set(String(profile.user_id), profile.phone || "");
     }
   });
 
@@ -821,6 +824,12 @@ export async function getOrders() {
 
         customer_avatar_url:
           customerAvatarById.get(String(order.customer_id)) || "",
+
+        customer_phone:
+          customerPhoneById.get(String(order.customer_id)) ||
+          order.customer_phone ||
+          order.phone ||
+          "",
 
         /*
          * Normal order status.

@@ -141,6 +141,14 @@
   object-fit: cover;
 }
 
+.customer-address-cell {
+  display: block;
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* ======================================================
    BADGES
 ====================================================== */
